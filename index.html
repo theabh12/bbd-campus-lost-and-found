@@ -3,171 +3,136 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BBD Campus Lost & Found — Final</title>
+  <title>BBD Campus Lost & Found — Final (Redesigned)</title>
 
-  <!-- Primary icon / favicon using the BBD logo (remote). Replace with local assets/* later if you upload them -->
+  <!-- Favicon (remote BBD logo) -->
   <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" />
-  <link rel="apple-touch-icon" href="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" />
   <meta name="theme-color" content="#1f6feb" />
-
-  <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* ===========================
-       Soft Glass Theme (Phase 4)
-       =========================== */
     :root{
-      --bg1:#f3f8ff; --bg2:#e9f4ff;
-      --glass: rgba(255,255,255,0.78);
-      --glass-strong: rgba(255,255,255,0.9);
-      --muted:#616973;
-      --accent:#1f6feb;
-      --accent-2:#2b8df6;
-      --danger:#ef4444;
-      --success:#10b981;
+      --bg1:#f6fbff; --bg2:#eaf6ff;
+      --glass: rgba(255,255,255,0.84);
+      --glass-strong: rgba(255,255,255,0.92);
+      --muted:#5f6a76;
+      --accent:#1f6feb; --accent-2:#2b8df6;
+      --danger:#ef4444; --success:#10b981;
       --card-border: rgba(255,255,255,0.7);
-      --shadow: 0 14px 40px rgba(16,24,40,0.06);
+      --shadow: 0 16px 50px rgba(16,24,40,0.06);
       --radius:14px;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;font-family:Inter,system-ui,Arial;color:#071124;
-      background:linear-gradient(135deg,var(--bg1),var(--bg2));
-      -webkit-font-smoothing:antialiased;min-height:100vh;overflow-y:auto;
-      opacity:0; transform:translateY(6px); transition:opacity .35s ease, transform .35s ease;
-    }
-    body.page-ready{opacity:1; transform:none;}
-    a{color:inherit}
-    .container{max-width:1200px;margin:28px auto;padding:18px;display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start}
-
-    /* Sidebar */
-    .sidebar{position:sticky;top:22px;background:var(--glass);border-radius:var(--radius);padding:16px;border:1px solid var(--card-border);box-shadow:var(--shadow);backdrop-filter:blur(8px)}
-    .logo-row{display:flex;gap:12px;align-items:center}
-    .logo-img{width:56px;height:56px;border-radius:10px;background:#fff;object-fit:cover}
-    .brand-title{font-weight:800;font-size:16px}
-    .brand-sub{font-size:12px;color:var(--muted)}
-    .nav{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-    .nav-item{padding:10px;border-radius:10px;cursor:pointer;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:10px}
-    .nav-item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 12px 30px rgba(31,99,255,0.08)}
-    .small-muted{font-size:12px;color:var(--muted);margin-top:12px}
-
-    /* Main header */
-    .main{padding:2px}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-    .title{font-weight:800;font-size:22px}
-    .subtitle{font-size:13px;color:var(--muted)}
-    .controls{display:flex;align-items:center;gap:10px}
-    .search{padding:10px;border-radius:10px;border:1px solid rgba(11,17,36,0.06);min-width:280px}
-    .btn{padding:9px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(31,99,255,0.08)}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:#071124;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-font-smoothing:antialiased;min-height:100vh;opacity:0;transform:translateY(6px);transition:opacity .28s ease,transform .28s ease}
+    body.ready{opacity:1;transform:none}
+    .app{max-width:980px;margin:28px auto;padding:20px}
+    /* header */
+    header{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:64px;height:64px;border-radius:12px;overflow:hidden;box-shadow:0 12px 30px rgba(31,99,255,0.08);background:#fff}
+    .logo img{width:100%;height:100%;object-fit:cover}
+    .app-title{font-weight:800;font-size:22px}
+    .app-sub{font-size:13px;color:var(--muted)}
+    /* centered tabs (under title) */
+    .tabs{display:flex;gap:12px;justify-content:center;margin-top:8px}
+    .tab{padding:12px 20px;border-radius:999px;background:transparent;border:1px solid transparent;cursor:pointer;font-weight:700;color:var(--muted);transition:transform .12s,background .12s}
+    .tab:hover{transform:translateY(-4px)}
+    .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 12px 30px rgba(31,99,255,0.10)}
+    /* controls */
+    .controls{display:flex;gap:10px;align-items:center;margin:12px 0;justify-content:center}
+    .search{padding:10px 14px;border-radius:10px;border:1px solid rgba(11,17,36,0.06);min-width:360px}
+    .btn{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(31,99,255,0.08)}
     .btn.ghost{background:transparent;border:1px solid var(--card-border);color:var(--muted)}
-    .inbox{position:relative}
-    .badge{position:absolute;right:-8px;top:-8px;background:var(--danger);color:#fff;width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 8px 20px rgba(239,68,68,0.18)}
-
-    /* Grid */
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-    .card{background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,252,255,0.96));border-radius:12px;padding:12px;border:1px solid var(--card-border);box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s}
+    .inbox{position:relative;display:inline-block}
+    .badge{position:absolute;right:-10px;top:-10px;background:var(--danger);color:#fff;width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 8px 20px rgba(239,68,68,0.16)}
+    /* grid single column full width cards */
+    .list{display:flex;flex-direction:column;gap:14px;margin-top:10px}
+    .card{
+      display:flex;gap:14px;align-items:flex-start;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,252,255,0.98));
+      border-radius:12px;padding:16px;border:1px solid var(--card-border);box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s;
+      width:100%;
+    }
     .card:hover{transform:translateY(-6px);box-shadow:0 30px 60px rgba(16,24,40,0.08)}
-    .card-head{display:flex;gap:12px;align-items:center}
-    .thumb{width:120px;height:80px;border-radius:10px;background:#f3f7ff;object-fit:cover;flex-shrink:0}
-    .meta{display:flex;flex-direction:column}
-    .title-sm{font-weight:800}
-    .desc{font-size:14px;color:var(--muted);margin-top:6px}
-    .pill{padding:6px 8px;border-radius:999px;background:#f2f8ff;font-weight:600;font-size:12px;color:var(--muted)}
-
-    .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-    .claim{padding:8px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,#ff7a7a,#ff4b4b);color:#fff;font-weight:700;cursor:pointer}
-    .claimed{background:#94f0b7;color:#04572a;cursor:default}
-
-    /* Floating add button (mobile) */
-    .fab{position:fixed;right:26px;bottom:26px;width:62px;height:62px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 18px 40px rgba(31,99,255,0.12);cursor:pointer}
-
-    /* Modal */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,9,15,0.38);z-index:999}
+    .card-media{width:260px;height:160px;border-radius:10px;background:#f3f7ff;flex-shrink:0;object-fit:cover}
+    .card-body{flex:1;display:flex;flex-direction:column;gap:8px}
+    .card-title{font-weight:800;font-size:18px}
+    .card-desc{color:var(--muted);font-size:14px}
+    .meta-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .pill{padding:6px 10px;border-radius:999px;background:#f1f7ff;font-weight:700;font-size:13px;color:var(--muted)}
+    .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+    .claim{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,#ff7a7a,#ff4b4b);color:#fff;font-weight:800;cursor:pointer}
+    .claimed{background:#94f0b7;color:#04572a}
+    /* empty state */
+    .empty{display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px;border-radius:12px;background:var(--glass);border:1px solid var(--card-border)}
+    /* modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,9,15,0.36);z-index:999}
     .modal.show{display:flex}
-    .panel{width:720px;max-width:96%;background:var(--glass-strong);padding:18px;border-radius:12px;border:1px solid var(--card-border);box-shadow:0 40px 80px rgba(9,16,56,0.12);backdrop-filter:blur(8px)}
-    .panel h3{margin:0}
+    .panel{width:760px;max-width:96%;background:var(--glass-strong);padding:18px;border-radius:12px;border:1px solid var(--card-border);box-shadow:0 40px 80px rgba(9,16,56,0.12);backdrop-filter:blur(8px)}
     .single-box{width:100%;min-height:120px;padding:14px;border-radius:12px;border:1px solid rgba(15,23,42,0.06);resize:vertical}
-    .form-row{display:flex;gap:8px;margin-top:12px}
-
-    /* shimmer skeleton */
-    .skeleton{background:linear-gradient(90deg,#f3f6ff,#eef4ff,#f3f6ff);background-size:200% 100%;animation:shimmer 1.2s linear infinite;border-radius:10px}
-    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
+    .form-row{display:flex;gap:10px;margin-top:12px}
+    /* fab large bottom-right */
+    .fab{position:fixed;right:28px;bottom:28px;width:82px;height:82px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:36px;box-shadow:0 22px 50px rgba(31,99,255,0.16);cursor:pointer;z-index:1500}
+    .fab:hover{transform:translateY(-4px)}
     /* notification panel */
-    .notif-panel{position:fixed;right:22px;top:82px;width:360px;background:var(--glass-strong);border-radius:12px;padding:10px;border:1px solid var(--card-border);box-shadow:0 30px 60px rgba(9,16,56,0.12);display:none;z-index:1200}
+    .notif-panel{position:fixed;right:22px;top:92px;width:400px;background:var(--glass-strong);border-radius:12px;padding:10px;border:1px solid var(--card-border);box-shadow:0 30px 60px rgba(9,16,56,0.12);display:none;z-index:1200}
     .notif-panel.show{display:block}
     .notif-item{padding:10px;border-radius:10px;margin-bottom:8px;background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,252,255,0.96));cursor:pointer}
     .notif-item.unread{box-shadow:0 12px 30px rgba(31,99,255,0.06)}
-
-    /* empty state */
-    .empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:28px;border-radius:12px;background:var(--glass);border:1px solid var(--card-border)}
-    .empty svg{width:160px;height:120px;opacity:.9}
-
-    /* toasts */
+    /* particles canvas */
+    #particles{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1600}
+    /* toast */
     .toast{position:fixed;right:18px;bottom:18px;background:#0b1220;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 16px 40px rgba(11,17,36,0.28);z-index:2000;opacity:0;transform:translateY(8px);transition:opacity .28s,transform .28s}
-
     /* responsive */
-    @media (max-width:980px){ .container{grid-template-columns:1fr; padding:12px} .sidebar{position:relative} .notif-panel{right:12px;left:12px;width:auto} }
+    @media (max-width:820px){
+      .card{flex-direction:column}
+      .card-media{width:100%;height:200px}
+      .search{min-width:100%}
+      .panel{width:92%}
+    }
   </style>
 </head>
 <body>
+  <div id="particles"><canvas id="pcanvas" style="width:100%;height:100%"></canvas></div>
 
-  <!-- notification particles canvas -->
-  <div id="particles" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1500">
-    <canvas id="pcanvas" style="width:100%;height:100%"></canvas>
-  </div>
-
-  <div class="container" id="appRoot">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="logo-row">
-        <div style="position:relative">
-          <img id="logoImg" class="logo-img" src="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" alt="BBD Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%%22http://www.w3.org/2000/svg%%22 width=56 height=56><rect width=56 height=56 rx=10 fill=%22%231f6feb%22/></svg>'">
-          <!-- custom L&F badge overlay -->
-          <div style="position:absolute;right:-8px;bottom:-8px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;padding:6px 8px;border-radius:8px;font-weight:800;font-size:12px;box-shadow:0 8px 22px rgba(31,99,255,0.12)">[L&F]</div>
-        </div>
-        <div>
-          <div class="brand-title">BBD Campus</div>
-          <div class="brand-sub">Lost & Found Service</div>
+  <div class="app" id="appRoot">
+    <header>
+      <div class="brand">
+        <div class="logo"><img src="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" alt="BBD" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%%22http://www.w3.org/2000/svg%%22 width=64 height=64><rect width=64 height=64 rx=12 fill=%22%231f6feb%22/></svg>'" style="width:100%;height:100%;object-fit:cover"></div>
+        <div style="text-align:center">
+          <div class="app-title">Campus Lost & Found</div>
+          <div class="app-sub">BBD Educational Group — campus item sharing</div>
         </div>
       </div>
 
-      <nav class="nav" role="navigation" aria-label="Sections">
-        <div class="nav-item active" data-tab="lost">🔍 Lost</div>
-        <div class="nav-item" data-tab="found">📦 Found</div>
-        <div class="nav-item" data-tab="giveaway">🎁 Giveaway</div>
-        <div style="height:1px;background:rgba(7,17,36,0.03);margin:12px 0"></div>
-        <div class="nav-item" id="contributorsLink">👥 Contributors</div>
-        <div style="flex:1"></div>
-        <div class="small-muted">Built for BBD Educational Group</div>
-      </nav>
-    </aside>
+      <!-- centered tabs under title -->
+      <div class="tabs" role="tablist" aria-label="Sections">
+        <div class="tab active" data-tab="lost">Lost</div>
+        <div class="tab" data-tab="found">Found</div>
+        <div class="tab" data-tab="giveaway">Giveaway</div>
+      </div>
 
-    <!-- MAIN -->
-    <main class="main">
-      <div class="topbar">
-        <div>
-          <div class="title">Campus Lost & Found</div>
-          <div class="subtitle">Report lost/found items or give away things to the campus community.</div>
+      <div class="controls">
+        <input id="search" class="search" placeholder="Search title / description..." />
+        <div class="inbox">
+          <button id="inboxBtn" class="btn ghost">Inbox</button>
+          <div id="badge" class="badge" style="display:none">0</div>
         </div>
+        <div id="userArea"></div>
+        <button id="openAdd" class="btn">+ Add Item</button>
+      </div>
+    </header>
 
-        <div class="controls">
-          <input id="search" class="search" placeholder="Search title / description..." />
-          <div class="inbox">
-            <button id="inboxBtn" class="btn ghost" title="Inbox">Inbox</button>
-            <div id="badge" class="badge" style="display:none">0</div>
+    <!-- item list (single column) -->
+    <main>
+      <section id="list" class="list">
+        <!-- skeleton cards until Firestore loads -->
+        <div class="card" style="height:140px">
+          <div style="flex:1">
+            <div class="card-title" style="background:#f3f6ff;height:18px;width:60%;border-radius:6px"></div>
           </div>
-          <div id="userArea"></div>
-          <button id="openAdd" class="btn">+ Add Item</button>
         </div>
-      </div>
-
-      <section id="grid" class="grid">
-        <!-- skeleton loader until Firestore returns -->
-        <div class="card skeleton" style="height:120px"></div>
-        <div class="card skeleton" style="height:120px"></div>
-        <div class="card skeleton" style="height:120px"></div>
+        <div class="card" style="height:140px"></div>
+        <div class="card" style="height:140px"></div>
       </section>
     </main>
   </div>
@@ -217,22 +182,19 @@
     </div>
   </div>
 
-  <!-- floating add (mobile) -->
-  <div id="fab" class="fab" title="Add Item" style="display:none">+</div>
+  <!-- big floating add button -->
+  <div id="fab" class="fab" title="Add Item">+</div>
 
   <!-- toast container -->
   <div id="toastRoot"></div>
 
   <script type="module">
-  /* ===========================
-     Final Phase 4 — Firebase + UI glue
-     =========================== */
-
+  // Firebase + UI glue (single-file final)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, updateDoc, doc, arrayUnion, limit } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-  // Your firebase config (same as before)
+  // your firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyA6fg0gFPowPWZVOajkkznj9xocVp3evQs",
     authDomain: "bbd-campus-lost-and-found.firebaseapp.com",
@@ -247,11 +209,11 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Optional: imgbb key
+  // optional imgbb key (leave blank for Base64 fallback)
   const IMGBB_KEY = "";
 
-  // UI Refs
-  const grid = document.getElementById('grid');
+  // UI refs
+  const list = document.getElementById('list');
   const search = document.getElementById('search');
   const inboxBtn = document.getElementById('inboxBtn');
   const badge = document.getElementById('badge');
@@ -259,6 +221,7 @@
   const modal = document.getElementById('modal');
   const closeModal = document.getElementById('closeModal');
   const openAdd = document.getElementById('openAdd');
+  const fab = document.getElementById('fab');
   const singleBox = document.getElementById('singleBox');
   const fileInput = document.getElementById('fileInput');
   const postBtn = document.getElementById('postBtn');
@@ -270,145 +233,111 @@
   const loginEmail = document.getElementById('loginEmail');
   const loginPass = document.getElementById('loginPass');
   const userArea = document.getElementById('userArea');
-  const navItems = document.querySelectorAll('.nav .nav-item');
+  const tabs = document.querySelectorAll('.tab');
   const contributorsLink = document.getElementById('contributorsLink');
   const postCategory = document.getElementById('category');
-  const fab = document.getElementById('fab');
+  const pcanvas = document.getElementById('pcanvas');
+  const ctx = pcanvas.getContext('2d');
   const toastRoot = document.getElementById('toastRoot');
 
+  // state
   let currentTab = 'lost';
   let itemsUnsub = null;
   let notifsUnsub = null;
   let currentUser = null;
 
-  // particles canvas
-  const pcanvas = document.getElementById('pcanvas');
-  const ctx = pcanvas.getContext('2d');
+  // canvas resize
   function resizeCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas); resizeCanvas();
 
-  // show page after JS loaded (transition)
-  window.requestAnimationFrame(()=>document.body.classList.add('page-ready'));
+  // show page
+  requestAnimationFrame(()=>document.body.classList.add('ready'));
 
-  // AUTH helpers
+  // AUTH UI
   function renderUser(user){
     userArea.innerHTML = '';
     if (!user){
-      const loginBtn = document.createElement('button'); loginBtn.className='btn ghost'; loginBtn.textContent='Login';
-      loginBtn.onclick = () => openLoginArea();
-      const signupBtn = document.createElement('button'); signupBtn.className='btn'; signupBtn.textContent='Sign up';
-      signupBtn.onclick = () => openLoginArea();
-      userArea.appendChild(loginBtn); userArea.appendChild(signupBtn);
+      const l = document.createElement('button'); l.className='btn ghost'; l.textContent='Login';
+      const s = document.createElement('button'); s.className='btn'; s.textContent='Sign up';
+      l.onclick = () => openLoginArea(); s.onclick = () => openLoginArea();
+      userArea.appendChild(l); userArea.appendChild(s);
     } else {
       const name = document.createElement('div'); name.style.fontWeight='700'; name.textContent = user.displayName || user.email;
-      const logout = document.createElement('button'); logout.className='btn ghost'; logout.textContent = 'Logout';
-      logout.onclick = async () => { await signOut(auth); showToast('Logged out'); };
-      userArea.appendChild(name); userArea.appendChild(logout);
+      const out = document.createElement('button'); out.className='btn ghost'; out.textContent='Logout';
+      out.onclick = async ()=>{ await signOut(auth); showToast('Logged out'); };
+      userArea.appendChild(name); userArea.appendChild(out);
     }
   }
 
-  function openLoginArea(){
-    modal.classList.add('show'); loginArea.style.display='block'; addArea.style.display='none'; document.getElementById('modalTitle').textContent='Login / Signup';
-  }
-  function openAddArea(){
-    if (!currentUser) { openLoginArea(); return; }
-    modal.classList.add('show'); loginArea.style.display='none'; addArea.style.display='block'; document.getElementById('modalTitle').textContent='Post an Item';
-  }
-  closeModal.onclick = () => { modal.classList.remove('show'); singleBox.value=''; fileInput.value=''; };
+  function openLoginArea(){ modal.classList.add('show'); loginArea.style.display='block'; addArea.style.display='none'; document.getElementById('modalTitle').textContent='Login / Signup'; }
+  function openAddArea(){ if (!currentUser) { openLoginArea(); return; } modal.classList.add('show'); loginArea.style.display='none'; addArea.style.display='block'; document.getElementById('modalTitle').textContent='Post an Item'; }
+  closeModal.onclick = ()=>{ modal.classList.remove('show'); singleBox.value=''; fileInput.value=''; };
 
-  openAdd.onclick = openAddArea;
-  fab.onclick = openAddArea;
-  openLogin.onclick = openLoginArea;
+  openAdd.onclick = openAddArea; fab.onclick = openAddArea; openLogin.onclick = openLoginArea;
 
-  signupBtn.onclick = async () => {
-    const email = loginEmail.value.trim(); const pass = loginPass.value.trim();
-    if (!email || !pass || pass.length<6) return alert('Enter valid email and password (6+ chars)');
-    try { await createUserWithEmailAndPassword(auth,email,pass); showToast('Signup success'); modal.classList.remove('show'); } catch(e){ alert('Signup failed: '+e.message); }
-  };
-  loginBtn.onclick = async () => {
-    const email = loginEmail.value.trim(); const pass = loginPass.value.trim();
-    if (!email || !pass) return alert('Enter login');
-    try { await signInWithEmailAndPassword(auth,email,pass); showToast('Logged in'); modal.classList.remove('show'); } catch(e){ alert('Login failed: '+e.message); }
-  };
+  signupBtn.onclick = async ()=>{ const email=loginEmail.value.trim(),pass=loginPass.value.trim(); if(!email||!pass||pass.length<6) return alert('Enter valid email & pass (6+)'); try{ await createUserWithEmailAndPassword(auth,email,pass); showToast('Signup success'); modal.classList.remove('show'); }catch(e){ alert('Signup failed: '+e.message) } };
+  loginBtn.onclick = async ()=>{ const email=loginEmail.value.trim(),pass=loginPass.value.trim(); if(!email||!pass) return alert('Enter login'); try{ await signInWithEmailAndPassword(auth,email,pass); showToast('Logged in'); modal.classList.remove('show'); }catch(e){ alert('Login failed: '+e.message) } };
 
-  // Google login helper
-  async function googleLogin(){
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      showToast('Logged in with Google'); modal.classList.remove('show');
-    } catch(e){ alert('Google login failed: '+e.message); }
-  }
+  async function googleLogin(){ try{ const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); showToast('Logged in with Google'); modal.classList.remove('show'); }catch(e){ alert('Google login failed: '+e.message) } }
 
-  onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-    renderUser(user);
-    attachNotificationsListener();
-    attachItemsListener(currentTab);
-    // minimal users doc for future email features (demo)
-    if (user){
-      try { await addDoc(collection(db,'users'), { uid:user.uid, email:user.email, name:user.displayName||user.email, createdAt: serverTimestamp() }); } catch(e){}
-    }
+  onAuthStateChanged(auth, async user => {
+    currentUser = user; renderUser(user); attachNotificationsListener(); attachItemsListener(currentTab);
+    if (user){ try{ await addDoc(collection(db,'users'), { uid:user.uid, email:user.email, name:user.displayName||user.email, createdAt: serverTimestamp() }); }catch(e){} }
   });
 
-  // attach items listener for tab
+  // TAB handling
+  tabs.forEach(t=> t.addEventListener('click', ()=>{ tabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); currentTab = t.dataset.tab; attachItemsListener(currentTab); }));
+
+  // Attach items listener
   function attachItemsListener(tabName){
-    if (itemsUnsub) { itemsUnsub(); itemsUnsub = null; }
-    grid.innerHTML = '';
+    if (itemsUnsub){ itemsUnsub(); itemsUnsub=null; }
+    list.innerHTML = '';
     // show skeleton
-    for (let i=0;i<3;i++){ const s = document.createElement('div'); s.className='card skeleton'; s.style.height='120px'; grid.appendChild(s); }
-    const q = query(collection(db, tabName), orderBy('createdAt','desc'), limit(60));
+    for (let i=0;i<2;i++){ const s = document.createElement('div'); s.className='card'; s.style.height='140px'; list.appendChild(s); }
+    const q = query(collection(db, tabName), orderBy('createdAt','desc'), limit(80));
     itemsUnsub = onSnapshot(q, snap => {
       const arr = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-      renderGrid(arr);
-    }, err => { grid.innerHTML = `<div class="card">Failed to load: ${err.message}</div>`; });
+      renderList(arr);
+    }, err => { list.innerHTML = `<div class="card">Failed to load: ${err.message}</div>`; });
   }
 
-  function renderGrid(items){
+  function renderList(items){
     const q = search.value.trim().toLowerCase();
     const filtered = items.filter(it => {
       if (!q) return true;
       return ((it.title||'') + ' ' + (it.description||'')).toLowerCase().includes(q);
     });
-    if (!filtered.length){
-      grid.innerHTML = `<div class="empty"><svg viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect width="64" height="48" rx="8" fill="#f0f6ff"/><path d="M9 34c3-6 10-10 19-10s16 4 19 10" stroke="#cfe7ff" stroke-width="2" stroke-linecap="round"/><circle cx="44" cy="20" r="6" fill="#dfefff"/></g></svg><div style="font-weight:700">Nothing here yet</div><div class="small-muted">No items posted in this section — be the first to add one.</div></div>`;
-      return;
-    }
-    grid.innerHTML = '';
+    if (!filtered.length){ list.innerHTML = `<div class="empty"><svg viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect width="64" height="48" rx="8" fill="#f0f6ff"/><path d="M9 34c3-6 10-10 19-10s16 4 19 10" stroke="#cfe7ff" stroke-width="2" stroke-linecap="round"/><circle cx="44" cy="20" r="6" fill="#dfefff"/></g></svg><div style="font-weight:700">Nothing here yet</div><div class="small-muted">No items posted in this section — be the first to add one.</div></div>`; return; }
+    list.innerHTML = '';
     filtered.forEach(it => {
-      const c = document.createElement('div'); c.className='card fade';
-      const thumb = it.imageURL ? `<img src="${it.imageURL}" class="thumb">` : `<div class="thumb"></div>`;
+      const c = document.createElement('div'); c.className='card';
+      const media = it.imageURL ? `<img src="${it.imageURL}" class="card-media">` : `<div class="card-media"></div>`;
       c.innerHTML = `
-        <div class="card-head">
-          ${thumb}
-          <div class="meta">
-            <div class="title-sm">${escapeHtml(it.title||'Untitled')}</div>
-            <div class="desc">${escapeHtml(it.description||'')}</div>
-            <div class="meta-row" style="margin-top:8px"><div class="pill">${escapeHtml(it.location||'Campus')}</div><div class="pill">${escapeHtml(it.category||'')}</div></div>
+        ${media}
+        <div class="card-body">
+          <div class="card-title">${escapeHtml(it.title||'Untitled')}</div>
+          <div class="card-desc">${escapeHtml(it.description||'')}</div>
+          <div class="meta-row">
+            <div class="pill">${escapeHtml(it.location||'Campus')}</div>
+            <div class="pill">${escapeHtml(it.category||'')}</div>
           </div>
-        </div>
-        <div class="card-foot">
-          <div class="small-muted">By ${escapeHtml(it.posterName||'Unknown')}</div>
-          <div>
-            <button class="claim ${it.claimed ? 'claimed' : ''}" ${it.claimed ? 'disabled' : ''}>${it.claimed ? 'Claimed' : 'Claim'}</button>
+          <div class="card-foot">
+            <div class="small-muted">By ${escapeHtml(it.posterName||'Unknown')}</div>
+            <div>
+              <button class="claim ${it.claimed ? 'claimed' : ''}" ${it.claimed ? 'disabled' : ''}>${it.claimed ? 'Claimed' : 'Claim'}</button>
+            </div>
           </div>
         </div>
       `;
+      // claim handler
       const claimBtn = c.querySelector('.claim');
       claimBtn && claimBtn.addEventListener('click', async () => {
         if (!currentUser) return openLoginArea();
         try {
           await updateDoc(doc(db, currentTab, it.id), { claimed: true });
-          await addDoc(collection(db,'notifications'), {
-            title: 'Item Claimed',
-            message: `${it.title || 'An item'} was claimed in ${currentTab}.`,
-            target: 'all',
-            itemId: it.id,
-            createdAt: serverTimestamp(),
-            readBy: []
-          });
+          await addDoc(collection(db,'notifications'), { title: 'Item Claimed', message: `${it.title || 'An item'} was claimed in ${currentTab}.`, target:'all', itemId: it.id, createdAt: serverTimestamp(), readBy: [] });
           const rect = claimBtn.getBoundingClientRect();
-          particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 36 });
+          particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 32 });
           showToast('Claim registered — owner will contact via email');
         } catch(e){ alert('Claim failed: '+e.message); }
       });
@@ -416,26 +345,15 @@
       // owner delete
       if (currentUser && currentUser.uid === it.postedBy){
         const del = document.createElement('button'); del.className='btn ghost'; del.textContent='Delete';
-        del.onclick = async () => {
-          if (!confirm('Delete item?')) return;
-          try { await updateDoc(doc(db,currentTab,it.id), { deleted: true }); showToast('Item deleted'); } catch(e){ alert('Delete failed: '+e.message); }
-        };
+        del.onclick = async () => { if (!confirm('Delete item?')) return; try { await updateDoc(doc(db,currentTab,it.id), { deleted:true }); showToast('Item deleted'); } catch(e){ alert('Delete failed: '+e.message); } };
         c.querySelector('.card-foot div').appendChild(del);
       }
 
-      grid.appendChild(c);
+      list.appendChild(c);
     });
   }
 
-  // nav clicks
-  navItems.forEach(n => n.addEventListener('click', () => {
-    navItems.forEach(x=>x.classList.remove('active'));
-    n.classList.add('active'); currentTab = n.dataset.tab; attachItemsListener(currentTab);
-  }));
-
-  contributorsLink.onclick = () => { window.location.href = 'contributors.html'; };
-
-  // posting flow
+  // post item
   postBtn.onclick = async () => {
     if (!currentUser) return openLoginArea();
     const raw = singleBox.value.trim(); if (!raw) return alert('Please type item details');
@@ -444,38 +362,23 @@
     const file = fileInput.files[0]; let imageURL = '';
     if (file){
       if (IMGBB_KEY){
-        try {
-          const base = await fileToBase64ForImgbb(file);
-          const form = new FormData(); form.append('image', base);
-          const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method:'POST', body: form });
-          const j = await res.json(); if (j && j.data && j.data.url) imageURL = j.data.url;
-        } catch(e){ console.warn('imgbb fail', e); imageURL = await fileToDataUrl(file); }
+        try { const base = await fileToBase64ForImgbb(file); const form = new FormData(); form.append('image', base); const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method:'POST', body: form }); const j = await res.json(); if (j && j.data && j.data.url) imageURL = j.data.url; } catch(e){ console.warn('imgbb fail', e); imageURL = await fileToDataUrl(file); }
       } else { imageURL = await fileToDataUrl(file); }
     }
     try {
-      await addDoc(collection(db, currentTab), {
-        title, description, location, category, imageURL: imageURL||'', postedBy: currentUser.uid,
-        posterName: currentUser.displayName || currentUser.email, claimed:false, createdAt: serverTimestamp()
-      });
-      await addDoc(collection(db,'notifications'), {
-        title: 'New item posted',
-        message: `${title} added to ${currentTab}.`,
-        target: 'all',
-        itemId: null,
-        createdAt: serverTimestamp(),
-        readBy: []
-      });
+      await addDoc(collection(db,currentTab), { title, description, location, category, imageURL: imageURL||'', postedBy: currentUser.uid, posterName: currentUser.displayName||currentUser.email, claimed:false, createdAt: serverTimestamp() });
+      await addDoc(collection(db,'notifications'), { title: 'New item posted', message: `${title} added to ${currentTab}.`, target:'all', itemId:null, createdAt: serverTimestamp(), readBy: [] });
       showToast('Posted successfully ✅');
       modal.classList.remove('show'); singleBox.value=''; fileInput.value='';
     } catch(e){ alert('Post failed: '+e.message); }
   };
 
-  function fileToBase64ForImgbb(file){ return new Promise((res,rej) => { const r = new FileReader(); r.onload = ()=> res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
-  function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); })}
+  function fileToBase64ForImgbb(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
+  function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
 
-  // notifications logic
+  // notifications
   function attachNotificationsListener(){
-    if (notifsUnsub) { notifsUnsub(); notifsUnsub=null; }
+    if (notifsUnsub){ notifsUnsub(); notifsUnsub=null; }
     const q = query(collection(db,'notifications'), orderBy('createdAt','desc'), limit(80));
     notifsUnsub = onSnapshot(q, snap => {
       const arr = snap.docs.map(d => ({ id:d.id, ...d.data() }));
@@ -490,74 +393,50 @@
     if (unread>0){ badge.style.display='flex'; badge.textContent = unread; } else { badge.style.display='none'; }
   }
 
-  inboxBtn.onclick = () => {
-    notifPanel.classList.toggle('show');
-    if (notifPanel.classList.contains('show')) {
-      // panel will render automatically via listener
-    }
-  };
+  inboxBtn.onclick = ()=>{ notifPanel.classList.toggle('show'); }
 
   function renderNotifPanel(list){
     notifPanel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>Notifications</strong><button id="markAll" class="btn ghost">Mark all read</button></div>`;
-    if (!list.length) { notifPanel.innerHTML += `<div class="small-muted">No notifications</div>`; return; }
+    if (!list.length){ notifPanel.innerHTML += `<div class="small-muted">No notifications</div>`; return; }
     list.forEach(n => {
       const unread = !n.readBy || !n.readBy.includes(currentUser ? currentUser.uid : '___');
-      const it = document.createElement('div'); it.className = 'notif-item ' + (unread ? 'unread' : '');
+      const it = document.createElement('div'); it.className='notif-item ' + (unread ? 'unread' : '');
       it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div class="small-muted">${escapeHtml(n.message || '')}</div><div class="small-muted" style="margin-top:6px">${n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleString() : ''}</div>`;
-      it.onclick = async () => {
-        if (!currentUser) return openLoginArea();
-        try { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } catch(e){ console.warn('mark read', e); }
-      };
+      it.onclick = async ()=>{ if (!currentUser) return openLoginArea(); try { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } catch(e){ console.warn('mark read', e); } };
       notifPanel.appendChild(it);
     });
     const markAll = document.getElementById('markAll');
-    markAll && (markAll.onclick = async () => {
-      if (!currentUser) return openLoginArea();
-      try { for (const n of list) { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } showToast('All marked read'); } catch(e){ alert('Mark all failed: '+e.message); }
-    });
+    markAll && (markAll.onclick = async ()=>{ if (!currentUser) return openLoginArea(); try { for (const n of list) { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } showToast('All marked read'); } catch(e){ alert('Mark all failed: '+e.message) } });
   }
 
-  // particle engine
+  // particle burst
   function particleBurst({x=window.innerWidth/2, y=window.innerHeight/2, count=36} = {}){
     const particles = [];
-    for (let i=0;i<count;i++){
-      particles.push({ x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-1.2)*6, life:Math.random()*60+40, size:Math.random()*3+2, color:`hsl(${Math.random()*360},80%,60%)` });
-    }
+    for (let i=0;i<count;i++) particles.push({ x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-1.2)*6, life:Math.random()*60+40, size:Math.random()*3+2, color:`hsl(${Math.random()*360},80%,60%)` });
     let anim;
     function step(){
       ctx.clearRect(0,0,pcanvas.width,pcanvas.height);
       let alive=false;
       for (const p of particles){
-        if (p.life>0){
-          p.x+=p.vx; p.y+=p.vy; p.vy+=0.14; p.life--;
-          ctx.globalAlpha = Math.max(0, p.life/80);
-          ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
-          alive=true;
-        }
+        if (p.life>0){ p.x+=p.vx; p.y+=p.vy; p.vy+=0.14; p.life--; ctx.globalAlpha=Math.max(0,p.life/80); ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); alive=true; }
       }
-      if (alive) anim = requestAnimationFrame(step); else { cancelAnimationFrame(anim); ctx.clearRect(0,0,pcanvas.width,pcanvas.height); }
+      if (alive) anim=requestAnimationFrame(step); else { cancelAnimationFrame(anim); ctx.clearRect(0,0,pcanvas.width,pcanvas.height); }
     }
     step();
   }
 
-  // small helpers: toasts
-  function showToast(msg, t=3000){
-    const el = document.createElement('div'); el.className='toast'; el.textContent = msg; toastRoot.appendChild(el);
-    requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; });
-    setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),300); }, t);
-  }
+  // toasts
+  function showToast(msg, t=2800){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; toastRoot.appendChild(el); requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }); setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),300); }, t); }
 
   function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
   // init listeners
-  attachItemsListener(currentTab);
-  attachNotificationsListener();
+  attachItemsListener(currentTab); attachNotificationsListener();
 
   // search debounce
-  let stimer=null;
-  search.addEventListener('input', ()=>{ clearTimeout(stimer); stimer=setTimeout(()=>attachItemsListener(currentTab),300); });
+  let stimer=null; search.addEventListener('input', ()=>{ clearTimeout(stimer); stimer=setTimeout(()=>attachItemsListener(currentTab), 300); });
 
-  // resize particles canvas
+  // resize canvas
   function initCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
   initCanvas(); window.addEventListener('resize', initCanvas);
 
