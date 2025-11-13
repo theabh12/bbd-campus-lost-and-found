@@ -39,8 +39,10 @@
     /* controls */
     .controls{display:flex;gap:10px;align-items:center;margin:12px 0;justify-content:center;flex-wrap:wrap}
     .search{padding:10px 14px;border-radius:10px;border:1px solid rgba(11,17,36,0.06);min-width:360px}
-    .btn{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(31,99,255,0.08)}
+    .btn{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(31,99,255,0.08);transition:transform .12s}
+    .btn:hover{transform:translateY(-2px)}
     .btn.ghost{background:transparent;border:1px solid var(--card-border);color:var(--muted)}
+    .btn.danger{background:linear-gradient(90deg,#ff7a7a,#ff4b4b)}
     .inbox{position:relative;display:inline-block}
     .badge{position:absolute;right:-10px;top:-10px;background:var(--danger);color:#fff;width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 8px 20px rgba(239,68,68,0.16)}
     /* grid single column full width cards - BIGGER */
@@ -68,6 +70,12 @@
     .panel{width:760px;max-width:96%;background:var(--glass-strong);padding:18px;border-radius:12px;border:1px solid var(--card-border);box-shadow:0 40px 80px rgba(9,16,56,0.12);backdrop-filter:blur(8px)}
     .single-box{width:100%;min-height:120px;padding:14px;border-radius:12px;border:1px solid rgba(15,23,42,0.06);resize:vertical}
     .form-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .input-field{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);font-size:14px;margin-bottom:10px}
+    .auth-toggle{text-align:center;margin-top:12px;color:var(--muted);font-size:14px}
+    .auth-toggle a{color:var(--accent);cursor:pointer;font-weight:700;text-decoration:none}
+    .auth-toggle a:hover{text-decoration:underline}
+    .info-box{background:#eaf6ff;padding:12px;border-radius:8px;margin-bottom:12px;border-left:4px solid var(--accent)}
+    .info-box p{margin:0;font-size:13px;color:var(--muted)}
     /* fab BIGGER bottom-right */
     .fab{position:fixed;right:32px;bottom:32px;width:100px;height:100px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:52px;box-shadow:0 22px 50px rgba(31,99,255,0.20);cursor:pointer;z-index:1500;transition:transform .2s}
     .fab:hover{transform:translateY(-6px) scale(1.05)}
@@ -119,7 +127,6 @@
           <div id="badge" class="badge" style="display:none">0</div>
         </div>
         <div id="userArea"></div>
-        <button id="openAdd" class="btn">+ Add Item</button>
       </div>
     </header>
     <!-- item list (single column) -->
@@ -143,15 +150,15 @@
   </div>
   <!-- notification panel -->
   <div id="notifPanel" class="notif-panel"></div>
-  <!-- modal -->
-  <div id="modal" class="modal" aria-hidden="true">
+  <!-- modal for Add Item -->
+  <div id="modalAdd" class="modal" aria-hidden="true">
     <div class="panel" role="dialog" aria-modal="true">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 id="modalTitle">Post an item</h3>
-        <button id="closeModal" style="border:0;background:transparent;font-size:20px;cursor:pointer">✕</button>
+        <h3>Post an Item</h3>
+        <button id="closeModalAdd" style="border:0;background:transparent;font-size:20px;cursor:pointer">✕</button>
       </div>
-      <div id="addArea" style="margin-top:12px">
-        <label class="small">Describe your item in one line</label>
+      <div style="margin-top:12px">
+        <label style="font-size:14px;color:var(--muted)">Describe your item in one line</label>
         <textarea id="singleBox" class="single-box" placeholder="Lost — Black Wallet near Canteen — contact@mail.com"></textarea>
         <div class="form-row">
           <input id="fileInput" type="file" accept="image/*" />
@@ -164,18 +171,34 @@
           </select>
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
-          <button id="openLogin" class="btn ghost">Login / Signup</button>
-          <button id="postBtn" class="btn">Post</button>
+          <button id="postBtn" class="btn">Post Item</button>
         </div>
       </div>
-      <div id="loginArea" style="display:none;margin-top:12px">
-        <label>Email</label>
-        <input id="loginEmail" type="email" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);margin-bottom:10px" />
-        <label>Password</label>
-        <input id="loginPass" type="password" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06)" />
-        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
-          <button id="signupBtn" class="btn ghost">Sign up</button>
-          <button id="loginBtn" class="btn">Login</button>
+    </div>
+  </div>
+  <!-- modal for Login/Signup -->
+  <div id="modalAuth" class="modal" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true" style="max-width:480px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 id="authTitle">Login to Your Account</h3>
+        <button id="closeModalAuth" style="border:0;background:transparent;font-size:20px;cursor:pointer">✕</button>
+      </div>
+      <div id="authArea" style="margin-top:16px">
+        <!-- Info box -->
+        <div id="authInfo" class="info-box">
+          <p><strong>First time?</strong> Click "Sign Up" below to create an account.</p>
+        </div>
+        <label style="font-size:14px;font-weight:600;margin-bottom:4px;display:block">Email</label>
+        <input id="authEmail" type="email" class="input-field" placeholder="your-email@example.com" />
+        
+        <label style="font-size:14px;font-weight:600;margin-bottom:4px;display:block">Password</label>
+        <input id="authPass" type="password" class="input-field" placeholder="Min 6 characters" />
+        
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button id="authActionBtn" class="btn" style="flex:1">Login</button>
+        </div>
+        <div class="auth-toggle">
+          <span id="authToggleText">Don't have an account? <a id="authToggleLink">Sign Up</a></span>
         </div>
       </div>
     </div>
@@ -205,7 +228,6 @@
   const db = getFirestore(app);
   const storage = getStorage(app);
   // EmailJS configuration (REPLACE WITH YOUR OWN KEYS)
-  // Sign up at https://www.emailjs.com/ and get your keys
   const EMAILJS_SERVICE_ID = "service_qczf199"; // Replace with your EmailJS service ID
   const EMAILJS_TEMPLATE_ID = "template_yeab3wq"; // Replace with your EmailJS template ID
   const EMAILJS_PUBLIC_KEY = "RERxK16JreItz1BAB"; // Replace with your EmailJS public key
@@ -224,20 +246,21 @@
   const inboxBtn = document.getElementById('inboxBtn');
   const badge = document.getElementById('badge');
   const notifPanel = document.getElementById('notifPanel');
-  const modal = document.getElementById('modal');
-  const closeModal = document.getElementById('closeModal');
-  const openAdd = document.getElementById('openAdd');
+  const modalAdd = document.getElementById('modalAdd');
+  const modalAuth = document.getElementById('modalAuth');
+  const closeModalAdd = document.getElementById('closeModalAdd');
+  const closeModalAuth = document.getElementById('closeModalAuth');
   const fab = document.getElementById('fab');
   const singleBox = document.getElementById('singleBox');
   const fileInput = document.getElementById('fileInput');
   const postBtn = document.getElementById('postBtn');
-  const openLogin = document.getElementById('openLogin');
-  const loginArea = document.getElementById('loginArea');
-  const addArea = document.getElementById('addArea');
-  const loginBtn = document.getElementById('loginBtn');
-  const signupBtn = document.getElementById('signupBtn');
-  const loginEmail = document.getElementById('loginEmail');
-  const loginPass = document.getElementById('loginPass');
+  const authEmail = document.getElementById('authEmail');
+  const authPass = document.getElementById('authPass');
+  const authActionBtn = document.getElementById('authActionBtn');
+  const authToggleLink = document.getElementById('authToggleLink');
+  const authTitle = document.getElementById('authTitle');
+  const authInfo = document.getElementById('authInfo');
+  const authToggleText = document.getElementById('authToggleText');
   const userArea = document.getElementById('userArea');
   const tabs = document.querySelectorAll('.tab');
   const postCategory = document.getElementById('category');
@@ -249,6 +272,7 @@
   let itemsUnsub = null;
   let notifsUnsub = null;
   let currentUser = null;
+  let authMode = 'login'; // 'login' or 'signup'
   // canvas resize
   function resizeCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas); resizeCanvas();
@@ -260,29 +284,123 @@
     if (!user){
       const l = document.createElement('button'); l.className='btn ghost'; l.textContent='Login';
       const s = document.createElement('button'); s.className='btn'; s.textContent='Sign up';
-      l.onclick = () => openLoginArea(); s.onclick = () => openLoginArea();
+      l.onclick = () => openAuthModal('login'); 
+      s.onclick = () => openAuthModal('signup');
       userArea.appendChild(l); userArea.appendChild(s);
     } else {
-      const name = document.createElement('div'); name.style.fontWeight='700'; name.textContent = user.displayName || user.email;
+      const name = document.createElement('div'); 
+      name.style.fontWeight='700'; 
+      name.style.marginRight='10px';
+      name.textContent = user.displayName || user.email.split('@')[0];
       const out = document.createElement('button'); out.className='btn ghost'; out.textContent='Logout';
       out.onclick = async ()=>{ await signOut(auth); showToast('Logged out'); };
       userArea.appendChild(name); userArea.appendChild(out);
     }
   }
-  function openLoginArea(){ modal.classList.add('show'); loginArea.style.display='block'; addArea.style.display='none'; document.getElementById('modalTitle').textContent='Login / Signup'; }
-  function openAddArea(){ if (!currentUser) { openLoginArea(); return; } modal.classList.add('show'); loginArea.style.display='none'; addArea.style.display='block'; document.getElementById('modalTitle').textContent='Post an Item'; }
-  function closeModalWindow(){ modal.classList.remove('show'); singleBox.value=''; fileInput.value=''; }
-  closeModal.onclick = closeModalWindow;
-  openAdd.onclick = openAddArea; fab.onclick = openAddArea; openLogin.onclick = openLoginArea;
-  signupBtn.onclick = async ()=>{ const email=loginEmail.value.trim(),pass=loginPass.value.trim(); if(!email||!pass||pass.length<6) return alert('Enter valid email & pass (6+)'); try{ await createUserWithEmailAndPassword(auth,email,pass); showToast('Signup success'); modal.classList.remove('show'); }catch(e){ alert('Signup failed: '+e.message) } };
-  loginBtn.onclick = async ()=>{ const email=loginEmail.value.trim(),pass=loginPass.value.trim(); if(!email||!pass) return alert('Enter login'); try{ await signInWithEmailAndPassword(auth,email,pass); showToast('Logged in'); modal.classList.remove('show'); }catch(e){ alert('Login failed: '+e.message) } };
-  async function googleLogin(){ try{ const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); showToast('Logged in with Google'); modal.classList.remove('show'); }catch(e){ alert('Google login failed: '+e.message) } }
+  function openAuthModal(mode = 'login'){
+    authMode = mode;
+    if(mode === 'login'){
+      authTitle.textContent = 'Login to Your Account';
+      authActionBtn.textContent = 'Login';
+      authInfo.innerHTML = '<p><strong>First time?</strong> Click "Sign Up" below to create an account.</p>';
+      authToggleText.innerHTML = 'Don\'t have an account? <a id="authToggleLink">Sign Up</a>';
+    } else {
+      authTitle.textContent = 'Create New Account';
+      authActionBtn.textContent = 'Sign Up';
+      authInfo.innerHTML = '<p><strong>Already have an account?</strong> Click "Login" below.</p>';
+      authToggleText.innerHTML = 'Already have an account? <a id="authToggleLink">Login</a>';
+    }
+    
+    // Re-attach toggle listener
+    const newToggle = document.getElementById('authToggleLink');
+    newToggle.onclick = () => openAuthModal(authMode === 'login' ? 'signup' : 'login');
+    
+    modalAuth.classList.add('show');
+    authEmail.value = '';
+    authPass.value = '';
+  }
+  function openAddModal(){
+    if (!currentUser) {
+      openAuthModal('login');
+      showToast('Please login first to post items');
+      return;
+    }
+    modalAdd.classList.add('show');
+  }
+  closeModalAdd.onclick = () => { modalAdd.classList.remove('show'); singleBox.value=''; fileInput.value=''; };
+  closeModalAuth.onclick = () => { modalAuth.classList.remove('show'); };
+  fab.onclick = openAddModal;
+  // Auth action button
+  authActionBtn.onclick = async () => {
+    const email = authEmail.value.trim();
+    const pass = authPass.value.trim();
+    
+    if(!email || !pass) {
+      showToast('❌ Please enter email and password');
+      return;
+    }
+    
+    if(pass.length < 6) {
+      showToast('❌ Password must be at least 6 characters');
+      return;
+    }
+    
+    try {
+      if(authMode === 'signup'){
+        await createUserWithEmailAndPassword(auth, email, pass);
+        showToast('✅ Account created successfully!');
+        modalAuth.classList.remove('show');
+        // Add user to Firestore
+        try {
+          await addDoc(collection(db,'users'), { 
+            uid: auth.currentUser.uid, 
+            email: email, 
+            name: email.split('@')[0], 
+            createdAt: serverTimestamp() 
+          });
+        } catch(e){ console.warn('User doc creation failed', e); }
+      } else {
+        await signInWithEmailAndPassword(auth, email, pass);
+        showToast('✅ Logged in successfully!');
+        modalAuth.classList.remove('show');
+      }
+    } catch(e) {
+      console.error('Auth error:', e);
+      if(authMode === 'login'){
+        if(e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential'){
+          showToast('❌ No account found. Please Sign Up first!');
+          setTimeout(() => openAuthModal('signup'), 1500);
+        } else if(e.code === 'auth/wrong-password'){
+          showToast('❌ Wrong password. Try again.');
+        } else {
+          showToast('❌ Login failed: ' + e.message);
+        }
+      } else {
+        if(e.code === 'auth/email-already-in-use'){
+          showToast('❌ Email already exists. Please Login instead.');
+          setTimeout(() => openAuthModal('login'), 1500);
+        } else {
+          showToast('❌ Signup failed: ' + e.message);
+        }
+      }
+    }
+  };
+  // Enter key support
+  authEmail.addEventListener('keypress', (e) => { if(e.key === 'Enter') authActionBtn.click(); });
+  authPass.addEventListener('keypress', (e) => { if(e.key === 'Enter') authActionBtn.click(); });
   onAuthStateChanged(auth, async user => {
-    currentUser = user; renderUser(user); attachNotificationsListener(); attachItemsListener(currentTab);
-    if (user){ try{ await addDoc(collection(db,'users'), { uid:user.uid, email:user.email, name:user.displayName||user.email, createdAt: serverTimestamp() }); }catch(e){} }
+    currentUser = user; 
+    renderUser(user); 
+    attachNotificationsListener(); 
+    attachItemsListener(currentTab);
   });
   // TAB handling
-  tabs.forEach(t=> t.addEventListener('click', ()=>{ tabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); currentTab = t.dataset.tab; attachItemsListener(currentTab); }));
+  tabs.forEach(t=> t.addEventListener('click', ()=>{ 
+    tabs.forEach(x=>x.classList.remove('active')); 
+    t.classList.add('active'); 
+    currentTab = t.dataset.tab; 
+    attachItemsListener(currentTab); 
+  }));
   // Attach items listener
   function attachItemsListener(tabName){
     if (itemsUnsub){ itemsUnsub(); itemsUnsub=null; }
@@ -326,21 +444,21 @@
       // claim handler
       const claimBtn = c.querySelector('.claim');
       claimBtn && claimBtn.addEventListener('click', async () => {
-        if (!currentUser) return openLoginArea();
+        if (!currentUser) { openAuthModal('login'); showToast('Please login to claim items'); return; }
         try {
           await updateDoc(doc(db, currentTab, it.id), { claimed: true });
           await addDoc(collection(db,'notifications'), { title: 'Item Claimed', message: `${it.title || 'An item'} was claimed in ${currentTab}.`, target:'all', itemId: it.id, createdAt: serverTimestamp(), readBy: [] });
           const rect = claimBtn.getBoundingClientRect();
           particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 32 });
-          showToast('Claim registered — owner will contact via email');
+          showToast('✅ Claim registered — owner will contact via email');
           // Send email notification
           await sendEmailToAllUsers('Item Claimed', `${it.title} has been claimed!`);
-        } catch(e){ alert('Claim failed: '+e.message); }
+        } catch(e){ showToast('❌ Claim failed: '+e.message); }
       });
       // owner delete
       if (currentUser && currentUser.uid === it.postedBy){
         const del = document.createElement('button'); del.className='btn ghost'; del.textContent='Delete';
-        del.onclick = async () => { if (!confirm('Delete item?')) return; try { await updateDoc(doc(db,currentTab,it.id), { deleted:true }); showToast('Item deleted'); } catch(e){ alert('Delete failed: '+e.message); } };
+        del.onclick = async () => { if (!confirm('Delete item?')) return; try { await updateDoc(doc(db,currentTab,it.id), { deleted:true }); showToast('Item deleted'); } catch(e){ showToast('❌ Delete failed: '+e.message); } };
         c.querySelector('.card-foot div').appendChild(del);
       }
       list.appendChild(c);
@@ -356,18 +474,18 @@
       showToast('Uploading image...');
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
-      showToast('Image uploaded successfully!');
+      showToast('✅ Image uploaded successfully!');
       return downloadURL;
     } catch(e) {
       console.error('Cloud upload failed:', e);
-      showToast('Image upload failed, using fallback');
+      showToast('⚠️ Image upload failed, using fallback');
       return await fileToDataUrl(file);
     }
   }
   // post item
   postBtn.onclick = async () => {
-    if (!currentUser) return openLoginArea();
-    const raw = singleBox.value.trim(); if (!raw) return alert('Please type item details');
+    if (!currentUser) { openAuthModal('login'); showToast('Please login first'); return; }
+    const raw = singleBox.value.trim(); if (!raw) { showToast('❌ Please type item details'); return; }
     let title = raw.split('—')[0] || raw.split('-')[0] || raw; title = title.trim().slice(0,120);
     const description = raw; const location = 'Campus'; const category = postCategory.value || 'other';
     const file = fileInput.files[0]; let imageURL = '';
@@ -380,15 +498,17 @@
       await addDoc(collection(db,currentTab), { title, description, location, category, imageURL: imageURL||'', postedBy: currentUser.uid, posterName: currentUser.displayName||currentUser.email, claimed:false, createdAt: serverTimestamp() });
       await addDoc(collection(db,'notifications'), { title: 'New item posted', message: `${title} added to ${currentTab}.`, target:'all', itemId:null, createdAt: serverTimestamp(), readBy: [] });
       
-      showToast('Posted successfully ✅');
+      showToast('✅ Posted successfully!');
       
       // Send email notification to all users
       await sendEmailToAllUsers(`New ${currentTab} Item`, `${title} has been posted in ${currentTab} section!`);
       
       // Close modal and clear form
-      closeModalWindow();
+      modalAdd.classList.remove('show');
+      singleBox.value=''; 
+      fileInput.value='';
       
-    } catch(e){ alert('Post failed: '+e.message); }
+    } catch(e){ showToast('❌ Post failed: '+e.message); }
   };
   function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
   // Email notification function
@@ -409,16 +529,15 @@
               to_email: email,
               subject: subject,
               message: message,
-              from_name: 'BBD Campus Lost & Found'
+              from_name: 'BBD Lost & Found'
             });
           } catch(e) {
             console.warn('Failed to send email to:', email, e);
           }
         }
-        console.log('Email notifications sent to', emails.length, 'users');
+        console.log('✅ Email notifications sent to', emails.length, 'users');
       } else {
         console.log('EmailJS not configured. Would send to:', emails.length, 'users');
-        console.log('Subject:', subject, 'Message:', message);
       }
     } catch(e) {
       console.error('Failed to send email notifications:', e);
@@ -447,11 +566,11 @@
       const unread = !n.readBy || !n.readBy.includes(currentUser ? currentUser.uid : '___');
       const it = document.createElement('div'); it.className='notif-item ' + (unread ? 'unread' : '');
       it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div class="small-muted">${escapeHtml(n.message || '')}</div><div class="small-muted" style="margin-top:6px">${n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleString() : ''}</div>`;
-      it.onclick = async ()=>{ if (!currentUser) return openLoginArea(); try { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } catch(e){ console.warn('mark read', e); } };
+      it.onclick = async ()=>{ if (!currentUser) return openAuthModal('login'); try { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } catch(e){ console.warn('mark read', e); } };
       notifPanel.appendChild(it);
     });
     const markAll = document.getElementById('markAll');
-    markAll && (markAll.onclick = async ()=>{ if (!currentUser) return openLoginArea(); try { for (const n of list) { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } showToast('All marked read'); } catch(e){ alert('Mark all failed: '+e.message) } });
+    markAll && (markAll.onclick = async ()=>{ if (!currentUser) return openAuthModal('login'); try { for (const n of list) { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } showToast('All marked read'); } catch(e){ showToast('❌ Mark all failed: '+e.message) } });
   }
   // particle burst
   function particleBurst({x=window.innerWidth/2, y=window.innerHeight/2, count=36} = {}){
@@ -478,4 +597,3 @@
   </script>
 </body>
 </html>
-
