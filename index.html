@@ -210,7 +210,7 @@
   <script type="module">
   // Firebase + UI glue (single-file final)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, updateDoc, doc, arrayUnion, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
   // your firebase config
@@ -228,7 +228,7 @@
   const db = getFirestore(app);
   const storage = getStorage(app);
   // EmailJS configuration - REPLACE WITH YOUR KEYS
- const EMAILJS_SERVICE_ID = "service_qczf199"; // Replace with your EmailJS service ID
+const EMAILJS_SERVICE_ID = "service_qczf199"; // Replace with your EmailJS service ID
   const EMAILJS_TEMPLATE_ID = "template_yeab3wq"; // Replace with your EmailJS template ID
   const EMAILJS_PUBLIC_KEY = "RERxK16JreItz1BAB"; // Replace with your EmailJS public key
   // Load EmailJS SDK
@@ -273,7 +273,7 @@
   let itemsUnsub = null;
   let notifsUnsub = null;
   let currentUser = null;
-  let authMode = 'login'; // 'login' or 'signup'
+  let authMode = 'login';
   // canvas resize
   function resizeCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas); resizeCanvas();
@@ -312,7 +312,6 @@
       authToggleText.innerHTML = 'Already have an account? <a id="authToggleLink">Login</a>';
     }
     
-    // Re-attach toggle listener
     const newToggle = document.getElementById('authToggleLink');
     newToggle.onclick = () => openAuthModal(authMode === 'login' ? 'signup' : 'login');
     
@@ -351,7 +350,6 @@
         await createUserWithEmailAndPassword(auth, email, pass);
         showToast('✅ Account created successfully!');
         modalAuth.classList.remove('show');
-        // Add user to Firestore
         try {
           await addDoc(collection(db,'users'), { 
             uid: auth.currentUser.uid, 
@@ -386,7 +384,6 @@
       }
     }
   };
-  // Enter key support
   authEmail.addEventListener('keypress', (e) => { if(e.key === 'Enter') authActionBtn.click(); });
   authPass.addEventListener('keypress', (e) => { if(e.key === 'Enter') authActionBtn.click(); });
   onAuthStateChanged(auth, async user => {
@@ -395,18 +392,15 @@
     attachNotificationsListener(); 
     attachItemsListener(currentTab);
   });
-  // TAB handling
   tabs.forEach(t=> t.addEventListener('click', ()=>{ 
     tabs.forEach(x=>x.classList.remove('active')); 
     t.classList.add('active'); 
     currentTab = t.dataset.tab; 
     attachItemsListener(currentTab); 
   }));
-  // Attach items listener
   function attachItemsListener(tabName){
     if (itemsUnsub){ itemsUnsub(); itemsUnsub=null; }
     list.innerHTML = '';
-    // show skeleton
     for (let i=0;i<2;i++){ const s = document.createElement('div'); s.className='card'; s.style.height='180px'; list.appendChild(s); }
     const q = query(collection(db, tabName), orderBy('createdAt','desc'), limit(80));
     itemsUnsub = onSnapshot(q, snap => {
@@ -442,7 +436,6 @@
           </div>
         </div>
       `;
-      // claim handler
       const claimBtn = c.querySelector('.claim');
       claimBtn && claimBtn.addEventListener('click', async () => {
         if (!currentUser) { openAuthModal('login'); showToast('Please login to claim items'); return; }
@@ -452,11 +445,9 @@
           const rect = claimBtn.getBoundingClientRect();
           particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 32 });
           showToast('✅ Claim registered — owner will contact via email');
-          // Send email notification
           await sendEmailToAllUsers('Item Claimed', `${it.title} has been claimed!`);
         } catch(e){ showToast('❌ Claim failed: '+e.message); }
       });
-      // owner delete
       if (currentUser && currentUser.uid === it.postedBy){
         const del = document.createElement('button'); del.className='btn ghost'; del.textContent='Delete';
         del.onclick = async () => { if (!confirm('Delete item?')) return; try { await updateDoc(doc(db,currentTab,it.id), { deleted:true }); showToast('Item deleted'); } catch(e){ showToast('❌ Delete failed: '+e.message); } };
@@ -465,7 +456,6 @@
       list.appendChild(c);
     });
   }
-  // Upload image to Firebase Storage
   async function uploadImageToCloud(file) {
     try {
       const timestamp = Date.now();
@@ -487,7 +477,7 @@
       return await fileToDataUrl(file);
     }
   }
-  // post item
+  // FIXED post item function
   postBtn.onclick = async () => {
     if (!currentUser) { openAuthModal('login'); showToast('Please login first'); return; }
     
@@ -505,89 +495,92 @@
     const file = fileInput.files[0]; 
     let imageURL = '';
     
-    // Disable button to prevent double-posting
     postBtn.disabled = true;
     postBtn.textContent = 'Posting...';
     
     try {
-      // Upload image if selected
       if (file){
         console.log('📸 Image selected, uploading...');
-        imageURL = await uploadImageToCloud(file);
-        console.log('🖼️ Image URL:', imageURL);
+        try {
+          imageURL = await uploadImageToCloud(file);
+          console.log('🖼️ Image URL:', imageURL);
+        } catch(imgErr) {
+          console.warn('⚠️ Image upload failed, posting without image:', imgErr);
+          imageURL = '';
+        }
       } else {
         console.log('ℹ️ No image selected, posting without image');
       }
       
-      // Save to Firestore
       console.log('💾 Saving to Firestore...');
-      await addDoc(collection(db,currentTab), { 
+      
+      const itemData = { 
         title, 
         description, 
         location, 
         category, 
-        imageURL: imageURL||'', 
+        imageURL: imageURL || '', 
         postedBy: currentUser.uid, 
-        posterName: currentUser.displayName||currentUser.email, 
-        claimed:false, 
-        createdAt: serverTimestamp() 
-      });
+        posterName: currentUser.displayName || currentUser.email, 
+        claimed: false, 
+        createdAt: serverTimestamp(),
+        deleted: false
+      };
       
-      // Add notification
-      await addDoc(collection(db,'notifications'), { 
+      await addDoc(collection(db, currentTab), itemData);
+      console.log('✅ Item saved to Firestore!');
+      
+      showToast('✅ Posted successfully!');
+      
+      console.log('🔄 Closing modal and resetting form...');
+      modalAdd.classList.remove('show');
+      singleBox.value=''; 
+      fileInput.value='';
+      postBtn.disabled = false;
+      postBtn.textContent = 'Post Item';
+      console.log('✅ Modal closed!');
+      
+      addDoc(collection(db,'notifications'), { 
         title: `New ${currentTab} item posted`, 
         message: `${title} added to ${currentTab}.`, 
         target:'all', 
         itemId:null, 
         createdAt: serverTimestamp(), 
         readBy: [] 
+      }).then(() => {
+        console.log('✅ Notification added!');
+      }).catch(notifErr => {
+        console.warn('⚠️ Notification failed:', notifErr);
       });
       
-      console.log('✅ Item posted to Firestore!');
-      showToast('✅ Posted successfully!');
-      
-      // Send email notification
       console.log('📧 Sending email notifications...');
-      await sendEmailToAllUsers(`New ${currentTab} Item`, `${title} has been posted in ${currentTab} section!`);
-      
-      // Close modal and reset form
-      console.log('🔄 Resetting form...');
-      modalAdd.classList.remove('show');
-      singleBox.value=''; 
-      fileInput.value='';
-      postBtn.disabled = false;
-      postBtn.textContent = 'Post Item';
-      
-      console.log('✅ All done!');
+      sendEmailToAllUsers(`New ${currentTab} Item`, `${title} has been posted in ${currentTab} section!`)
+        .then(() => console.log('✅ Emails sent!'))
+        .catch(e => console.warn('⚠️ Email failed:', e));
       
     } catch(e){ 
       console.error('❌ Post failed:', e);
-      showToast('❌ Post failed: '+e.message); 
+      showToast('❌ Post failed: ' + (e.message || 'Unknown error')); 
       postBtn.disabled = false;
       postBtn.textContent = 'Post Item';
     }
   };
   function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
-  // Email notification function
   async function sendEmailToAllUsers(subject, message) {
     try {
       if(!window.emailjs || EMAILJS_SERVICE_ID === "YOUR_SERVICE_ID") {
-        console.warn('⚠️ EmailJS not configured. Skipping email notifications.');
+        console.warn('⚠️ EmailJS not configured.');
         return;
       }
       
-      console.log('📧 Getting all users...');
-      // Get all users from Firestore
+      console.log('📧 Getting users...');
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const users = usersSnapshot.docs.map(d => d.data());
-      
-      // Filter unique emails
       const emails = [...new Set(users.map(u => u.email).filter(e => e))];
-      console.log(`📧 Found ${emails.length} users to notify`);
+      console.log(`📧 Found ${emails.length} users`);
       
-      showToast(`📧 Sending emails to ${emails.length} users...`);
+      showToast(`📧 Sending to ${emails.length} users...`);
       
-      // Send email to each user
       let successCount = 0;
       for(const email of emails) {
         try {
@@ -598,21 +591,19 @@
             from_name: 'BBD Lost & Found'
           });
           successCount++;
-          console.log(`✅ Email sent to: ${email}`);
+          console.log(`✅ Sent to: ${email}`);
         } catch(e) {
-          console.warn('❌ Failed to send email to:', email, e);
+          console.warn('❌ Failed:', email);
         }
       }
       
-      console.log(`✅ Successfully sent ${successCount}/${emails.length} emails`);
-      showToast(`✅ Sent ${successCount} email notifications!`);
+      console.log(`✅ Sent ${successCount}/${emails.length} emails`);
+      showToast(`✅ Sent ${successCount} emails!`);
       
     } catch(e) {
-      console.error('❌ Failed to send email notifications:', e);
-      showToast('⚠️ Email notifications failed');
+      console.error('❌ Email failed:', e);
     }
   }
-  // notifications
   function attachNotificationsListener(){
     if (notifsUnsub){ notifsUnsub(); notifsUnsub=null; }
     const q = query(collection(db,'notifications'), orderBy('createdAt','desc'), limit(80));
@@ -641,7 +632,6 @@
     const markAll = document.getElementById('markAll');
     markAll && (markAll.onclick = async ()=>{ if (!currentUser) return openAuthModal('login'); try { for (const n of list) { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } showToast('All marked read'); } catch(e){ showToast('❌ Mark all failed: '+e.message) } });
   }
-  // particle burst
   function particleBurst({x=window.innerWidth/2, y=window.innerHeight/2, count=36} = {}){
     const particles = [];
     for (let i=0;i<count;i++) particles.push({ x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-1.2)*6, life:Math.random()*60+40, size:Math.random()*3+2, color:`hsl(${Math.random()*360},80%,60%)` });
@@ -656,12 +646,9 @@
     }
     step();
   }
-  // toasts
   function showToast(msg, t=2800){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; toastRoot.appendChild(el); requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }); setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),300); }, t); }
   function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-  // init listeners
   attachItemsListener(currentTab); attachNotificationsListener();
-  // search debounce
   let stimer=null; search.addEventListener('input', ()=>{ clearTimeout(stimer); stimer=setTimeout(()=>attachItemsListener(currentTab), 300); });
   </script>
 </body>
