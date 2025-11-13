@@ -227,8 +227,8 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const storage = getStorage(app);
-  // EmailJS configuration (REPLACE WITH YOUR OWN KEYS)
-  const EMAILJS_SERVICE_ID = "service_qczf199"; // Replace with your EmailJS service ID
+  // EmailJS configuration - REPLACE WITH YOUR KEYS
+ const EMAILJS_SERVICE_ID = "service_qczf199"; // Replace with your EmailJS service ID
   const EMAILJS_TEMPLATE_ID = "template_yeab3wq"; // Replace with your EmailJS template ID
   const EMAILJS_PUBLIC_KEY = "RERxK16JreItz1BAB"; // Replace with your EmailJS public key
   // Load EmailJS SDK
@@ -237,6 +237,7 @@
   emailjsScript.onload = () => {
     if(window.emailjs && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
       emailjs.init(EMAILJS_PUBLIC_KEY);
+      console.log('✅ EmailJS initialized');
     }
   };
   document.head.appendChild(emailjsScript);
@@ -471,13 +472,17 @@
       const filename = `items/${timestamp}_${file.name}`;
       const storageRef = ref(storage, filename);
       
-      showToast('Uploading image...');
+      console.log('📤 Starting image upload...');
+      showToast('📤 Uploading image...');
+      
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
-      showToast('✅ Image uploaded successfully!');
+      
+      console.log('✅ Image uploaded successfully:', downloadURL);
+      showToast('✅ Image uploaded!');
       return downloadURL;
     } catch(e) {
-      console.error('Cloud upload failed:', e);
+      console.error('❌ Cloud upload failed:', e);
       showToast('⚠️ Image upload failed, using fallback');
       return await fileToDataUrl(file);
     }
@@ -485,62 +490,126 @@
   // post item
   postBtn.onclick = async () => {
     if (!currentUser) { openAuthModal('login'); showToast('Please login first'); return; }
-    const raw = singleBox.value.trim(); if (!raw) { showToast('❌ Please type item details'); return; }
-    let title = raw.split('—')[0] || raw.split('-')[0] || raw; title = title.trim().slice(0,120);
-    const description = raw; const location = 'Campus'; const category = postCategory.value || 'other';
-    const file = fileInput.files[0]; let imageURL = '';
     
-    if (file){
-      imageURL = await uploadImageToCloud(file);
+    const raw = singleBox.value.trim(); 
+    if (!raw) { 
+      showToast('❌ Please type item details'); 
+      return; 
     }
     
+    let title = raw.split('—')[0] || raw.split('-')[0] || raw; 
+    title = title.trim().slice(0,120);
+    const description = raw; 
+    const location = 'Campus'; 
+    const category = postCategory.value || 'other';
+    const file = fileInput.files[0]; 
+    let imageURL = '';
+    
+    // Disable button to prevent double-posting
+    postBtn.disabled = true;
+    postBtn.textContent = 'Posting...';
+    
     try {
-      await addDoc(collection(db,currentTab), { title, description, location, category, imageURL: imageURL||'', postedBy: currentUser.uid, posterName: currentUser.displayName||currentUser.email, claimed:false, createdAt: serverTimestamp() });
-      await addDoc(collection(db,'notifications'), { title: 'New item posted', message: `${title} added to ${currentTab}.`, target:'all', itemId:null, createdAt: serverTimestamp(), readBy: [] });
+      // Upload image if selected
+      if (file){
+        console.log('📸 Image selected, uploading...');
+        imageURL = await uploadImageToCloud(file);
+        console.log('🖼️ Image URL:', imageURL);
+      } else {
+        console.log('ℹ️ No image selected, posting without image');
+      }
       
+      // Save to Firestore
+      console.log('💾 Saving to Firestore...');
+      await addDoc(collection(db,currentTab), { 
+        title, 
+        description, 
+        location, 
+        category, 
+        imageURL: imageURL||'', 
+        postedBy: currentUser.uid, 
+        posterName: currentUser.displayName||currentUser.email, 
+        claimed:false, 
+        createdAt: serverTimestamp() 
+      });
+      
+      // Add notification
+      await addDoc(collection(db,'notifications'), { 
+        title: `New ${currentTab} item posted`, 
+        message: `${title} added to ${currentTab}.`, 
+        target:'all', 
+        itemId:null, 
+        createdAt: serverTimestamp(), 
+        readBy: [] 
+      });
+      
+      console.log('✅ Item posted to Firestore!');
       showToast('✅ Posted successfully!');
       
-      // Send email notification to all users
+      // Send email notification
+      console.log('📧 Sending email notifications...');
       await sendEmailToAllUsers(`New ${currentTab} Item`, `${title} has been posted in ${currentTab} section!`);
       
-      // Close modal and clear form
+      // Close modal and reset form
+      console.log('🔄 Resetting form...');
       modalAdd.classList.remove('show');
       singleBox.value=''; 
       fileInput.value='';
+      postBtn.disabled = false;
+      postBtn.textContent = 'Post Item';
       
-    } catch(e){ showToast('❌ Post failed: '+e.message); }
+      console.log('✅ All done!');
+      
+    } catch(e){ 
+      console.error('❌ Post failed:', e);
+      showToast('❌ Post failed: '+e.message); 
+      postBtn.disabled = false;
+      postBtn.textContent = 'Post Item';
+    }
   };
   function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
   // Email notification function
   async function sendEmailToAllUsers(subject, message) {
     try {
+      if(!window.emailjs || EMAILJS_SERVICE_ID === "YOUR_SERVICE_ID") {
+        console.warn('⚠️ EmailJS not configured. Skipping email notifications.');
+        return;
+      }
+      
+      console.log('📧 Getting all users...');
       // Get all users from Firestore
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const users = usersSnapshot.docs.map(d => d.data());
       
       // Filter unique emails
       const emails = [...new Set(users.map(u => u.email).filter(e => e))];
+      console.log(`📧 Found ${emails.length} users to notify`);
       
-      if(window.emailjs && EMAILJS_SERVICE_ID !== "YOUR_SERVICE_ID") {
-        // Send email to each user
-        for(const email of emails) {
-          try {
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-              to_email: email,
-              subject: subject,
-              message: message,
-              from_name: 'BBD Lost & Found'
-            });
-          } catch(e) {
-            console.warn('Failed to send email to:', email, e);
-          }
+      showToast(`📧 Sending emails to ${emails.length} users...`);
+      
+      // Send email to each user
+      let successCount = 0;
+      for(const email of emails) {
+        try {
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: email,
+            subject: subject,
+            message: message,
+            from_name: 'BBD Lost & Found'
+          });
+          successCount++;
+          console.log(`✅ Email sent to: ${email}`);
+        } catch(e) {
+          console.warn('❌ Failed to send email to:', email, e);
         }
-        console.log('✅ Email notifications sent to', emails.length, 'users');
-      } else {
-        console.log('EmailJS not configured. Would send to:', emails.length, 'users');
       }
+      
+      console.log(`✅ Successfully sent ${successCount}/${emails.length} emails`);
+      showToast(`✅ Sent ${successCount} email notifications!`);
+      
     } catch(e) {
-      console.error('Failed to send email notifications:', e);
+      console.error('❌ Failed to send email notifications:', e);
+      showToast('⚠️ Email notifications failed');
     }
   }
   // notifications
