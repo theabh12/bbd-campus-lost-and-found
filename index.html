@@ -3,139 +3,241 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BBD Campus Lost & Found (Firebase)</title>
+  <title>BBD Campus Lost & Found — Final</title>
+
+  <!-- Primary icon / favicon using the BBD logo (remote). Replace with local assets/* later if you upload them -->
+  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" />
+  <link rel="apple-touch-icon" href="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" />
+  <meta name="theme-color" content="#1f6feb" />
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    /* Minimal, clean styling (keeps your previous aesthetic) */
-    :root{--bg:#e9f2ff;--card:#fff;--accent:#d33f49;--primary:#3b82f6;--text:#0b1220}
-    body{font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:12px;transition:0.25s}
-    body.dark{background:#0b1220;color:#e6eef6}
-    .container{max-width:960px;margin:14px auto}
-    h1{text-align:center;color:var(--primary);margin:8px 0}
-    .tabs{display:flex;gap:8px;margin:16px 0}
-    .tab{flex:1;padding:10px;border-radius:999px;background:#f3f4f6;text-align:center;cursor:pointer}
-    .tab.active{background:var(--primary);color:#fff}
-    .section{background:var(--card);padding:14px;border-radius:12px;box-shadow:0 6px 22px rgba(0,0,0,0.08);margin-bottom:16px}
-    .floating{position:fixed;right:28px;bottom:28px;width:60px;height:60px;border-radius:50%;background:var(--primary);color:#fff;font-size:36px;text-align:center;line-height:60px;cursor:pointer}
-    .item-card{display:flex;gap:12px;align-items:center;padding:10px;border-radius:12px;background:#f0f9ff;margin-bottom:10px}
-    .item-image{width:80px;height:80px;border-radius:8px;object-fit:cover}
-    .item-title{font-weight:700;margin:0}
-    .item-desc{margin:6px 0;color:#444}
-    .claim-btn{padding:6px 10px;border-radius:8px;border:0;background:var(--primary);color:#fff;cursor:pointer}
-    .controls{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .search{padding:8px;border-radius:8px;border:1px solid #ddd;width:100%}
-    .popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);align-items:center;justify-content:center}
-    .popup.show{display:flex}
-    .popup-content{background:var(--card);padding:18px;border-radius:12px;width:420px;max-width:94%}
-    .small{font-size:0.85em;color:#666}
-    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-    .btn{padding:8px 12px;border-radius:8px;border:0;background:var(--primary);color:#fff;cursor:pointer}
-    .outline{background:#fff;color:var(--primary);border:1px solid var(--primary)}
-    .auth-info{display:flex;gap:8px;align-items:center}
-    .notice{padding:8px;border-radius:8px;background:#fff4dd;color:#6b4a00;margin:10px 0}
-    footer{text-align:center;margin:24px 0;color:#666}
-    .notif{position:fixed;left:20px;bottom:20px;background:#222;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.3);display:none}
-    .notif.show{display:block}
-    label{display:block;margin-top:8px;font-size:0.9rem}
-    input[type="text"],input[type="email"],textarea,select{width:100%;padding:8px;border-radius:8px;border:1px solid #ddd;margin-top:6px}
-    textarea{min-height:70px}
+    /* ===========================
+       Soft Glass Theme (Phase 4)
+       =========================== */
+    :root{
+      --bg1:#f3f8ff; --bg2:#e9f4ff;
+      --glass: rgba(255,255,255,0.78);
+      --glass-strong: rgba(255,255,255,0.9);
+      --muted:#616973;
+      --accent:#1f6feb;
+      --accent-2:#2b8df6;
+      --danger:#ef4444;
+      --success:#10b981;
+      --card-border: rgba(255,255,255,0.7);
+      --shadow: 0 14px 40px rgba(16,24,40,0.06);
+      --radius:14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter,system-ui,Arial;color:#071124;
+      background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      -webkit-font-smoothing:antialiased;min-height:100vh;overflow-y:auto;
+      opacity:0; transform:translateY(6px); transition:opacity .35s ease, transform .35s ease;
+    }
+    body.page-ready{opacity:1; transform:none;}
+    a{color:inherit}
+    .container{max-width:1200px;margin:28px auto;padding:18px;display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start}
+
+    /* Sidebar */
+    .sidebar{position:sticky;top:22px;background:var(--glass);border-radius:var(--radius);padding:16px;border:1px solid var(--card-border);box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+    .logo-row{display:flex;gap:12px;align-items:center}
+    .logo-img{width:56px;height:56px;border-radius:10px;background:#fff;object-fit:cover}
+    .brand-title{font-weight:800;font-size:16px}
+    .brand-sub{font-size:12px;color:var(--muted)}
+    .nav{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+    .nav-item{padding:10px;border-radius:10px;cursor:pointer;color:var(--muted);font-weight:700;display:flex;align-items:center;gap:10px}
+    .nav-item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 12px 30px rgba(31,99,255,0.08)}
+    .small-muted{font-size:12px;color:var(--muted);margin-top:12px}
+
+    /* Main header */
+    .main{padding:2px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+    .title{font-weight:800;font-size:22px}
+    .subtitle{font-size:13px;color:var(--muted)}
+    .controls{display:flex;align-items:center;gap:10px}
+    .search{padding:10px;border-radius:10px;border:1px solid rgba(11,17,36,0.06);min-width:280px}
+    .btn{padding:9px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(31,99,255,0.08)}
+    .btn.ghost{background:transparent;border:1px solid var(--card-border);color:var(--muted)}
+    .inbox{position:relative}
+    .badge{position:absolute;right:-8px;top:-8px;background:var(--danger);color:#fff;width:20px;height:20px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;box-shadow:0 8px 20px rgba(239,68,68,0.18)}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,252,255,0.96));border-radius:12px;padding:12px;border:1px solid var(--card-border);box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 30px 60px rgba(16,24,40,0.08)}
+    .card-head{display:flex;gap:12px;align-items:center}
+    .thumb{width:120px;height:80px;border-radius:10px;background:#f3f7ff;object-fit:cover;flex-shrink:0}
+    .meta{display:flex;flex-direction:column}
+    .title-sm{font-weight:800}
+    .desc{font-size:14px;color:var(--muted);margin-top:6px}
+    .pill{padding:6px 8px;border-radius:999px;background:#f2f8ff;font-weight:600;font-size:12px;color:var(--muted)}
+
+    .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+    .claim{padding:8px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,#ff7a7a,#ff4b4b);color:#fff;font-weight:700;cursor:pointer}
+    .claimed{background:#94f0b7;color:#04572a;cursor:default}
+
+    /* Floating add button (mobile) */
+    .fab{position:fixed;right:26px;bottom:26px;width:62px;height:62px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;box-shadow:0 18px 40px rgba(31,99,255,0.12);cursor:pointer}
+
+    /* Modal */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(6,9,15,0.38);z-index:999}
+    .modal.show{display:flex}
+    .panel{width:720px;max-width:96%;background:var(--glass-strong);padding:18px;border-radius:12px;border:1px solid var(--card-border);box-shadow:0 40px 80px rgba(9,16,56,0.12);backdrop-filter:blur(8px)}
+    .panel h3{margin:0}
+    .single-box{width:100%;min-height:120px;padding:14px;border-radius:12px;border:1px solid rgba(15,23,42,0.06);resize:vertical}
+    .form-row{display:flex;gap:8px;margin-top:12px}
+
+    /* shimmer skeleton */
+    .skeleton{background:linear-gradient(90deg,#f3f6ff,#eef4ff,#f3f6ff);background-size:200% 100%;animation:shimmer 1.2s linear infinite;border-radius:10px}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* notification panel */
+    .notif-panel{position:fixed;right:22px;top:82px;width:360px;background:var(--glass-strong);border-radius:12px;padding:10px;border:1px solid var(--card-border);box-shadow:0 30px 60px rgba(9,16,56,0.12);display:none;z-index:1200}
+    .notif-panel.show{display:block}
+    .notif-item{padding:10px;border-radius:10px;margin-bottom:8px;background:linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,252,255,0.96));cursor:pointer}
+    .notif-item.unread{box-shadow:0 12px 30px rgba(31,99,255,0.06)}
+
+    /* empty state */
+    .empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:28px;border-radius:12px;background:var(--glass);border:1px solid var(--card-border)}
+    .empty svg{width:160px;height:120px;opacity:.9}
+
+    /* toasts */
+    .toast{position:fixed;right:18px;bottom:18px;background:#0b1220;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 16px 40px rgba(11,17,36,0.28);z-index:2000;opacity:0;transform:translateY(8px);transition:opacity .28s,transform .28s}
+
+    /* responsive */
+    @media (max-width:980px){ .container{grid-template-columns:1fr; padding:12px} .sidebar{position:relative} .notif-panel{right:12px;left:12px;width:auto} }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="topbar">
-      <h1>BBD Campus Lost & Found Service</h1>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div id="userArea" class="auth-info"></div>
-        <button id="darkToggle" class="btn outline">🌙</button>
-      </div>
-    </div>
 
-    <div class="tabs">
-      <div class="tab active" data-tab="lost">Lost</div>
-      <div class="tab" data-tab="found">Found</div>
-      <div class="tab" data-tab="giveaway">Giveaway</div>
-    </div>
-
-    <div class="section">
-      <div class="controls">
-        <input id="searchInput" class="search" placeholder="Search items by title or description..." />
-        <div style="width:10px"></div>
-      </div>
-
-      <div id="itemsContainer"></div>
-    </div>
-
-    <div class="floating" id="addBtn">+</div>
-    <div id="notification" class="notif"></div>
-
-    <footer>© Team Lost & Found — BBD Educational Group</footer>
+  <!-- notification particles canvas -->
+  <div id="particles" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1500">
+    <canvas id="pcanvas" style="width:100%;height:100%"></canvas>
   </div>
 
-  <!-- Add / Login Popup -->
-  <div id="popup" class="popup">
-    <div class="popup-content">
+  <div class="container" id="appRoot">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo-row">
+        <div style="position:relative">
+          <img id="logoImg" class="logo-img" src="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" alt="BBD Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%%22http://www.w3.org/2000/svg%%22 width=56 height=56><rect width=56 height=56 rx=10 fill=%22%231f6feb%22/></svg>'">
+          <!-- custom L&F badge overlay -->
+          <div style="position:absolute;right:-8px;bottom:-8px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;padding:6px 8px;border-radius:8px;font-weight:800;font-size:12px;box-shadow:0 8px 22px rgba(31,99,255,0.12)">[L&F]</div>
+        </div>
+        <div>
+          <div class="brand-title">BBD Campus</div>
+          <div class="brand-sub">Lost & Found Service</div>
+        </div>
+      </div>
+
+      <nav class="nav" role="navigation" aria-label="Sections">
+        <div class="nav-item active" data-tab="lost">🔍 Lost</div>
+        <div class="nav-item" data-tab="found">📦 Found</div>
+        <div class="nav-item" data-tab="giveaway">🎁 Giveaway</div>
+        <div style="height:1px;background:rgba(7,17,36,0.03);margin:12px 0"></div>
+        <div class="nav-item" id="contributorsLink">👥 Contributors</div>
+        <div style="flex:1"></div>
+        <div class="small-muted">Built for BBD Educational Group</div>
+      </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title">Campus Lost & Found</div>
+          <div class="subtitle">Report lost/found items or give away things to the campus community.</div>
+        </div>
+
+        <div class="controls">
+          <input id="search" class="search" placeholder="Search title / description..." />
+          <div class="inbox">
+            <button id="inboxBtn" class="btn ghost" title="Inbox">Inbox</button>
+            <div id="badge" class="badge" style="display:none">0</div>
+          </div>
+          <div id="userArea"></div>
+          <button id="openAdd" class="btn">+ Add Item</button>
+        </div>
+      </div>
+
+      <section id="grid" class="grid">
+        <!-- skeleton loader until Firestore returns -->
+        <div class="card skeleton" style="height:120px"></div>
+        <div class="card skeleton" style="height:120px"></div>
+        <div class="card skeleton" style="height:120px"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- notification panel -->
+  <div id="notifPanel" class="notif-panel"></div>
+
+  <!-- modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 id="popupTitle">Add Item</h3>
-        <button id="closePopup" style="border:0;background:transparent;font-size:20px;cursor:pointer">&times;</button>
+        <h3 id="modalTitle">Post an item</h3>
+        <button id="closeModal" style="border:0;background:transparent;font-size:20px;cursor:pointer">✕</button>
       </div>
 
-      <!-- Add / Edit Form -->
-      <div id="addForm">
-        <label>Title *</label>
-        <input id="titleInput" type="text" />
+      <div id="addArea" style="margin-top:12px">
+        <label class="small">Describe your item in one line</label>
+        <textarea id="singleBox" class="single-box" placeholder="Lost — Black Wallet near Canteen — contact@mail.com"></textarea>
 
-        <label>Description</label>
-        <textarea id="descInput"></textarea>
+        <div class="form-row">
+          <input id="fileInput" type="file" accept="image/*" />
+          <select id="category" style="padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06)">
+            <option value="other">Category: Other</option>
+            <option value="electronics">Electronics</option>
+            <option value="books">Books</option>
+            <option value="notes">Notes</option>
+            <option value="clothing">Clothing</option>
+          </select>
+        </div>
 
-        <label>Location *</label>
-        <input id="locInput" type="text" placeholder="Library, Canteen..." />
-
-        <label>Contact Email *</label>
-        <input id="emailInput" type="email" placeholder="your.email@college.edu" />
-
-        <label>Image (optional)</label>
-        <input id="fileInput" type="file" accept="image/*" />
-
-        <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
-          <button id="saveItemBtn" class="btn">Save</button>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+          <button id="openLogin" class="btn ghost">Login / Signup</button>
+          <button id="postBtn" class="btn">Post</button>
         </div>
       </div>
 
-      <!-- Login Form -->
-      <div id="loginForm" style="display:none">
+      <div id="loginArea" style="display:none;margin-top:12px">
         <label>Email</label>
-        <input id="authEmail" type="email" />
+        <input id="loginEmail" type="email" />
         <label>Password</label>
-        <input id="authPass" type="password" />
-        <div style="display:flex;gap:8px;margin-top:10px;justify-content:space-between">
-          <div>
-            <button id="signupBtn" class="btn outline">Sign up</button>
-            <button id="loginBtn" class="btn">Log in</button>
-          </div>
-          <div>
-            <button id="googleBtn" class="btn">Continue with Google</button>
-          </div>
+        <input id="loginPass" type="password" />
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
+          <button id="signupBtn" class="btn ghost">Sign up</button>
+          <button id="loginBtn" class="btn">Login</button>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- Firebase + App Script -->
+  <!-- floating add (mobile) -->
+  <div id="fab" class="fab" title="Add Item" style="display:none">+</div>
+
+  <!-- toast container -->
+  <div id="toastRoot"></div>
+
   <script type="module">
-  /***********************
-    1) Firebase SDK & config
-  ***********************/
+  /* ===========================
+     Final Phase 4 — Firebase + UI glue
+     =========================== */
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, updateDoc, doc, arrayUnion, limit } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-  // ---- PASTE your firebaseConfig (you already gave it) ----
+  // Your firebase config (same as before)
   const firebaseConfig = {
     apiKey: "AIzaSyA6fg0gFPowPWZVOajkkznj9xocVp3evQs",
     authDomain: "bbd-campus-lost-and-found.firebaseapp.com",
     projectId: "bbd-campus-lost-and-found",
-    storageBucket: "bbd-campus-lost-and-found.appspot.com", // we will NOT use storage (you had a different value earlier) — keep this or ignore
+    storageBucket: "bbd-campus-lost-and-found.appspot.com",
     messagingSenderId: "519626476206",
     appId: "1:519626476206:web:62b07f0bc143499c7a3b3f",
     measurementId: "G-NQZWGG3717"
@@ -145,371 +247,319 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  /***********************
-    2) imgbb config (OPTIONAL)
-    If you want images to be hosted on imgbb (recommended), get a free API key:
-    https://api.imgbb.com/
-    Paste it below. If left empty, the app will save base64 directly in Firestore.
-  ***********************/
-  const IMGBB_API_KEY = ""; // <-- paste your imgbb API key here (optional)
+  // Optional: imgbb key
+  const IMGBB_KEY = "";
 
-  /***********************
-    3) UI helpers & state
-  ***********************/
-  const tabs = document.querySelectorAll('.tab');
-  const itemsContainer = document.getElementById('itemsContainer');
-  const addBtn = document.getElementById('addBtn');
-  const popup = document.getElementById('popup');
-  const closePopup = document.getElementById('closePopup');
-  const popupTitle = document.getElementById('popupTitle');
-
-  const titleInput = document.getElementById('titleInput');
-  const descInput = document.getElementById('descInput');
-  const locInput = document.getElementById('locInput');
-  const emailInput = document.getElementById('emailInput');
+  // UI Refs
+  const grid = document.getElementById('grid');
+  const search = document.getElementById('search');
+  const inboxBtn = document.getElementById('inboxBtn');
+  const badge = document.getElementById('badge');
+  const notifPanel = document.getElementById('notifPanel');
+  const modal = document.getElementById('modal');
+  const closeModal = document.getElementById('closeModal');
+  const openAdd = document.getElementById('openAdd');
+  const singleBox = document.getElementById('singleBox');
   const fileInput = document.getElementById('fileInput');
-  const saveItemBtn = document.getElementById('saveItemBtn');
-
-  const loginForm = document.getElementById('loginForm');
-  const addForm = document.getElementById('addForm');
-  const authEmail = document.getElementById('authEmail');
-  const authPass = document.getElementById('authPass');
-  const signupBtn = document.getElementById('signupBtn');
+  const postBtn = document.getElementById('postBtn');
+  const openLogin = document.getElementById('openLogin');
+  const loginArea = document.getElementById('loginArea');
+  const addArea = document.getElementById('addArea');
   const loginBtn = document.getElementById('loginBtn');
-  const googleBtn = document.getElementById('googleBtn');
-
+  const signupBtn = document.getElementById('signupBtn');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPass = document.getElementById('loginPass');
   const userArea = document.getElementById('userArea');
-  const searchInput = document.getElementById('searchInput');
-  const notifEl = document.getElementById('notification');
-  const darkToggle = document.getElementById('darkToggle');
+  const navItems = document.querySelectorAll('.nav .nav-item');
+  const contributorsLink = document.getElementById('contributorsLink');
+  const postCategory = document.getElementById('category');
+  const fab = document.getElementById('fab');
+  const toastRoot = document.getElementById('toastRoot');
 
   let currentTab = 'lost';
+  let itemsUnsub = null;
+  let notifsUnsub = null;
   let currentUser = null;
-  let liveListeners = {}; // store unsubscribers
 
-  // load dark mode preference
-  if (localStorage.getItem('dark') === 'true') document.body.classList.add('dark');
-  darkToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    localStorage.setItem('dark', document.body.classList.contains('dark'));
-  });
+  // particles canvas
+  const pcanvas = document.getElementById('pcanvas');
+  const ctx = pcanvas.getContext('2d');
+  function resizeCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas); resizeCanvas();
 
-  /***********************
-    4) Tab navigation
-  ***********************/
-  tabs.forEach(t => t.addEventListener('click', () => {
-    tabs.forEach(x => x.classList.remove('active'));
-    t.classList.add('active');
-    currentTab = t.dataset.tab;
-    renderPlaceholder();
-    switchListenerTo(currentTab);
-  }));
+  // show page after JS loaded (transition)
+  window.requestAnimationFrame(()=>document.body.classList.add('page-ready'));
 
-  function renderPlaceholder(){
-    itemsContainer.innerHTML = `<p class="small">Loading ${currentTab} items...</p>`;
-  }
-
-  /***********************
-    5) Auth UI & logic
-  ***********************/
-  function showUser(user){
+  // AUTH helpers
+  function renderUser(user){
     userArea.innerHTML = '';
-    if (!user) {
-      const loginBtn = document.createElement('button'); loginBtn.textContent = 'Login'; loginBtn.className='btn outline';
-      const signupBtn = document.createElement('button'); signupBtn.textContent='Sign up'; signupBtn.className='btn';
-      loginBtn.onclick = () => openLogin();
-      signupBtn.onclick = () => { openLogin(); }
+    if (!user){
+      const loginBtn = document.createElement('button'); loginBtn.className='btn ghost'; loginBtn.textContent='Login';
+      loginBtn.onclick = () => openLoginArea();
+      const signupBtn = document.createElement('button'); signupBtn.className='btn'; signupBtn.textContent='Sign up';
+      signupBtn.onclick = () => openLoginArea();
       userArea.appendChild(loginBtn); userArea.appendChild(signupBtn);
     } else {
-      currentUser = user;
-      const span = document.createElement('span'); span.textContent = user.displayName || user.email;
-      const out = document.createElement('button'); out.textContent='Logout'; out.className='btn outline';
-      out.onclick = async () => { await signOut(auth); };
-      userArea.appendChild(span); userArea.appendChild(out);
+      const name = document.createElement('div'); name.style.fontWeight='700'; name.textContent = user.displayName || user.email;
+      const logout = document.createElement('button'); logout.className='btn ghost'; logout.textContent = 'Logout';
+      logout.onclick = async () => { await signOut(auth); showToast('Logged out'); };
+      userArea.appendChild(name); userArea.appendChild(logout);
     }
   }
 
-  function openLogin(){
-    popup.classList.add('show');
-    popupTitle.textContent = 'Login / Signup';
-    addForm.style.display = 'none';
-    loginForm.style.display = 'block';
+  function openLoginArea(){
+    modal.classList.add('show'); loginArea.style.display='block'; addArea.style.display='none'; document.getElementById('modalTitle').textContent='Login / Signup';
   }
-
-  async function createAccount(){
-    const email = authEmail.value.trim(); const pass = authPass.value.trim();
-    if (!email || !pass) return alert('Enter email and password');
-    try {
-      const cred = await createUserWithEmailAndPassword(auth, email, pass);
-      // After signup, UI will auto-update via onAuthStateChanged
-      alert('Signup successful. You are logged in.');
-      closeModal();
-    } catch(e){ alert('Signup error: ' + e.message); }
+  function openAddArea(){
+    if (!currentUser) { openLoginArea(); return; }
+    modal.classList.add('show'); loginArea.style.display='none'; addArea.style.display='block'; document.getElementById('modalTitle').textContent='Post an Item';
   }
+  closeModal.onclick = () => { modal.classList.remove('show'); singleBox.value=''; fileInput.value=''; };
 
-  async function doLogin(){
-    const email = authEmail.value.trim(); const pass = authPass.value.trim();
-    if (!email || !pass) return alert('Enter email and password');
-    try {
-      await signInWithEmailAndPassword(auth, email, pass);
-      alert('Login successful.');
-      closeModal();
-    } catch(e){ alert('Login error: ' + e.message); }
-  }
+  openAdd.onclick = openAddArea;
+  fab.onclick = openAddArea;
+  openLogin.onclick = openLoginArea;
 
-  googleBtn.addEventListener('click', async () => {
+  signupBtn.onclick = async () => {
+    const email = loginEmail.value.trim(); const pass = loginPass.value.trim();
+    if (!email || !pass || pass.length<6) return alert('Enter valid email and password (6+ chars)');
+    try { await createUserWithEmailAndPassword(auth,email,pass); showToast('Signup success'); modal.classList.remove('show'); } catch(e){ alert('Signup failed: '+e.message); }
+  };
+  loginBtn.onclick = async () => {
+    const email = loginEmail.value.trim(); const pass = loginPass.value.trim();
+    if (!email || !pass) return alert('Enter login');
+    try { await signInWithEmailAndPassword(auth,email,pass); showToast('Logged in'); modal.classList.remove('show'); } catch(e){ alert('Login failed: '+e.message); }
+  };
+
+  // Google login helper
+  async function googleLogin(){
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      closeModal();
-    } catch(e){ alert('Google Login error: ' + e.message); }
-  });
+      showToast('Logged in with Google'); modal.classList.remove('show');
+    } catch(e){ alert('Google login failed: '+e.message); }
+  }
 
-  signupBtn.addEventListener('click', createAccount);
-  loginBtn.addEventListener('click', doLogin);
-
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     currentUser = user;
-    showUser(user);
-  });
-
-  /***********************
-    6) Add item modal logic
-  ***********************/
-  addBtn.addEventListener('click', () => {
-    if (!currentUser) {
-      // prompt login
-      openLogin();
-      return;
-    }
-    popup.classList.add('show');
-    popupTitle.textContent = 'Add Item';
-    addForm.style.display = 'block';
-    loginForm.style.display = 'none';
-    // clear fields
-    titleInput.value = descInput.value = locInput.value = emailInput.value = '';
-    fileInput.value = '';
-  });
-  closePopup.addEventListener('click', () => closeModal());
-  function closeModal(){ popup.classList.remove('show'); }
-
-  /***********************
-    7) Image helper: upload to imgbb (if key provided)
-    returns URL string or null
-  ***********************/
-  async function uploadImageToImgbb(file){
-    if (!file) return null;
-    if (!IMGBB_API_KEY) return null;
-    try {
-      const form = new FormData();
-      form.append('image', await fileToBase64ForImgbb(file)); // imgbb accepts base64 data (without header)
-      const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY, {
-        method: 'POST', body: form
-      });
-      const j = await res.json();
-      if (j && j.data && j.data.url) return j.data.url;
-      return null;
-    } catch(e){
-      console.warn('imgbb upload failed', e);
-      return null;
-    }
-  }
-
-  // helper: convert file to base64 string suitable for imgbb (without data: prefix)
-  function fileToBase64ForImgbb(file){
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        // reader.result is "data:image/xxx;base64,...."
-        const base64 = reader.result.split(',')[1]; // remove header
-        resolve(base64);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  // fallback: full data URL (base64 with header) for Firestore storage
-  function fileToDataUrl(file){ return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(r.result);
-    r.onerror = rej;
-    r.readAsDataURL(file);
-  }); }
-
-  /***********************
-    8) Save item (uploads image -> saves Firestore doc)
-  ***********************/
-  saveItemBtn.addEventListener('click', async () => {
-    if (!currentUser) return alert('Please login to post.');
-    const title = titleInput.value.trim();
-    const desc = descInput.value.trim();
-    const location = locInput.value.trim();
-    const contact = emailInput.value.trim();
-    if (!title || !location || !contact) return alert('Title, Location and Contact Email are required.');
-
-    // disable button
-    saveItemBtn.disabled = true;
-    saveItemBtn.textContent = 'Saving...';
-
-    const file = fileInput.files[0];
-    let imageURL = "";
-    if (file){
-      // try imgbb if key provided
-      if (IMGBB_API_KEY){
-        imageURL = await uploadImageToImgbb(file);
-      }
-      // if imgbb not used or failed, use base64 fallback
-      if (!imageURL){
-        imageURL = await fileToDataUrl(file); // long string
-      }
-    }
-
-    // Save to Firestore
-    try {
-      const docRef = await addDoc(collection(db, currentTab), {
-        title, description: desc, location, contact, imageURL: imageURL || "", postedBy: currentUser.uid,
-        posterName: currentUser.displayName || currentUser.email, claimed: false, createdAt: serverTimestamp()
-      });
-      // success
-      showTempNotification('Item posted successfully!');
-      closeModal();
-    } catch(e){
-      alert('Error saving item: ' + e.message);
-    } finally {
-      saveItemBtn.disabled = false;
-      saveItemBtn.textContent = 'Save';
+    renderUser(user);
+    attachNotificationsListener();
+    attachItemsListener(currentTab);
+    // minimal users doc for future email features (demo)
+    if (user){
+      try { await addDoc(collection(db,'users'), { uid:user.uid, email:user.email, name:user.displayName||user.email, createdAt: serverTimestamp() }); } catch(e){}
     }
   });
 
-  /***********************
-    9) Firestore listeners (real-time) & rendering
-       - when switching tab, remove old listener, attach new one
-  ***********************/
-  function switchListenerTo(tab){
-    // unsubscribe previous
-    if (liveListeners[tab]) {
-      // same tab already listening
-      return;
-    }
-    // unsubscribe all other listeners to avoid duplicates
-    Object.keys(liveListeners).forEach(k => {
-      if (liveListeners[k]) { liveListeners[k](); delete liveListeners[k]; }
-    });
-
-    // create query ordered by createdAt desc
-    const q = query(collection(db, tab), orderBy('createdAt', 'desc'));
-    const unsub = onSnapshot(q, snapshot => {
-      // process docChanges to show notifications for 'added'
-      snapshot.docChanges().forEach(change => {
-        if (change.type === 'added') {
-          const data = change.doc.data();
-          // Show a quick in-app notif only if poster isn't the current user
-          if (!currentUser || (data.postedBy !== currentUser.uid)) {
-            showTempNotification(`New item in ${tab.toUpperCase()}: ${data.title}`);
-          }
-        }
-      });
-      // render array
-      const arr = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderItems(arr);
-    }, err => {
-      console.error('listener error', err);
-      itemsContainer.innerHTML = `<p class="small">Error loading items: ${err.message}</p>`;
-    });
-
-    liveListeners[tab] = unsub;
+  // attach items listener for tab
+  function attachItemsListener(tabName){
+    if (itemsUnsub) { itemsUnsub(); itemsUnsub = null; }
+    grid.innerHTML = '';
+    // show skeleton
+    for (let i=0;i<3;i++){ const s = document.createElement('div'); s.className='card skeleton'; s.style.height='120px'; grid.appendChild(s); }
+    const q = query(collection(db, tabName), orderBy('createdAt','desc'), limit(60));
+    itemsUnsub = onSnapshot(q, snap => {
+      const arr = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      renderGrid(arr);
+    }, err => { grid.innerHTML = `<div class="card">Failed to load: ${err.message}</div>`; });
   }
 
-  // attach first time
-  switchListenerTo(currentTab);
-
-  function renderItems(items){
-    const q = searchInput.value.trim().toLowerCase();
+  function renderGrid(items){
+    const q = search.value.trim().toLowerCase();
     const filtered = items.filter(it => {
       if (!q) return true;
-      const t = (it.title || '') + ' ' + (it.description || '');
-      return t.toLowerCase().includes(q);
+      return ((it.title||'') + ' ' + (it.description||'')).toLowerCase().includes(q);
     });
-
-    if (filtered.length === 0) {
-      itemsContainer.innerHTML = `<p class="small">No items found in ${currentTab}.</p>`;
+    if (!filtered.length){
+      grid.innerHTML = `<div class="empty"><svg viewBox="0 0 64 48" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><rect width="64" height="48" rx="8" fill="#f0f6ff"/><path d="M9 34c3-6 10-10 19-10s16 4 19 10" stroke="#cfe7ff" stroke-width="2" stroke-linecap="round"/><circle cx="44" cy="20" r="6" fill="#dfefff"/></g></svg><div style="font-weight:700">Nothing here yet</div><div class="small-muted">No items posted in this section — be the first to add one.</div></div>`;
       return;
     }
-
-    itemsContainer.innerHTML = '';
+    grid.innerHTML = '';
     filtered.forEach(it => {
-      const card = document.createElement('div'); card.className='item-card';
-      const imgHtml = it.imageURL ? `<img src="${it.imageURL}" class="item-image">` : '';
-      card.innerHTML = `
-        ${imgHtml}
-        <div style="flex:1">
-          <p class="item-title">${escapeHtml(it.title || '')}</p>
-          <p class="small">By: ${escapeHtml(it.posterName || 'Unknown')}</p>
-          <p class="item-desc">${escapeHtml(it.description || '')}</p>
-          <p class="small">Category: ${escapeHtml(it.category || '')} | ${escapeHtml(it.location || '')}</p>
-          <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
-            <button class="claim-btn" ${it.claimed ? 'disabled' : ''}>${it.claimed ? 'Claimed' : 'Claim'}</button>
-            ${ (currentUser && currentUser.uid === it.postedBy) ? `<button class="btn outline delete-btn">Delete</button>` : '' }
+      const c = document.createElement('div'); c.className='card fade';
+      const thumb = it.imageURL ? `<img src="${it.imageURL}" class="thumb">` : `<div class="thumb"></div>`;
+      c.innerHTML = `
+        <div class="card-head">
+          ${thumb}
+          <div class="meta">
+            <div class="title-sm">${escapeHtml(it.title||'Untitled')}</div>
+            <div class="desc">${escapeHtml(it.description||'')}</div>
+            <div class="meta-row" style="margin-top:8px"><div class="pill">${escapeHtml(it.location||'Campus')}</div><div class="pill">${escapeHtml(it.category||'')}</div></div>
+          </div>
+        </div>
+        <div class="card-foot">
+          <div class="small-muted">By ${escapeHtml(it.posterName||'Unknown')}</div>
+          <div>
+            <button class="claim ${it.claimed ? 'claimed' : ''}" ${it.claimed ? 'disabled' : ''}>${it.claimed ? 'Claimed' : 'Claim'}</button>
           </div>
         </div>
       `;
-      // claim click
-      const claimBtn = card.querySelector('.claim-btn');
-      claimBtn.addEventListener('click', async () => {
+      const claimBtn = c.querySelector('.claim');
+      claimBtn && claimBtn.addEventListener('click', async () => {
+        if (!currentUser) return openLoginArea();
         try {
           await updateDoc(doc(db, currentTab, it.id), { claimed: true });
-          showTempNotification('Claim registered — owner will contact the given email.');
-        } catch(e){ alert('Error claiming: ' + e.message); }
+          await addDoc(collection(db,'notifications'), {
+            title: 'Item Claimed',
+            message: `${it.title || 'An item'} was claimed in ${currentTab}.`,
+            target: 'all',
+            itemId: it.id,
+            createdAt: serverTimestamp(),
+            readBy: []
+          });
+          const rect = claimBtn.getBoundingClientRect();
+          particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 36 });
+          showToast('Claim registered — owner will contact via email');
+        } catch(e){ alert('Claim failed: '+e.message); }
       });
-      // delete (only owner)
-      const delBtn = card.querySelector('.delete-btn');
-      if (delBtn){
-        delBtn.addEventListener('click', async () => {
-          if (!confirm('Delete this item?')) return;
-          try {
-            await updateDoc(doc(db, currentTab, it.id), { deleted: true });
-            // or you could delete the doc: await deleteDoc(doc(db, currentTab, it.id));
-            showTempNotification('Item marked deleted.');
-          } catch(e){ alert('Delete failed: ' + e.message); }
-        });
+
+      // owner delete
+      if (currentUser && currentUser.uid === it.postedBy){
+        const del = document.createElement('button'); del.className='btn ghost'; del.textContent='Delete';
+        del.onclick = async () => {
+          if (!confirm('Delete item?')) return;
+          try { await updateDoc(doc(db,currentTab,it.id), { deleted: true }); showToast('Item deleted'); } catch(e){ alert('Delete failed: '+e.message); }
+        };
+        c.querySelector('.card-foot div').appendChild(del);
       }
 
-      itemsContainer.appendChild(card);
+      grid.appendChild(c);
     });
   }
 
-  // search input
-  searchInput.addEventListener('input', () => {
-    // we'll re-render when snapshot returns; but to keep snappy we can filter existing list by re-querying Firestore once snapshot has data.
-    // simpler: rely on the current listener render; do nothing here.
-  });
+  // nav clicks
+  navItems.forEach(n => n.addEventListener('click', () => {
+    navItems.forEach(x=>x.classList.remove('active'));
+    n.classList.add('active'); currentTab = n.dataset.tab; attachItemsListener(currentTab);
+  }));
 
-  /***********************
-    10) notifications helper
-  ***********************/
-  let notifTimer = null;
-  function showTempNotification(msg, timeout=3500){
-    notifEl.textContent = msg;
-    notifEl.classList.add('show');
-    if (notifTimer) clearTimeout(notifTimer);
-    notifTimer = setTimeout(()=>{ notifEl.classList.remove('show'); }, timeout);
+  contributorsLink.onclick = () => { window.location.href = 'contributors.html'; };
+
+  // posting flow
+  postBtn.onclick = async () => {
+    if (!currentUser) return openLoginArea();
+    const raw = singleBox.value.trim(); if (!raw) return alert('Please type item details');
+    let title = raw.split('—')[0] || raw.split('-')[0] || raw; title = title.trim().slice(0,120);
+    const description = raw; const location = 'Campus'; const category = postCategory.value || 'other';
+    const file = fileInput.files[0]; let imageURL = '';
+    if (file){
+      if (IMGBB_KEY){
+        try {
+          const base = await fileToBase64ForImgbb(file);
+          const form = new FormData(); form.append('image', base);
+          const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method:'POST', body: form });
+          const j = await res.json(); if (j && j.data && j.data.url) imageURL = j.data.url;
+        } catch(e){ console.warn('imgbb fail', e); imageURL = await fileToDataUrl(file); }
+      } else { imageURL = await fileToDataUrl(file); }
+    }
+    try {
+      await addDoc(collection(db, currentTab), {
+        title, description, location, category, imageURL: imageURL||'', postedBy: currentUser.uid,
+        posterName: currentUser.displayName || currentUser.email, claimed:false, createdAt: serverTimestamp()
+      });
+      await addDoc(collection(db,'notifications'), {
+        title: 'New item posted',
+        message: `${title} added to ${currentTab}.`,
+        target: 'all',
+        itemId: null,
+        createdAt: serverTimestamp(),
+        readBy: []
+      });
+      showToast('Posted successfully ✅');
+      modal.classList.remove('show'); singleBox.value=''; fileInput.value='';
+    } catch(e){ alert('Post failed: '+e.message); }
+  };
+
+  function fileToBase64ForImgbb(file){ return new Promise((res,rej) => { const r = new FileReader(); r.onload = ()=> res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
+  function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); })}
+
+  // notifications logic
+  function attachNotificationsListener(){
+    if (notifsUnsub) { notifsUnsub(); notifsUnsub=null; }
+    const q = query(collection(db,'notifications'), orderBy('createdAt','desc'), limit(80));
+    notifsUnsub = onSnapshot(q, snap => {
+      const arr = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      renderBadge(arr);
+      if (notifPanel.classList.contains('show')) renderNotifPanel(arr);
+    }, err => console.warn('notif listen err', err));
   }
 
-  /***********************
-    11) small helpers
-  ***********************/
+  function renderBadge(list){
+    if (!currentUser){ badge.style.display='none'; return; }
+    const unread = list.filter(n => !Array.isArray(n.readBy) || !n.readBy.includes(currentUser.uid)).length;
+    if (unread>0){ badge.style.display='flex'; badge.textContent = unread; } else { badge.style.display='none'; }
+  }
+
+  inboxBtn.onclick = () => {
+    notifPanel.classList.toggle('show');
+    if (notifPanel.classList.contains('show')) {
+      // panel will render automatically via listener
+    }
+  };
+
+  function renderNotifPanel(list){
+    notifPanel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>Notifications</strong><button id="markAll" class="btn ghost">Mark all read</button></div>`;
+    if (!list.length) { notifPanel.innerHTML += `<div class="small-muted">No notifications</div>`; return; }
+    list.forEach(n => {
+      const unread = !n.readBy || !n.readBy.includes(currentUser ? currentUser.uid : '___');
+      const it = document.createElement('div'); it.className = 'notif-item ' + (unread ? 'unread' : '');
+      it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div class="small-muted">${escapeHtml(n.message || '')}</div><div class="small-muted" style="margin-top:6px">${n.createdAt ? new Date(n.createdAt.seconds*1000).toLocaleString() : ''}</div>`;
+      it.onclick = async () => {
+        if (!currentUser) return openLoginArea();
+        try { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } catch(e){ console.warn('mark read', e); }
+      };
+      notifPanel.appendChild(it);
+    });
+    const markAll = document.getElementById('markAll');
+    markAll && (markAll.onclick = async () => {
+      if (!currentUser) return openLoginArea();
+      try { for (const n of list) { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } showToast('All marked read'); } catch(e){ alert('Mark all failed: '+e.message); }
+    });
+  }
+
+  // particle engine
+  function particleBurst({x=window.innerWidth/2, y=window.innerHeight/2, count=36} = {}){
+    const particles = [];
+    for (let i=0;i<count;i++){
+      particles.push({ x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-1.2)*6, life:Math.random()*60+40, size:Math.random()*3+2, color:`hsl(${Math.random()*360},80%,60%)` });
+    }
+    let anim;
+    function step(){
+      ctx.clearRect(0,0,pcanvas.width,pcanvas.height);
+      let alive=false;
+      for (const p of particles){
+        if (p.life>0){
+          p.x+=p.vx; p.y+=p.vy; p.vy+=0.14; p.life--;
+          ctx.globalAlpha = Math.max(0, p.life/80);
+          ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill();
+          alive=true;
+        }
+      }
+      if (alive) anim = requestAnimationFrame(step); else { cancelAnimationFrame(anim); ctx.clearRect(0,0,pcanvas.width,pcanvas.height); }
+    }
+    step();
+  }
+
+  // small helpers: toasts
+  function showToast(msg, t=3000){
+    const el = document.createElement('div'); el.className='toast'; el.textContent = msg; toastRoot.appendChild(el);
+    requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; });
+    setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),300); }, t);
+  }
+
   function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
-  /***********************
-    12) initial UI & helper functions
-  ***********************/
-  // show login modal from outside
-  window.openLogin = openLogin;
+  // init listeners
+  attachItemsListener(currentTab);
+  attachNotificationsListener();
 
-  // when page loads, show login if not authenticated? not necessary
-  // set initial placeholder
-  renderPlaceholder();
+  // search debounce
+  let stimer=null;
+  search.addEventListener('input', ()=>{ clearTimeout(stimer); stimer=setTimeout(()=>attachItemsListener(currentTab),300); });
+
+  // resize particles canvas
+  function initCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
+  initCanvas(); window.addEventListener('resize', initCanvas);
 
   </script>
 </body>
