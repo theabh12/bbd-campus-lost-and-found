@@ -4,12 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>BBD Campus Lost & Found — Final (Redesigned)</title>
-
-  <!-- Favicon (remote BBD logo) -->
-  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" />
+  <!-- Favicon (BBD logo) -->
+  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" />
   <meta name="theme-color" content="#1f6feb" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
   <style>
     :root{
       --bg1:#f6fbff; --bg2:#eaf6ff;
@@ -39,7 +37,7 @@
     .tab:hover{transform:translateY(-4px)}
     .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 12px 30px rgba(31,99,255,0.10)}
     /* controls */
-    .controls{display:flex;gap:10px;align-items:center;margin:12px 0;justify-content:center}
+    .controls{display:flex;gap:10px;align-items:center;margin:12px 0;justify-content:center;flex-wrap:wrap}
     .search{padding:10px 14px;border-radius:10px;border:1px solid rgba(11,17,36,0.06);min-width:360px}
     .btn{padding:10px 14px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 12px 30px rgba(31,99,255,0.08)}
     .btn.ghost{background:transparent;border:1px solid var(--card-border);color:var(--muted)}
@@ -69,7 +67,7 @@
     .modal.show{display:flex}
     .panel{width:760px;max-width:96%;background:var(--glass-strong);padding:18px;border-radius:12px;border:1px solid var(--card-border);box-shadow:0 40px 80px rgba(9,16,56,0.12);backdrop-filter:blur(8px)}
     .single-box{width:100%;min-height:120px;padding:14px;border-radius:12px;border:1px solid rgba(15,23,42,0.06);resize:vertical}
-    .form-row{display:flex;gap:10px;margin-top:12px}
+    .form-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
     /* fab BIGGER bottom-right */
     .fab{position:fixed;right:32px;bottom:32px;width:100px;height:100px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-size:52px;box-shadow:0 22px 50px rgba(31,99,255,0.20);cursor:pointer;z-index:1500;transition:transform .2s}
     .fab:hover{transform:translateY(-6px) scale(1.05)}
@@ -82,6 +80,10 @@
     #particles{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1600}
     /* toast */
     .toast{position:fixed;right:18px;bottom:18px;background:#0b1220;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 16px 40px rgba(11,17,36,0.28);z-index:2000;opacity:0;transform:translateY(8px);transition:opacity .28s,transform .28s}
+    /* footer */
+    footer{margin-top:40px;padding:20px;text-align:center;color:var(--muted);font-size:14px}
+    footer a{color:var(--accent);text-decoration:none;font-weight:700}
+    footer a:hover{text-decoration:underline}
     /* responsive */
     @media (max-width:820px){
       .card{flex-direction:column}
@@ -95,24 +97,21 @@
 </head>
 <body>
   <div id="particles"><canvas id="pcanvas" style="width:100%;height:100%"></canvas></div>
-
   <div class="app" id="appRoot">
     <header>
       <div class="brand">
-        <div class="logo"><img src="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" alt="BBD" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%%22http://www.w3.org/2000/svg%%22 width=64 height=64><rect width=64 height=64 rx=12 fill=%22%231f6feb%22/></svg>'" style="width:100%;height:100%;object-fit:cover"></div>
+        <div class="logo"><img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" alt="BBD" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=64 height=64><rect width=64 height=64 rx=12 fill=%22%231f6feb%22/></svg>'" style="width:100%;height:100%;object-fit:cover"></div>
         <div style="text-align:center">
           <div class="app-title">Campus Lost & Found</div>
           <div class="app-sub">BBD Educational Group — campus item sharing</div>
         </div>
       </div>
-
       <!-- centered tabs under title -->
       <div class="tabs" role="tablist" aria-label="Sections">
         <div class="tab active" data-tab="lost">Lost</div>
         <div class="tab" data-tab="found">Found</div>
         <div class="tab" data-tab="giveaway">Giveaway</div>
       </div>
-
       <div class="controls">
         <input id="search" class="search" placeholder="Search title / description..." />
         <div class="inbox">
@@ -123,7 +122,6 @@
         <button id="openAdd" class="btn">+ Add Item</button>
       </div>
     </header>
-
     <!-- item list (single column) -->
     <main>
       <section id="list" class="list">
@@ -137,11 +135,14 @@
         <div class="card" style="height:180px"></div>
       </section>
     </main>
+    <!-- footer with contributors link -->
+    <footer>
+      <p>Made with ❤️ by BBD Students | <a href="contributors.html">View Contributors</a></p>
+      <p style="margin-top:8px;font-size:12px">Lost something? Found something? Share it here and help the community!</p>
+    </footer>
   </div>
-
   <!-- notification panel -->
   <div id="notifPanel" class="notif-panel"></div>
-
   <!-- modal -->
   <div id="modal" class="modal" aria-hidden="true">
     <div class="panel" role="dialog" aria-modal="true">
@@ -149,11 +150,9 @@
         <h3 id="modalTitle">Post an item</h3>
         <button id="closeModal" style="border:0;background:transparent;font-size:20px;cursor:pointer">✕</button>
       </div>
-
       <div id="addArea" style="margin-top:12px">
         <label class="small">Describe your item in one line</label>
         <textarea id="singleBox" class="single-box" placeholder="Lost — Black Wallet near Canteen — contact@mail.com"></textarea>
-
         <div class="form-row">
           <input id="fileInput" type="file" accept="image/*" />
           <select id="category" style="padding:10px;border-radius:10px;border:1px solid rgba(15,23,42,0.06)">
@@ -164,18 +163,16 @@
             <option value="clothing">Clothing</option>
           </select>
         </div>
-
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
           <button id="openLogin" class="btn ghost">Login / Signup</button>
           <button id="postBtn" class="btn">Post</button>
         </div>
       </div>
-
       <div id="loginArea" style="display:none;margin-top:12px">
         <label>Email</label>
-        <input id="loginEmail" type="email" />
+        <input id="loginEmail" type="email" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06);margin-bottom:10px" />
         <label>Password</label>
-        <input id="loginPass" type="password" />
+        <input id="loginPass" type="password" style="width:100%;padding:10px;border-radius:8px;border:1px solid rgba(15,23,42,0.06)" />
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px">
           <button id="signupBtn" class="btn ghost">Sign up</button>
           <button id="loginBtn" class="btn">Login</button>
@@ -183,19 +180,16 @@
       </div>
     </div>
   </div>
-
   <!-- big floating add button -->
   <div id="fab" class="fab" title="Add Item">+</div>
-
   <!-- toast container -->
   <div id="toastRoot"></div>
-
   <script type="module">
   // Firebase + UI glue (single-file final)
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, updateDoc, doc, arrayUnion, limit } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
-
+  import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, updateDoc, doc, arrayUnion, limit, getDocs } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
   // your firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyA6fg0gFPowPWZVOajkkznj9xocVp3evQs",
@@ -206,14 +200,24 @@
     appId: "1:519626476206:web:62b07f0bc143499c7a3b3f",
     measurementId: "G-NQZWGG3717"
   };
-
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
-  // optional imgbb key (leave blank for Base64 fallback)
-  const IMGBB_KEY = "";
-
+  const storage = getStorage(app);
+  // EmailJS configuration (REPLACE WITH YOUR OWN KEYS)
+  // Sign up at https://www.emailjs.com/ and get your keys
+  const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID"; // Replace with your EmailJS service ID
+  const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID"; // Replace with your EmailJS template ID
+  const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY"; // Replace with your EmailJS public key
+  // Load EmailJS SDK
+  const emailjsScript = document.createElement('script');
+  emailjsScript.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js";
+  emailjsScript.onload = () => {
+    if(window.emailjs && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
+  };
+  document.head.appendChild(emailjsScript);
   // UI refs
   const list = document.getElementById('list');
   const search = document.getElementById('search');
@@ -236,25 +240,20 @@
   const loginPass = document.getElementById('loginPass');
   const userArea = document.getElementById('userArea');
   const tabs = document.querySelectorAll('.tab');
-  const contributorsLink = document.getElementById('contributorsLink');
   const postCategory = document.getElementById('category');
   const pcanvas = document.getElementById('pcanvas');
   const ctx = pcanvas.getContext('2d');
   const toastRoot = document.getElementById('toastRoot');
-
   // state
   let currentTab = 'lost';
   let itemsUnsub = null;
   let notifsUnsub = null;
   let currentUser = null;
-
   // canvas resize
   function resizeCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
   window.addEventListener('resize', resizeCanvas); resizeCanvas();
-
   // show page
   requestAnimationFrame(()=>document.body.classList.add('ready'));
-
   // AUTH UI
   function renderUser(user){
     userArea.innerHTML = '';
@@ -270,26 +269,20 @@
       userArea.appendChild(name); userArea.appendChild(out);
     }
   }
-
   function openLoginArea(){ modal.classList.add('show'); loginArea.style.display='block'; addArea.style.display='none'; document.getElementById('modalTitle').textContent='Login / Signup'; }
   function openAddArea(){ if (!currentUser) { openLoginArea(); return; } modal.classList.add('show'); loginArea.style.display='none'; addArea.style.display='block'; document.getElementById('modalTitle').textContent='Post an Item'; }
-  closeModal.onclick = ()=>{ modal.classList.remove('show'); singleBox.value=''; fileInput.value=''; };
-
+  function closeModalWindow(){ modal.classList.remove('show'); singleBox.value=''; fileInput.value=''; }
+  closeModal.onclick = closeModalWindow;
   openAdd.onclick = openAddArea; fab.onclick = openAddArea; openLogin.onclick = openLoginArea;
-
   signupBtn.onclick = async ()=>{ const email=loginEmail.value.trim(),pass=loginPass.value.trim(); if(!email||!pass||pass.length<6) return alert('Enter valid email & pass (6+)'); try{ await createUserWithEmailAndPassword(auth,email,pass); showToast('Signup success'); modal.classList.remove('show'); }catch(e){ alert('Signup failed: '+e.message) } };
   loginBtn.onclick = async ()=>{ const email=loginEmail.value.trim(),pass=loginPass.value.trim(); if(!email||!pass) return alert('Enter login'); try{ await signInWithEmailAndPassword(auth,email,pass); showToast('Logged in'); modal.classList.remove('show'); }catch(e){ alert('Login failed: '+e.message) } };
-
   async function googleLogin(){ try{ const provider = new GoogleAuthProvider(); await signInWithPopup(auth, provider); showToast('Logged in with Google'); modal.classList.remove('show'); }catch(e){ alert('Google login failed: '+e.message) } }
-
   onAuthStateChanged(auth, async user => {
     currentUser = user; renderUser(user); attachNotificationsListener(); attachItemsListener(currentTab);
     if (user){ try{ await addDoc(collection(db,'users'), { uid:user.uid, email:user.email, name:user.displayName||user.email, createdAt: serverTimestamp() }); }catch(e){} }
   });
-
   // TAB handling
   tabs.forEach(t=> t.addEventListener('click', ()=>{ tabs.forEach(x=>x.classList.remove('active')); t.classList.add('active'); currentTab = t.dataset.tab; attachItemsListener(currentTab); }));
-
   // Attach items listener
   function attachItemsListener(tabName){
     if (itemsUnsub){ itemsUnsub(); itemsUnsub=null; }
@@ -302,7 +295,6 @@
       renderList(arr);
     }, err => { list.innerHTML = `<div class="card">Failed to load: ${err.message}</div>`; });
   }
-
   function renderList(items){
     const q = search.value.trim().toLowerCase();
     const filtered = items.filter(it => {
@@ -341,20 +333,37 @@
           const rect = claimBtn.getBoundingClientRect();
           particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 32 });
           showToast('Claim registered — owner will contact via email');
+          // Send email notification
+          await sendEmailToAllUsers('Item Claimed', `${it.title} has been claimed!`);
         } catch(e){ alert('Claim failed: '+e.message); }
       });
-
       // owner delete
       if (currentUser && currentUser.uid === it.postedBy){
         const del = document.createElement('button'); del.className='btn ghost'; del.textContent='Delete';
         del.onclick = async () => { if (!confirm('Delete item?')) return; try { await updateDoc(doc(db,currentTab,it.id), { deleted:true }); showToast('Item deleted'); } catch(e){ alert('Delete failed: '+e.message); } };
         c.querySelector('.card-foot div').appendChild(del);
       }
-
       list.appendChild(c);
     });
   }
-
+  // Upload image to Firebase Storage
+  async function uploadImageToCloud(file) {
+    try {
+      const timestamp = Date.now();
+      const filename = `items/${timestamp}_${file.name}`;
+      const storageRef = ref(storage, filename);
+      
+      showToast('Uploading image...');
+      await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(storageRef);
+      showToast('Image uploaded successfully!');
+      return downloadURL;
+    } catch(e) {
+      console.error('Cloud upload failed:', e);
+      showToast('Image upload failed, using fallback');
+      return await fileToDataUrl(file);
+    }
+  }
   // post item
   postBtn.onclick = async () => {
     if (!currentUser) return openLoginArea();
@@ -362,22 +371,59 @@
     let title = raw.split('—')[0] || raw.split('-')[0] || raw; title = title.trim().slice(0,120);
     const description = raw; const location = 'Campus'; const category = postCategory.value || 'other';
     const file = fileInput.files[0]; let imageURL = '';
+    
     if (file){
-      if (IMGBB_KEY){
-        try { const base = await fileToBase64ForImgbb(file); const form = new FormData(); form.append('image', base); const res = await fetch('https://api.imgbb.com/1/upload?key=' + IMGBB_KEY, { method:'POST', body: form }); const j = await res.json(); if (j && j.data && j.data.url) imageURL = j.data.url; } catch(e){ console.warn('imgbb fail', e); imageURL = await fileToDataUrl(file); }
-      } else { imageURL = await fileToDataUrl(file); }
+      imageURL = await uploadImageToCloud(file);
     }
+    
     try {
       await addDoc(collection(db,currentTab), { title, description, location, category, imageURL: imageURL||'', postedBy: currentUser.uid, posterName: currentUser.displayName||currentUser.email, claimed:false, createdAt: serverTimestamp() });
       await addDoc(collection(db,'notifications'), { title: 'New item posted', message: `${title} added to ${currentTab}.`, target:'all', itemId:null, createdAt: serverTimestamp(), readBy: [] });
+      
       showToast('Posted successfully ✅');
-      modal.classList.remove('show'); singleBox.value=''; fileInput.value='';
+      
+      // Send email notification to all users
+      await sendEmailToAllUsers(`New ${currentTab} Item`, `${title} has been posted in ${currentTab} section!`);
+      
+      // Close modal and clear form
+      closeModalWindow();
+      
     } catch(e){ alert('Post failed: '+e.message); }
   };
-
-  function fileToBase64ForImgbb(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
   function fileToDataUrl(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); }); }
-
+  // Email notification function
+  async function sendEmailToAllUsers(subject, message) {
+    try {
+      // Get all users from Firestore
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+      const users = usersSnapshot.docs.map(d => d.data());
+      
+      // Filter unique emails
+      const emails = [...new Set(users.map(u => u.email).filter(e => e))];
+      
+      if(window.emailjs && EMAILJS_SERVICE_ID !== "YOUR_SERVICE_ID") {
+        // Send email to each user
+        for(const email of emails) {
+          try {
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+              to_email: email,
+              subject: subject,
+              message: message,
+              from_name: 'BBD Campus Lost & Found'
+            });
+          } catch(e) {
+            console.warn('Failed to send email to:', email, e);
+          }
+        }
+        console.log('Email notifications sent to', emails.length, 'users');
+      } else {
+        console.log('EmailJS not configured. Would send to:', emails.length, 'users');
+        console.log('Subject:', subject, 'Message:', message);
+      }
+    } catch(e) {
+      console.error('Failed to send email notifications:', e);
+    }
+  }
   // notifications
   function attachNotificationsListener(){
     if (notifsUnsub){ notifsUnsub(); notifsUnsub=null; }
@@ -388,15 +434,12 @@
       if (notifPanel.classList.contains('show')) renderNotifPanel(arr);
     }, err => console.warn('notif listen err', err));
   }
-
   function renderBadge(list){
     if (!currentUser){ badge.style.display='none'; return; }
     const unread = list.filter(n => !Array.isArray(n.readBy) || !n.readBy.includes(currentUser.uid)).length;
     if (unread>0){ badge.style.display='flex'; badge.textContent = unread; } else { badge.style.display='none'; }
   }
-
   inboxBtn.onclick = ()=>{ notifPanel.classList.toggle('show'); }
-
   function renderNotifPanel(list){
     notifPanel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>Notifications</strong><button id="markAll" class="btn ghost">Mark all read</button></div>`;
     if (!list.length){ notifPanel.innerHTML += `<div class="small-muted">No notifications</div>`; return; }
@@ -410,7 +453,6 @@
     const markAll = document.getElementById('markAll');
     markAll && (markAll.onclick = async ()=>{ if (!currentUser) return openLoginArea(); try { for (const n of list) { await updateDoc(doc(db,'notifications',n.id), { readBy: arrayUnion(currentUser.uid) }); } showToast('All marked read'); } catch(e){ alert('Mark all failed: '+e.message) } });
   }
-
   // particle burst
   function particleBurst({x=window.innerWidth/2, y=window.innerHeight/2, count=36} = {}){
     const particles = [];
@@ -426,22 +468,13 @@
     }
     step();
   }
-
   // toasts
   function showToast(msg, t=2800){ const el=document.createElement('div'); el.className='toast'; el.textContent=msg; toastRoot.appendChild(el); requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='translateY(0)'; }); setTimeout(()=>{ el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),300); }, t); }
-
   function escapeHtml(s){ if(!s) return ''; return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
   // init listeners
   attachItemsListener(currentTab); attachNotificationsListener();
-
   // search debounce
   let stimer=null; search.addEventListener('input', ()=>{ clearTimeout(stimer); stimer=setTimeout(()=>attachItemsListener(currentTab), 300); });
-
-  // resize canvas
-  function initCanvas(){ pcanvas.width = window.innerWidth; pcanvas.height = window.innerHeight; }
-  initCanvas(); window.addEventListener('resize', initCanvas);
-
   </script>
 </body>
 </html>
