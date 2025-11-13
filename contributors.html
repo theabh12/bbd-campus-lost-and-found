@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Contributors — BBD Campus Lost & Found</title>
+  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg1:#f3f8ff;--bg2:#e9f4ff;--glass:rgba(255,255,255,0.86);--muted:#616973;--accent:#1f6feb;--card-border:rgba(255,255,255,0.7);--shadow:0 18px 50px rgba(16,24,40,0.06)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Arial;color:#071124;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-font-smoothing:antialiased}
+    .wrap{max-width:1000px;margin:36px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:60px;height:60px;border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+    .logo img{width:100%;height:100%;object-fit:cover}
+    .title{font-size:20px;font-weight:800}
+    .subtitle{font-size:13px;color:var(--muted)}
+    .back-btn{padding:8px 12px;border-radius:10px;border:0;background:transparent;color:var(--accent);font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(31,99,255,0.06)}
+    main{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+    .card{background:var(--glass);padding:18px;border-radius:14px;border:1px solid var(--card-border);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;transition:transform .18s,box-shadow .18s}
+    .card:hover{transform:translateY(-6px);box-shadow:0 36px 80px rgba(16,24,40,0.08)}
+    .name{font-weight:800;font-size:20px}
+    .roll{font-size:13px;color:var(--muted)}
+    .role{margin-top:6px;color:#0b1220}
+    .small{font-size:13px;color:var(--muted)}
+    .lead-badge{display:inline-block;margin-top:8px;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--accent),#2b8df6);color:#fff;font-weight:700;font-size:13px}
+    footer{margin-top:28px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo"><img id="logoImg" src="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" alt="BBD logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%%22http://www.w3.org/2000/svg%%22 width=60 height=60><rect width=60 height=60 rx=12 fill=%22%231f6feb%22/></svg>'"></div>
+        <div>
+          <div class="title">BBD Campus — Contributors</div>
+          <div class="subtitle">Acknowledgement of the team behind the project</div>
+        </div>
+      </div>
+      <div>
+        <button class="back-btn" id="backBtn">← Back to App</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div class="name">Abhinav Tiwari</div>
+            <div class="roll">Roll No. 8</div>
+          </div>
+          <div class="lead-badge">Head</div>
+        </div>
+        <div class="role">Project coordination, feature design, UI refinement, testing and overall leadership.</div>
+        <div class="small">Led the team and coordinated the project scope, timelines and demonstrations.</div>
+      </section>
+
+      <section class="card">
+        <div>
+          <div class="name">Aman Singh</div>
+          <div class="roll">Roll No. 31</div>
+        </div>
+        <div class="role">Contributed UI ideas, helped with testing and user feedback, and assisted in refining the interface.</div>
+        <div class="small">Worked on layout tweaks and device testing.</div>
+      </section>
+
+      <section class="card">
+        <div>
+          <div class="name">Adarsh Pandey</div>
+          <div class="roll">Roll No. 16</div>
+        </div>
+        <div class="role">Prepared presentation content, documentation and helped organize the demo flow.</div>
+        <div class="small">Focused on docs and presentation readiness.</div>
+      </section>
+
+      <section class="card">
+        <div>
+          <div class="name">Anuj Kumar</div>
+          <div class="roll">Roll No. 51</div>
+        </div>
+        <div class="role">Assisted with asset collection, resource research, and testing support.</div>
+        <div class="small">Helped gather icons, images and verify presentation resources.</div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="small">Thanks to everyone who contributed. This page is part of the BBD Campus Lost & Found project.</div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('backBtn').addEventListener('click', () => {
+      if (document.referrer && document.referrer.includes(location.hostname)) history.back();
+      else window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
