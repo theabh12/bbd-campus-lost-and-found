@@ -4,15 +4,472 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BBD Lost & Found — Home</title>
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="icon" href="assets/logo.png">
+    <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png">
+    <style>
+        /* ==========================================
+           CSS Reset & Base Styles
+           ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #007AFF;
+            --secondary-color: #5856D6;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16);
+            --spacing-xs: 8px;
+            --spacing-sm: 16px;
+            --spacing-md: 24px;
+            --spacing-lg: 32px;
+            --spacing-xl: 48px;
+            --spacing-xxl: 64px;
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-size-xs: 12px;
+            --font-size-sm: 14px;
+            --font-size-base: 16px;
+            --font-size-lg: 18px;
+            --font-size-xl: 24px;
+            --font-size-2xl: 32px;
+            --font-size-3xl: 48px;
+            --font-size-4xl: 56px;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ==========================================
+           Glassmorphism Utilities
+           ========================================== */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .glass-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 10px 20px;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .glass-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: rgba(255, 255, 255, 0.85);
+        }
+
+        .glass-btn.primary {
+            background: var(--primary-color);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-btn.primary:hover {
+            background: #0051D5;
+            box-shadow: 0 8px 24px rgba(0, 122, 255, 0.4);
+        }
+
+        /* ==========================================
+           Header & Navigation
+           ========================================== */
+        .glass-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .site-title {
+            font-size: var(--font-size-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-link.active {
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--primary-color);
+        }
+
+        /* ==========================================
+           Hero Section
+           ========================================== */
+        .hero {
+            padding: var(--spacing-xxl) var(--spacing-lg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .hero-card {
+            max-width: 800px;
+            padding: var(--spacing-xxl);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-lg);
+        }
+
+        .hero-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 16px 48px rgba(0, 122, 255, 0.3);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .hero-icon svg {
+            width: 60px;
+            height: 60px;
+            stroke: white;
+        }
+
+        .hero-title {
+            font-size: var(--font-size-4xl);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: var(--font-size-xl);
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+
+        .hero-btn {
+            padding: 16px 32px;
+            font-size: var(--font-size-base);
+            margin-top: var(--spacing-md);
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+            stroke: white;
+        }
+
+        /* ==========================================
+           Posts Section
+           ========================================== */
+        .posts-section {
+            padding: var(--spacing-xxl) var(--spacing-lg);
+            animation: fadeIn 1s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .post-card {
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+            border-radius: var(--radius-md);
+            margin-bottom: var(--spacing-md);
+            background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #1976D2;
+        }
+
+        .post-image.img-2 {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            color: #388E3C;
+        }
+
+        .post-image.img-3 {
+            background: linear-gradient(135deg, #F3E5F5, #E1BEE7);
+            color: #7B1FA2;
+        }
+
+        .post-content {
+            padding: var(--spacing-md);
+        }
+
+        .post-title {
+            font-size: var(--font-size-xl);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-primary);
+        }
+
+        .post-description {
+            font-size: var(--font-size-base);
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.5;
+        }
+
+        .post-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+        }
+
+        .meta-item svg {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+            stroke: var(--text-secondary);
+        }
+
+        /* ==========================================
+           Footer
+           ========================================== */
+        .glass-footer {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: var(--spacing-lg);
+            text-align: center;
+            margin-top: var(--spacing-xxl);
+        }
+
+        .glass-footer p {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* ==========================================
+           Animations
+           ========================================== */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* ==========================================
+           Responsive Design
+           ========================================== */
+        @media (max-width: 1024px) {
+            .posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+            
+            .nav-right {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero-title {
+                font-size: var(--font-size-3xl);
+            }
+            
+            .hero-subtitle {
+                font-size: var(--font-size-lg);
+            }
+            
+            .hero-card {
+                padding: var(--spacing-lg);
+            }
+            
+            .section-title {
+                font-size: var(--font-size-2xl);
+            }
+            
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --spacing-lg: 16px;
+                --spacing-xl: 24px;
+                --spacing-xxl: 32px;
+            }
+            
+            .site-title {
+                font-size: var(--font-size-base);
+            }
+            
+            .hero-icon {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .hero-icon svg {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .glass-btn {
+                padding: 8px 16px;
+                font-size: var(--font-size-xs);
+            }
+            
+            .hero-btn {
+                padding: 12px 24px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header class="glass-header">
         <nav class="nav-container">
             <div class="nav-left">
-                <img src="assets/logo.png" alt="BBD Logo" class="logo">
+                <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" alt="BBD Logo" class="logo">
                 <h1 class="site-title">BBD Lost & Found</h1>
             </div>
             <div class="nav-right">
@@ -28,13 +485,19 @@
     <section class="hero">
         <div class="hero-card glass-card">
             <div class="hero-icon">
-                <img src="assets/icons/search.svg" alt="Search Icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
             </div>
             <h2 class="hero-title">Campus Lost & Found</h2>
             <p class="hero-subtitle">Find your items quickly with a clean, modern UI</p>
             <a href="contribution.html" class="hero-btn glass-btn primary">
                 View Contributions
-                <img src="assets/icons/arrow.svg" alt="Arrow" class="btn-icon">
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="m12 5 7 7-7 7"></path>
+                </svg>
             </a>
         </div>
     </section>
@@ -46,19 +509,23 @@
             <div class="posts-grid">
                 <!-- Post Card 1 -->
                 <div class="post-card glass-card">
-                    <div class="post-image">
-                        <img src="assets/images/post1.jpg" alt="Lost Item">
-                    </div>
+                    <div class="post-image">🎒</div>
                     <div class="post-content">
                         <h4 class="post-title">Blue Water Bottle</h4>
                         <p class="post-description">Found near the library entrance. Has a sports team sticker.</p>
                         <div class="post-meta">
                             <div class="meta-item">
-                                <img src="assets/icons/clock.svg" alt="Time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
                                 <span>2 hours ago</span>
                             </div>
                             <div class="meta-item">
-                                <img src="assets/icons/location.svg" alt="Location">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
                                 <span>Library</span>
                             </div>
                         </div>
@@ -67,19 +534,23 @@
 
                 <!-- Post Card 2 -->
                 <div class="post-card glass-card">
-                    <div class="post-image">
-                        <img src="assets/images/post2.jpg" alt="Lost Item">
-                    </div>
+                    <div class="post-image img-2">🎒</div>
                     <div class="post-content">
                         <h4 class="post-title">Black Backpack</h4>
                         <p class="post-description">Lost near the cafeteria. Contains textbooks and notebooks.</p>
                         <div class="post-meta">
                             <div class="meta-item">
-                                <img src="assets/icons/clock.svg" alt="Time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
                                 <span>5 hours ago</span>
                             </div>
                             <div class="meta-item">
-                                <img src="assets/icons/location.svg" alt="Location">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
                                 <span>Cafeteria</span>
                             </div>
                         </div>
@@ -88,19 +559,23 @@
 
                 <!-- Post Card 3 -->
                 <div class="post-card glass-card">
-                    <div class="post-image">
-                        <img src="assets/images/post3.jpg" alt="Lost Item">
-                    </div>
+                    <div class="post-image img-3">🆔</div>
                     <div class="post-content">
                         <h4 class="post-title">Student ID Card</h4>
                         <p class="post-description">Found in the auditorium. Please contact admin to claim.</p>
                         <div class="post-meta">
                             <div class="meta-item">
-                                <img src="assets/icons/clock.svg" alt="Time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
                                 <span>1 day ago</span>
                             </div>
                             <div class="meta-item">
-                                <img src="assets/icons/location.svg" alt="Location">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
                                 <span>Auditorium</span>
                             </div>
                         </div>
@@ -109,19 +584,23 @@
 
                 <!-- Post Card 4 -->
                 <div class="post-card glass-card">
-                    <div class="post-image">
-                        <img src="assets/images/post1.jpg" alt="Lost Item">
-                    </div>
+                    <div class="post-image">🎧</div>
                     <div class="post-content">
                         <h4 class="post-title">Wireless Earbuds</h4>
                         <p class="post-description">Found in the computer lab. White color with charging case.</p>
                         <div class="post-meta">
                             <div class="meta-item">
-                                <img src="assets/icons/clock.svg" alt="Time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
                                 <span>3 days ago</span>
                             </div>
                             <div class="meta-item">
-                                <img src="assets/icons/location.svg" alt="Location">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
                                 <span>Computer Lab</span>
                             </div>
                         </div>
@@ -130,19 +609,23 @@
 
                 <!-- Post Card 5 -->
                 <div class="post-card glass-card">
-                    <div class="post-image">
-                        <img src="assets/images/post2.jpg" alt="Lost Item">
-                    </div>
+                    <div class="post-image img-2">📚</div>
                     <div class="post-content">
                         <h4 class="post-title">Notebook Set</h4>
                         <p class="post-description">Three spiral notebooks found in classroom B-204.</p>
                         <div class="post-meta">
                             <div class="meta-item">
-                                <img src="assets/icons/clock.svg" alt="Time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
                                 <span>4 days ago</span>
                             </div>
                             <div class="meta-item">
-                                <img src="assets/icons/location.svg" alt="Location">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
                                 <span>Classroom B-204</span>
                             </div>
                         </div>
@@ -151,19 +634,23 @@
 
                 <!-- Post Card 6 -->
                 <div class="post-card glass-card">
-                    <div class="post-image">
-                        <img src="assets/images/post3.jpg" alt="Lost Item">
-                    </div>
+                    <div class="post-image img-3">🔢</div>
                     <div class="post-content">
                         <h4 class="post-title">Calculator</h4>
                         <p class="post-description">Scientific calculator found in the mathematics department.</p>
                         <div class="post-meta">
                             <div class="meta-item">
-                                <img src="assets/icons/clock.svg" alt="Time">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
                                 <span>1 week ago</span>
                             </div>
                             <div class="meta-item">
-                                <img src="assets/icons/location.svg" alt="Location">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
                                 <span>Math Dept</span>
                             </div>
                         </div>
@@ -178,6 +665,45 @@
         <p>&copy; 2024 BBD Lost & Found. All rights reserved.</p>
     </footer>
 
-    <script src="scripts/main.js"></script>
+    <script>
+        // Animation initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+
+            // Post card hover effects
+            const postCards = document.querySelectorAll('.post-card');
+            postCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            console.log('%c BBD Lost & Found ', 'background: #007AFF; color: white; font-size: 20px; padding: 10px;');
+        });
+    </script>
 </body>
 </html>
