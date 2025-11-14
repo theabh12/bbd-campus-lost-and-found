@@ -340,7 +340,7 @@
             </div>
             <div class="nav-right">
                 <a href="index.html" class="nav-link">Home</a>
-                <a href="contribution.html" class="nav-link active">Contributions</a>
+                <a href="contributions.html" class="nav-link active">Contributions</a>
                 <button class="glass-btn">Login</button>
                 <button class="glass-btn primary">Signup</button>
             </div>
@@ -364,6 +364,7 @@
             <p class="page-subtitle">Meet the team behind this project</p>
 
             <div class="contributors-grid">
+
                 <!-- Contributor Card 1 -->
                 <div class="contributor-card glass-card">
                     <div class="contributor-image">
@@ -477,6 +478,7 @@
                         </p>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -508,17 +510,6 @@
                 card.style.transform = 'translateY(20px)';
                 card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
                 observer.observe(card);
-            });
-
-            const contributorCards = document.querySelectorAll('.contributor-card');
-            contributorCards.forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-8px)';
-                });
-                
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
             });
 
             console.log('%c BBD Lost & Found - Contributors ', 'background: #5856D6; color: white; font-size: 20px; padding: 10px;');
