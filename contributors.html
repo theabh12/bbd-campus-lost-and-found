@@ -1,519 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BBD Lost & Found — Contributors</title>
-    <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #007AFF;
-            --secondary-color: #5856D6;
-            --text-primary: #1d1d1f;
-            --text-secondary: #6e6e73;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.16);
-            --spacing-xs: 8px;
-            --spacing-sm: 16px;
-            --spacing-md: 24px;
-            --spacing-lg: 32px;
-            --spacing-xl: 48px;
-            --spacing-xxl: 64px;
-            --radius-sm: 12px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        body {
-            font-family: var(--font-family);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--text-primary);
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-md);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .glass-btn {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-md);
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: var(--shadow-sm);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            border: none;
-        }
-
-        .glass-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            background: rgba(255, 255, 255, 0.85);
-        }
-
-        .glass-btn.primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Header */
-        .glass-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            box-shadow: var(--shadow-sm);
-            animation: fadeInDown 0.6s ease;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-        }
-
-        .site-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .nav-link {
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-link.active {
-            background: rgba(0, 122, 255, 0.1);
-            color: var(--primary-color);
-        }
-
-        /* Contributors Section */
-        .contributors-section {
-            padding: 64px 32px;
-            min-height: 80vh;
-            animation: fadeIn 0.8s ease;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .back-btn-container {
-            margin-bottom: 32px;
-        }
-
-        .back-btn {
-            padding: 12px 24px;
-        }
-
-        .back-icon {
-            width: 16px;
-            height: 16px;
-            transform: rotate(180deg);
-            stroke: var(--text-primary);
-        }
-
-        .page-title {
-            font-size: 48px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 16px;
-            color: white;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .page-subtitle {
-            font-size: 18px;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 64px;
-        }
-
-        .contributors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            gap: 24px;
-        }
-
-        .contributor-card {
-            padding: 32px;
-            display: flex;
-            gap: 24px;
-            align-items: start;
-        }
-
-        .contributor-image {
-            width: 100px;
-            height: 100px;
-            min-width: 100px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow-md);
-        }
-
-        .contributor-image svg {
-            width: 60px;
-            height: 60px;
-            stroke: white;
-        }
-
-        .contributor-info {
-            flex: 1;
-        }
-
-        .contributor-name {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            color: var(--text-primary);
-        }
-
-        .contributor-roll {
-            font-size: 14px;
-            color: var(--primary-color);
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-
-        .contributor-role {
-            font-size: 16px;
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-bottom: 16px;
-            padding: 4px 12px;
-            background: rgba(0, 122, 255, 0.1);
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        .contributor-description {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        /* Footer */
-        .glass-footer {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--glass-border);
-            padding: 32px;
-            text-align: center;
-            margin-top: 64px;
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .contributors-grid {
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 16px;
-            }
-            
-            .nav-right {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .page-title {
-                font-size: 32px;
-            }
-            
-            .contributors-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .contributor-card {
-                flex-direction: column;
-                text-align: center;
-                align-items: center;
-            }
-        }
-    </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Contributors — BBD Campus Lost & Found</title>
+  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg1:#f3f8ff;--bg2:#e9f4ff;--glass:rgba(255,255,255,0.86);--muted:#616973;--accent:#1f6feb;--card-border:rgba(255,255,255,0.7);--shadow:0 18px 50px rgba(16,24,40,0.06)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,system-ui,Arial;color:#071124;background:linear-gradient(135deg,var(--bg1),var(--bg2));-webkit-font-smoothing:antialiased;min-height:100vh}
+    .wrap{max-width:1200px;margin:36px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:60px;height:60px;border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+    .logo img{width:100%;height:100%;object-fit:cover}
+    .title{font-size:20px;font-weight:800}
+    .subtitle{font-size:13px;color:var(--muted)}
+    .back-btn{padding:10px 16px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#2b8df6);color:#fff;font-weight:700;cursor:pointer;box-shadow:0 10px 30px rgba(31,99,255,0.1);transition:transform .12s}
+    .back-btn:hover{transform:translateY(-2px)}
+    
+    /* ONE CARD PER ROW - BIGGER */
+    main{display:flex;flex-direction:column;gap:24px;margin-top:24px}
+    .card{background:var(--glass);padding:32px;border-radius:16px;border:1px solid var(--card-border);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px;transition:transform .18s,box-shadow .18s;width:100%}
+    .card:hover{transform:translateY(-6px);box-shadow:0 36px 80px rgba(16,24,40,0.08)}
+    .name{font-weight:800;font-size:26px}
+    .roll{font-size:16px;color:var(--muted);margin-top:4px}
+    .role{margin-top:8px;color:#0b1220;font-size:17px;line-height:1.6}
+    .small{font-size:15px;color:var(--muted);line-height:1.5}
+    .lead-badge{display:inline-block;margin-top:8px;padding:10px 16px;border-radius:999px;background:linear-gradient(90deg,var(--accent),#2b8df6);color:#fff;font-weight:800;font-size:15px}
+    footer{margin-top:32px;text-align:center;color:var(--muted);padding:20px}
+    
+    @media (max-width:768px){
+      header{flex-direction:column;text-align:center}
+      .brand{flex-direction:column}
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="glass-header">
-        <nav class="nav-container">
-            <div class="nav-left">
-                <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" alt="BBD Logo" class="logo">
-                <h1 class="site-title">BBD Lost & Found</h1>
-            </div>
-            <div class="nav-right">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="contributions.html" class="nav-link active">Contributions</a>
-                <button class="glass-btn">Login</button>
-                <button class="glass-btn primary">Signup</button>
-            </div>
-        </nav>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo"><img src="https://bbdu.ac.in/wp-content/uploads/2021/07/bbd-group-1.png" alt="BBD logo"></div>
+        <div>
+          <div class="title">BBD Campus — Contributors</div>
+          <div class="subtitle">Acknowledgement of the team behind the project</div>
+        </div>
+      </div>
+      <div>
+        <button class="back-btn" id="backBtn">← Back to App</button>
+      </div>
     </header>
 
-    <!-- Contributors Section -->
-    <section class="contributors-section">
-        <div class="container">
-            <div class="back-btn-container">
-                <a href="index.html" class="back-btn glass-btn">
-                    <svg class="back-icon" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14"></path>
-                        <path d="m12 5 7 7-7 7"></path>
-                    </svg>
-                    Back to Home
-                </a>
-            </div>
-            
-            <h2 class="page-title">Here is My Contribution</h2>
-            <p class="page-subtitle">Meet the team behind this project</p>
-
-            <div class="contributors-grid">
-
-                <!-- Contributor Card 1 -->
-                <div class="contributor-card glass-card">
-                    <div class="contributor-image">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="contributor-info">
-                        <h3 class="contributor-name">Aryan Sharma</h3>
-                        <p class="contributor-roll">Roll No: 21BCS001</p>
-                        <p class="contributor-role">Lead Developer</p>
-                        <p class="contributor-description">
-                            Designed and developed the frontend architecture using modern glassmorphism UI principles. 
-                            Implemented responsive design and smooth animations for enhanced user experience.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Contributor Card 2 -->
-                <div class="contributor-card glass-card">
-                    <div class="contributor-image">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="contributor-info">
-                        <h3 class="contributor-name">Priya Verma</h3>
-                        <p class="contributor-roll">Roll No: 21BCS042</p>
-                        <p class="contributor-role">Backend Developer</p>
-                        <p class="contributor-description">
-                            Built the backend API and database architecture. Implemented secure authentication 
-                            and efficient data management systems for lost and found item tracking.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Contributor Card 3 -->
-                <div class="contributor-card glass-card">
-                    <div class="contributor-image">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="contributor-info">
-                        <h3 class="contributor-name">Rahul Gupta</h3>
-                        <p class="contributor-roll">Roll No: 21BCS078</p>
-                        <p class="contributor-role">UI/UX Designer</p>
-                        <p class="contributor-description">
-                            Created the visual design system and user interface mockups. Focused on creating 
-                            an intuitive and aesthetically pleasing experience inspired by Apple's design language.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Contributor Card 4 -->
-                <div class="contributor-card glass-card">
-                    <div class="contributor-image">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="contributor-info">
-                        <h3 class="contributor-name">Sneha Patel</h3>
-                        <p class="contributor-roll">Roll No: 21BCS095</p>
-                        <p class="contributor-role">Quality Assurance</p>
-                        <p class="contributor-description">
-                            Conducted thorough testing across multiple devices and browsers. Ensured the platform 
-                            is bug-free, accessible, and provides a seamless experience to all users.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Contributor Card 5 -->
-                <div class="contributor-card glass-card">
-                    <div class="contributor-image">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="contributor-info">
-                        <h3 class="contributor-name">Vikram Singh</h3>
-                        <p class="contributor-roll">Roll No: 21BCS112</p>
-                        <p class="contributor-role">Project Manager</p>
-                        <p class="contributor-description">
-                            Coordinated team activities and managed project timelines. Ensured effective 
-                            communication between team members and successful project delivery.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Contributor Card 6 -->
-                <div class="contributor-card glass-card">
-                    <div class="contributor-image">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <div class="contributor-info">
-                        <h3 class="contributor-name">Ananya Reddy</h3>
-                        <p class="contributor-roll">Roll No: 21BCS128</p>
-                        <p class="contributor-role">Content Strategist</p>
-                        <p class="contributor-description">
-                            Developed the content strategy and wrote all user-facing copy. Focused on creating 
-                            clear, concise messaging that enhances the overall user experience.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
+    <main>
+      <section class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div>
+            <div class="name">Abhinav Tiwari</div>
+            <div class="roll">Roll No. 8</div>
+          </div>
+          <div class="lead-badge">Head</div>
         </div>
-    </section>
+        <div class="role">Project coordination, feature design, UI refinement, testing and overall leadership.</div>
+        <div class="small">Led the team and coordinated the project scope, timelines and demonstrations.</div>
+      </section>
 
-    <!-- Footer -->
-    <footer class="glass-footer">
-        <p>&copy; 2024 BBD Lost & Found. All rights reserved.</p>
+      <section class="card">
+        <div>
+          <div class="name">Aman Singh</div>
+          <div class="roll">Roll No. 31</div>
+        </div>
+        <div class="role">Contributed UI ideas, helped with testing and user feedback, and assisted in refining the interface.</div>
+        <div class="small">Worked on layout tweaks and device testing.</div>
+      </section>
+
+      <section class="card">
+        <div>
+          <div class="name">Adarsh Pandey</div>
+          <div class="roll">Roll No. 16</div>
+        </div>
+        <div class="role">Prepared presentation content, documentation and helped organize the demo flow.</div>
+        <div class="small">Focused on docs and presentation readiness.</div>
+      </section>
+
+      <section class="card">
+        <div>
+          <div class="name">Anuj Kumar</div>
+          <div class="roll">Roll No. 51</div>
+        </div>
+        <div class="role">Assisted with asset collection, resource research, and testing support.</div>
+        <div class="small">Helped gather icons, images and verify presentation resources.</div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="small">Thanks to everyone who contributed. This page is part of the BBD Campus Lost & Found project.</div>
     </footer>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
-            
-            const cards = document.querySelectorAll('.glass-card');
-            cards.forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(card);
-            });
-
-            console.log('%c BBD Lost & Found - Contributors ', 'background: #5856D6; color: white; font-size: 20px; padding: 10px;');
-        });
-    </script>
+  <script>
+    document.getElementById('backBtn').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  </script>
 </body>
 </html>
