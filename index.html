@@ -920,30 +920,11 @@
   
   <div id="toast" class="toast"></div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAkXGv71dqUPp_5g2uCPBoRZrBCgpZ8a5c",
-      authDomain: "bbd-lost-and-found-66898.firebaseapp.com",
-      projectId: "bbd-lost-and-found-66898",
-      storageBucket: "bbd-lost-and-found-66898.firebasestorage.app",
-      messagingSenderId: "13536453880",
-      appId: "1:13536453880:web:5328c59e03f6d1bc30470d"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-
+  <script>
+    // LOCAL STORAGE ONLY - NO FIREBASE
     let currentTab = 'lost';
-    let currentUser = null;
-    let authMode = 'login';
-    let unsubscribe = null;
+    let currentUser = JSON.parse(localStorage.getItem('bbdCurrentUser')) || null;
+    let allItems = JSON.parse(localStorage.getItem('bbdAllItems')) || { lost: [], found: [], giveaway: [] };
 
     const list = document.getElementById('list');
     const search = document.getElementById('search');
@@ -971,11 +952,11 @@
     const authToggleLink = document.getElementById('authToggleLink');
     const authToggleText = document.getElementById('authToggleText');
 
-    onAuthStateChanged(auth, (user) => {
-      currentUser = user;
-      renderUserArea();
-      loadItems();
-    });
+    let authMode = 'login';
+
+    // Init
+    renderUserArea();
+    renderList();
 
     function renderUserArea() {
       if (currentUser) {
@@ -985,7 +966,12 @@
             <button id="logoutBtn" class="btn btn-ghost">Logout</button>
           </div>
         `;
-        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+          currentUser = null;
+          localStorage.removeItem('bbdCurrentUser');
+          renderUserArea();
+          showToast('✅ Logged out');
+        });
       } else {
         userArea.innerHTML = `
           <button id="loginBtn" class="btn btn-ghost">Login</button>
@@ -1019,7 +1005,7 @@
 
     closeModalAuth.addEventListener('click', () => modalAuth.classList.remove('show'));
 
-    authBtn.addEventListener('click', async () => {
+    authBtn.addEventListener('click', () => {
       const email = authEmail.value.trim();
       const password = authPass.value.trim();
 
@@ -1033,68 +1019,50 @@
         return;
       }
 
-      authBtn.disabled = true;
-      authBtn.textContent = authMode === 'login' ? 'Logging in...' : 'Signing up...';
+      const users = JSON.parse(localStorage.getItem('bbdUsers')) || [];
 
-      try {
-        if (authMode === 'login') {
-          await signInWithEmailAndPassword(auth, email, password);
+      if (authMode === 'login') {
+        const user = users.find(u => u.email === email && u.password === password);
+        if (user) {
+          currentUser = { email: user.email, uid: user.uid };
+          localStorage.setItem('bbdCurrentUser', JSON.stringify(currentUser));
           showToast('✅ Logged in successfully!');
+          modalAuth.classList.remove('show');
+          renderUserArea();
         } else {
-          await createUserWithEmailAndPassword(auth, email, password);
-          showToast('✅ Account created successfully!');
-        }
-        modalAuth.classList.remove('show');
-      } catch (error) {
-        if (error.code === 'auth/email-already-in-use') {
-          showToast('❌ Email already exists');
-        } else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
           showToast('❌ Invalid credentials');
-        } else {
-          showToast('❌ ' + error.message);
         }
-      } finally {
-        authBtn.disabled = false;
-        authBtn.textContent = authMode === 'login' ? 'Login' : 'Sign Up';
+      } else {
+        const exists = users.find(u => u.email === email);
+        if (exists) {
+          showToast('❌ Email already exists');
+        } else {
+          const newUser = { email, password, uid: Date.now().toString() };
+          users.push(newUser);
+          localStorage.setItem('bbdUsers', JSON.stringify(users));
+          currentUser = { email: newUser.email, uid: newUser.uid };
+          localStorage.setItem('bbdCurrentUser', JSON.stringify(currentUser));
+          showToast('✅ Account created!');
+          modalAuth.classList.remove('show');
+          renderUserArea();
+        }
       }
     });
-
-    async function handleLogout() {
-      try {
-        await signOut(auth);
-        showToast('✅ Logged out');
-      } catch (error) {
-        showToast('❌ Logout failed');
-      }
-    }
 
     tabs.forEach(tab => {
       tab.addEventListener('click', () => {
         tabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
         currentTab = tab.dataset.tab;
-        loadItems();
+        renderList();
       });
     });
 
-    search.addEventListener('input', loadItems);
+    search.addEventListener('input', renderList);
 
-    function loadItems() {
-      if (unsubscribe) unsubscribe();
-
-      const q = query(collection(db, currentTab), orderBy('createdAt', 'desc'));
-      
-      unsubscribe = onSnapshot(q, (snapshot) => {
-        const items = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        renderList(items);
-      });
-    }
-
-    function renderList(items) {
+    function renderList() {
       const q = search.value.trim().toLowerCase();
+      const items = allItems[currentTab] || [];
       const filtered = items.filter(item => {
         if (!q) return true;
         return (item.title + ' ' + item.description).toLowerCase().includes(q);
@@ -1118,7 +1086,7 @@
         card.className = 'card';
         card.style.animationDelay = `${index * 0.1}s`;
 
-        const date = item.createdAt?.toDate?.() || new Date();
+        const date = new Date(item.createdAt);
 
         card.innerHTML = `
           <div class="card-content">
@@ -1159,12 +1127,24 @@
 
         const claimBtn = card.querySelector('.btn-claim');
         if (claimBtn && !item.claimed) {
-          claimBtn.addEventListener('click', () => claimItem(item.id));
+          claimBtn.addEventListener('click', () => {
+            item.claimed = true;
+            localStorage.setItem('bbdAllItems', JSON.stringify(allItems));
+            renderList();
+            showToast('✅ Item claimed!');
+          });
         }
 
         const deleteBtn = card.querySelector('[data-delete]');
         if (deleteBtn) {
-          deleteBtn.addEventListener('click', () => deleteItem(item.id));
+          deleteBtn.addEventListener('click', () => {
+            if (confirm('Delete this item?')) {
+              allItems[currentTab] = allItems[currentTab].filter(i => i.id !== item.id);
+              localStorage.setItem('bbdAllItems', JSON.stringify(allItems));
+              renderList();
+              showToast('🗑️ Item deleted');
+            }
+          });
         }
       });
     }
@@ -1205,7 +1185,7 @@
       }
     });
 
-    postBtn.addEventListener('click', async () => {
+    postBtn.addEventListener('click', () => {
       if (!currentUser) return;
 
       const title = itemTitle.value.trim();
@@ -1221,63 +1201,31 @@
       postBtn.disabled = true;
       postBtn.textContent = 'Posting...';
 
-      try {
-        let imageURL = '';
-
-        if (fileInput.files[0]) {
-          const file = fileInput.files[0];
-          const storageRef = ref(storage, `items/${Date.now()}_${file.name}`);
-          await uploadBytes(storageRef, file);
-          imageURL = await getDownloadURL(storageRef);
-        }
-
-        await addDoc(collection(db, currentTab), {
+      setTimeout(() => {
+        const newItem = {
+          id: Date.now().toString(),
           title,
           description: desc,
           location: loc,
           category: cat,
-          imageURL,
+          imageURL: imgPreview.src || '',
           claimed: false,
           userId: currentUser.uid,
           postedBy: currentUser.email.split('@')[0],
-          createdAt: serverTimestamp()
-        });
+          createdAt: new Date().toISOString()
+        };
+
+        allItems[currentTab].unshift(newItem);
+        localStorage.setItem('bbdAllItems', JSON.stringify(allItems));
         
         modalAdd.classList.remove('show');
+        renderList();
         showToast('✅ Item posted successfully!');
-
-      } catch (error) {
-        showToast('❌ Failed to post item');
-      } finally {
+        
         postBtn.disabled = false;
         postBtn.textContent = 'Post Item';
-      }
+      }, 500);
     });
-
-    async function claimItem(id) {
-      if (!currentUser) {
-        openAuthModal('login');
-        return;
-      }
-
-      try {
-        await updateDoc(doc(db, currentTab, id), { claimed: true });
-        showToast('✅ Item claimed!');
-      } catch (error) {
-        showToast('❌ Failed to claim');
-      }
-    }
-
-    async function deleteItem(id) {
-      if (!confirm('Delete this item?')) return;
-
-      try {
-        await deleteDoc(doc(db, currentTab, id));
-        showToast('🗑️ Item deleted');
-      } catch (error) {
-        showToast('❌ Delete failed');
-      }
-    }
 
     function showToast(message) {
       toast.textContent = message;
