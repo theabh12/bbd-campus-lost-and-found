@@ -1,717 +1,884 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BBD Campus Lost & Found — Premium Edition</title>
-  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" />
-  <meta name="theme-color" content="#6366f1" />
+
+  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png"/>
+  <meta name="theme-color" content="#6366f1"/>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- MAIN UI STYLES (unmodified UI) -->
   <style>
-    /* ============ (UNCHANGED UI styles) ============ */
     :root{
-      --primary: #6366f1;
-      --primary-light: #818cf8;
-      --primary-dark: #4f46e5;
-      --secondary: #06b6d4;
-      --accent: #8b5cf6;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --bg-main: #0f0f23;
-      --bg-card: rgba(255, 255, 255, 0.05);
-      --bg-glass: rgba(255, 255, 255, 0.08);
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --border-glass: rgba(255, 255, 255, 0.1);
-      --shadow-glow: 0 0 60px rgba(99, 102, 241, 0.4);
-      --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5);
+      --primary:#6366f1;
+      --primary-light:#818cf8;
+      --primary-dark:#4f46e5;
+      --secondary:#06b6d4;
+      --accent:#8b5cf6;
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --bg-main:#0f0f23;
+      --bg-card:rgba(255,255,255,0.05);
+      --bg-glass:rgba(255,255,255,0.08);
+      --text-primary:#f8fafc;
+      --text-secondary:#94a3b8;
+      --border-glass:rgba(255,255,255,0.1);
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#0f0f23 0%,#1a1a3e 50%,#0f0f23 100%); color:var(--text-primary); min-height:100vh; overflow-x:hidden; position:relative; }
-    body::before { content:''; position:fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 20% 50%, rgba(99,102,241,0.15), transparent 50%), radial-gradient(circle at 80% 80%, rgba(139,92,246,0.15), transparent 50%), radial-gradient(circle at 40% 20%, rgba(6,182,212,0.15), transparent 50%); pointer-events:none; animation:bgShift 20s ease-in-out infinite; }
-    @keyframes bgShift { 0%,100%{opacity:1} 50%{opacity:0.7} }
-    .container { max-width:1400px; margin:0 auto; padding:2rem; position:relative; z-index:1; }
-    header { text-align:center; margin-bottom:3rem; animation:fadeInDown .8s ease; }
-    @keyframes fadeInDown { from{opacity:0; transform:translateY(-30px)} to{opacity:1; transform:none} }
-    .logo-wrapper { display:inline-flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem; padding:1.5rem 3rem; background:var(--bg-glass); backdrop-filter:blur(20px); border-radius:100px; border:1px solid var(--border-glass); box-shadow:var(--shadow-glow); }
-    .logo { width:60px; height:60px; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(99,102,241,0.4); }
-    .logo img { width:100%; height:100%; object-fit:cover; }
-    h1 { font-family:'Space Grotesk',sans-serif; font-size:2.5rem; font-weight:800; background:linear-gradient(135deg,#fff 0%,#a5b4fc 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .subtitle { font-size:1rem; color:var(--text-secondary); margin-top:.5rem; }
-    .tabs-wrapper { display:flex; justify-content:center; margin:2rem 0; animation:fadeIn 1s ease .2s both; }
-    .tabs { display:inline-flex; gap:1rem; padding:.5rem; background:var(--bg-glass); backdrop-filter:blur(20px); border-radius:50px; border:1px solid var(--border-glass); }
-    .tab { padding:1rem 2.5rem; border-radius:50px; border:none; background:transparent; color:var(--text-secondary); font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s; position:relative; }
-    .tab.active { background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; box-shadow:0 10px 30px rgba(99,102,241,.4); }
-    .controls { display:flex; justify-content:center; align-items:center; gap:1rem; margin:2rem 0; flex-wrap:wrap; animation:fadeIn 1s ease .4s both; }
-    .search-wrapper { position:relative; flex:1; max-width:500px; }
-    .search { width:100%; padding:1rem 1.5rem 1rem 3.5rem; background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); border-radius:50px; color:var(--text-primary); font-family:'Outfit',sans-serif; font-size:1rem; transition:all .3s; }
-    .search:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.2); }
-    .search::placeholder { color:var(--text-secondary); }
-    .btn { padding:1rem 2rem; border-radius:50px; border:none; font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; position:relative; overflow:hidden; }
-    .btn-primary { background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; box-shadow:0 10px 30px rgba(99,102,241,0.3); }
-    .btn-ghost { background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); color:var(--text-primary); }
-    .list { display:flex; flex-direction:column; gap:2rem; margin-top:2rem; }
-    .card { background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); border-radius:24px; overflow:hidden; transition:all .4s; animation:slideUp .6s ease both; position:relative; }
-    @keyframes slideUp { from{opacity:0; transform:translateY(30px)} to{opacity:1; transform:none} }
-    .card:hover { transform:translateY(-8px); box-shadow:var(--shadow-card); border-color:rgba(99,102,241,0.3); }
-    .card-content { display:grid; grid-template-columns:400px 1fr; gap:2rem; padding:2rem; }
-    .card-image { width:100%; height:300px; border-radius:16px; overflow:hidden; background:linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1)); position:relative; }
-    .card-image img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
-    .card:hover .card-image img { transform:scale(1.05); }
-    .no-image { display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-weight:500; }
-    .card-body { display:flex; flex-direction:column; gap:1.5rem; }
-    .card-title { font-family:'Space Grotesk',sans-serif; font-size:2rem; font-weight:700; background:linear-gradient(135deg,#fff 0%,#a5b4fc 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.2; }
-    .card-desc { color:var(--text-secondary); font-size:1.1rem; line-height:1.6; }
-    .meta-row { display:flex; gap:.75rem; flex-wrap:wrap; }
-    .chip { padding:.5rem 1.25rem; border-radius:50px; font-size:.9rem; font-weight:600; display:inline-flex; align-items:center; gap:.5rem; }
-    .chip-location { background:linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.1)); color:var(--secondary); border:1px solid rgba(6,182,212,0.3); }
-    .chip-category { background:linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); color:var(--accent); border:1px solid rgba(139,92,246,0.3); }
-    .chip-date { background:linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1)); color:var(--warning); border:1px solid rgba(245,158,11,0.3); }
-    .card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:1rem; border-top:1px solid var(--border-glass); }
-    .posted-by { color:var(--text-secondary); font-size:.95rem; }
-    .action-buttons { display:flex; gap:.75rem; }
-    .btn-claim { padding:.75rem 2rem; border-radius:50px; border:none; background:linear-gradient(135deg,var(--success),#059669); color:white; font-weight:600; cursor:pointer; }
-    .btn-claim.claimed { background:linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1)); color:var(--success); border:1px solid rgba(16,185,129,0.3); cursor:default; }
-    .btn-delete { padding:.75rem 1.5rem; border-radius:50px; border:1px solid rgba(239,68,68,0.3); background:linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1)); color:var(--danger); font-weight:600; cursor:pointer; }
-    .empty { text-align:center; padding:4rem 2rem; background:var(--bg-glass); border:1px solid var(--border-glass); border-radius:24px; }
-    .fab { position:fixed; bottom:2rem; right:2rem; width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; font-size:2rem; border:none; cursor:pointer; box-shadow:0 10px 40px rgba(99,102,241,0.5); transition:all .3s; z-index:100; display:flex; align-items:center; justify-content:center; }
-    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); z-index:1000; align-items:center; justify-content:center; animation:fadeIn .3s ease; }
-    .modal.show { display:flex; }
-    .modal-content { background:var(--bg-glass); backdrop-filter:blur(40px); border:1px solid var(--border-glass); border-radius:24px; padding:2.5rem; max-width:600px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card); }
-    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; }
-    .modal-close { width:36px; height:36px; border-radius:50%; background:var(--bg-card); border:1px solid var(--border-glass); color:var(--text-primary); font-size:1.5rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .3s ease; }
-    .modal-close:hover { background:var(--danger); transform:rotate(90deg); }
-    .form-group { margin-bottom:1.5rem; }
-    .form-input, .form-textarea, .form-select { width:100%; padding:1rem; background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; color:var(--text-primary); font-family:'Outfit',sans-serif; font-size:1rem; transition:all .3s ease; }
-    .image-upload-label { display:flex; align-items:center; justify-content:center; gap:.75rem; padding:1.5rem; background:var(--bg-card); border:2px dashed var(--border-glass); border-radius:12px; cursor:pointer; transition:all .3s ease; }
-    .image-preview { width:100%; max-height:250px; object-fit:cover; border-radius:12px; margin-top:1rem; display:none; }
-    .image-preview.show { display:block; }
-    .modal-actions { display:flex; gap:1rem; margin-top:2rem; }
-    .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px); padding:1rem 2rem; background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); border-radius:50px; color:var(--text-primary); font-weight:500; box-shadow:var(--shadow-card); z-index:2000; opacity:0; transition:all .4s; }
-    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-    footer { text-align:center; padding:3rem 2rem; margin-top:4rem; border-top:1px solid var(--border-glass); }
-    footer a { color:var(--primary-light); text-decoration:none; font-weight:600; }
-    @media (max-width:1024px){ .card-content{grid-template-columns:1fr} .card-image{height:250px} }
-    @media (max-width:768px){ h1{font-size:2rem} .tabs{flex-direction:column} .tab{width:100%} .controls{flex-direction:column} .search-wrapper{width:100%} .card-title{font-size:1.5rem} .fab{width:60px;height:60px;font-size:1.5rem} }
-    /* notification badge on inbox */
-    .inbox { position:relative; display:inline-block; }
-    .badge { position:absolute; right:-10px; top:-10px; background:var(--danger); color:#fff; width:20px; height:20px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:12px; box-shadow:0 8px 20px rgba(239,68,68,0.16); }
+
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Outfit',sans-serif;
+      background:linear-gradient(135deg,#0f0f23,#1a1a3e,#0f0f23);
+      color:var(--text-primary);
+      min-height:100vh;
+      position:relative;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:'';
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(circle at 20% 40%, rgba(99,102,241,.2), transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(139,92,246,.18), transparent 60%),
+        radial-gradient(circle at 50% 10%, rgba(6,182,212,.18), transparent 60%);
+      z-index:-1;
+      animation:bgFade 14s ease-in-out infinite;
+    }
+
+    @keyframes bgFade{
+      0%,100%{opacity:1}
+      50%{opacity:.7}
+    }
+
+    .container{
+      max-width:1400px;
+      margin:auto;
+      padding:2rem;
+    }
+
+    header{text-align:center;margin-bottom:3rem;}
+
+    .logo-wrapper{
+      display:inline-flex;
+      align-items:center;
+      background:var(--bg-glass);
+      padding:1.5rem 3rem;
+      border-radius:100px;
+      gap:1.3rem;
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border-glass);
+    }
+
+    .logo img{width:60px;height:60px;border-radius:16px;}
+
+    h1{
+      font-family:'Space Grotesk',sans-serif;
+      font-weight:800;
+      font-size:2.4rem;
+      background:linear-gradient(135deg,#fff,#b3b8ff);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .subtitle{
+      font-size:1rem;
+      color:var(--text-secondary);
+      margin-top:.3rem;
+    }
+
+    /* Tabs */
+    .tabs-wrapper{display:flex;justify-content:center;margin:2rem 0;}
+    .tabs{
+      display:flex;
+      gap:1rem;
+      background:var(--bg-glass);
+      border-radius:50px;
+      padding:.5rem;
+      backdrop-filter:blur(20px);
+      border:1px solid var(--border-glass);
+    }
+
+    .tab{
+      padding:1rem 2.5rem;
+      border-radius:50px;
+      background:transparent;
+      border:none;
+      color:var(--text-secondary);
+      font-weight:600;
+      cursor:pointer;
+      font-family:'Space Grotesk',sans-serif;
+      transition:.3s;
+    }
+    .tab.active{
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      color:#fff;
+      box-shadow:0 8px 20px rgba(99,102,241,.4);
+    }
+
+    /* Search */
+    .controls{
+      display:flex;
+      justify-content:center;
+      gap:1rem;
+      margin:2rem 0;
+      flex-wrap:wrap;
+    }
+
+    .search-wrapper{
+      position:relative;
+      flex:1;
+      max-width:500px;
+    }
+
+    .search{
+      width:100%;
+      padding:1rem 1.5rem 1rem 3rem;
+      background:var(--bg-glass);
+      border:1px solid var(--border-glass);
+      border-radius:50px;
+      color:var(--text-primary);
+      font-size:1rem;
+      backdrop-filter:blur(20px);
+    }
+
+    /* Item List */
+    .list{display:flex;flex-direction:column;gap:2rem;margin-top:2rem;}
+
+    .card{
+      background:var(--bg-glass);
+      border:1px solid var(--border-glass);
+      border-radius:20px;
+      overflow:hidden;
+      padding:1.5rem;
+    }
+
+    footer{
+      text-align:center;
+      padding:2rem 0;
+      margin-top:4rem;
+      border-top:1px solid var(--border-glass);
+    }
+    footer a{
+      color:var(--primary-light);
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    /* Floating Add Button */
+    .fab{
+      position:fixed;
+      bottom:2rem;
+      right:2rem;
+      width:70px;
+      height:70px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      color:white;
+      font-size:2rem;
+      border:none;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 30px rgba(99,102,241,.5);
+      z-index:200;
+    }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <header>
-      <div class="logo-wrapper">
-        <div class="logo">
-          <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" alt="BBD Logo">
-        </div>
-        <div>
-          <h1>Campus Lost & Found</h1>
-          <p class="subtitle">BBD University — Premium Edition</p>
-        </div>
-      </div>
-    </header>
+<div class="container">
 
-    <div class="tabs-wrapper">
-      <div class="tabs" role="tablist">
-        <button class="tab active" data-tab="lost">Lost Items</button>
-        <button class="tab" data-tab="found">Found Items</button>
-        <button class="tab" data-tab="giveaway">Giveaway</button>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-wrapper">
+      <div class="logo">
+        <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png">
+      </div>
+      <div>
+        <h1>Campus Lost & Found</h1>
+        <p class="subtitle">BBD University — Premium Edition</p>
       </div>
     </div>
+  </header>
 
-    <div class="controls">
-      <div class="search-wrapper">
-        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-secondary)"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
-        <input id="search" class="search" type="text" placeholder="Search items...">
-      </div>
-      <div id="userArea"></div>
-      <div class="inbox" style="margin-left:8px">
-        <button id="inboxBtn" class="btn btn-ghost">Inbox</button>
-        <div id="badge" class="badge" style="display:none">0</div>
-      </div>
-    </div>
-
-    <div id="list" class="list"></div>
-
-    <footer>
-      <p>Made with ❤️ by BBD Students | <a href="contributors.html">View Contributors</a></p>
-      <p style="margin-top:.5rem;color:var(--text-secondary)">Premium Lost & Found System — 2025 Edition</p>
-    </footer>
-  </div>
-
-  <!-- Auth Modal -->
-  <div id="modalAuth" class="modal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true" style="max-width:480px">
-      <div class="modal-header">
-        <h2 id="authTitle">Welcome Back</h2>
-        <button id="closeModalAuth" class="modal-close" title="Close">×</button>
-      </div>
-      <div class="form-group">
-        <label>Email Address</label>
-        <input id="authEmail" class="form-input" type="email" placeholder="your.email@example.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input id="authPass" class="form-input" type="password" placeholder="Min 6 characters">
-      </div>
-      <div class="modal-actions">
-        <button id="authBtn" class="btn btn-primary" style="flex:1">Login</button>
-      </div>
-      <p style="text-align:center;margin-top:1.5rem;color:var(--text-secondary)">
-        <span id="authToggleText">Don't have an account? <a id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Sign Up</a></span>
-      </p>
+  <!-- TABS -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button class="tab active" data-tab="lost">Lost Items</button>
+      <button class="tab" data-tab="found">Found Items</button>
+      <button class="tab" data-tab="giveaway">Giveaway</button>
     </div>
   </div>
 
-  <!-- Add/Edit Item Modal -->
-  <div id="modalAdd" class="modal" aria-hidden="true">
-    <div class="modal-content" role="dialog" aria-modal="true">
-      <div class="modal-header">
-        <h2 id="modalTitle">Post an Item</h2>
-        <button id="closeModalAdd" class="modal-close" title="Close">×</button>
-      </div>
-
-      <div class="form-group">
-        <label>Item Title</label>
-        <input id="itemTitle" class="form-input" type="text" placeholder="e.g., Black Leather Wallet">
-      </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea id="itemDesc" class="form-textarea" placeholder="Describe the item in detail..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Category</label>
-        <select id="category" class="form-select">
-          <option value="electronics">Electronics</option>
-          <option value="books">Books & Notes</option>
-          <option value="clothing">Clothing</option>
-          <option value="accessories">Accessories</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Location</label>
-        <input id="location" class="form-input" type="text" placeholder="e.g., Library 3rd Floor">
-      </div>
-
-      <div class="image-upload">
-        <label for="fileInput" class="image-upload-label">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          <span id="uploadText">Upload Image (Optional)</span>
-        </label>
-        <input id="fileInput" type="file" accept="image/*" style="display:none">
-        <img id="imgPreview" class="image-preview" alt="Preview">
-      </div>
-
-      <div class="modal-actions">
-        <button id="cancelBtn" class="btn btn-ghost" style="flex:1">Cancel</button>
-        <button id="postBtn" class="btn btn-primary" style="flex:1">Post Item</button>
-      </div>
+  <!-- SEARCH + USER AREA -->
+  <div class="controls">
+    <div class="search-wrapper">
+      <input id="search" class="search" placeholder="Search items...">
     </div>
+
+    <div id="userArea"></div>
+
+    <button id="inboxBtn" class="btn btn-ghost">Inbox</button>
+    <div id="badge" class="badge" style="display:none">0</div>
   </div>
 
-  <button id="fab" class="fab" title="Add New Item">+</button>
+  <!-- ITEMS -->
+  <div id="list" class="list"></div>
+  <!-- ================= AUTH MODAL ================= -->
+<div id="modalAuth" class="modal" style="
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
+  justify-content:center;align-items:center;z-index:1000;
+">
+  <div class="modal-content" style="
+    background:var(--bg-glass);border:1px solid var(--border-glass);
+    padding:2rem;border-radius:20px;width:90%;max-width:420px;
+  ">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <h2 id="authTitle">Login</h2>
+      <button id="closeModalAuth" class="modal-close"
+        style="border:none;background:var(--bg-card);width:36px;height:36px;border-radius:50%;cursor:pointer;">
+        ×
+      </button>
+    </div>
 
-  <div id="toast" class="toast"></div>
+    <div class="form-group" style="margin-bottom:1.2rem;">
+      <label>Email</label>
+      <input id="authEmail" class="form-input" type="email"
+        style="width:100%;padding:1rem;background:var(--bg-card);
+        border:1px solid var(--border-glass);border-radius:10px;color:white;"
+        placeholder="your.email@example.com">
+    </div>
 
-  <!-- libraries -->
-  <script type="module">
-  // Single-module script: Supabase v2 + features
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-  import imageCompression from "https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.esm.js";
+    <div class="form-group" style="margin-bottom:1.2rem;">
+      <label>Password</label>
+      <input id="authPass" class="form-input" type="password"
+        style="width:100%;padding:1rem;background:var(--bg-card);
+        border:1px solid var(--border-glass);border-radius:10px;color:white;"
+        placeholder="Minimum 6 characters">
+    </div>
 
-  // ---------- YOUR Supabase config ----------
-  const SUPABASE_URL = "https://aksovogwimuqprevlxhd.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q";
-  const SEND_EMAIL_FUNCTION_URL = ""; // optional edge function URL (leave blank during dev)
+    <button id="authBtn" class="btn btn-primary" style="
+      width:100%;padding:1rem;border-radius:12px;
+      background:linear-gradient(135deg,var(--primary),var(--accent));
+      color:white;border:none;font-size:1rem;font-weight:600;cursor:pointer;
+    ">
+      Login
+    </button>
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <p id="authToggleText" style="text-align:center;margin-top:1rem;color:var(--text-secondary)">
+      Don't have an account?
+      <span id="authToggleLink" style="color:var(--primary-light);cursor:pointer;font-weight:600;">
+        Sign Up
+      </span>
+    </p>
+  </div>
+</div>
 
-  // UI refs
-  const list = document.getElementById('list');
-  const search = document.getElementById('search');
-  const modalAdd = document.getElementById('modalAdd');
-  const modalAuth = document.getElementById('modalAuth');
-  const closeModalAdd = document.getElementById('closeModalAdd');
-  const closeModalAuth = document.getElementById('closeModalAuth');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const fab = document.getElementById('fab');
-  const itemTitle = document.getElementById('itemTitle');
-  const itemDesc = document.getElementById('itemDesc');
-  const category = document.getElementById('category');
-  const locationInput = document.getElementById('location');
-  const fileInput = document.getElementById('fileInput');
-  const uploadText = document.getElementById('uploadText');
-  const imgPreview = document.getElementById('imgPreview');
-  const postBtn = document.getElementById('postBtn');
-  const toast = document.getElementById('toast');
-  const tabs = document.querySelectorAll('.tab');
-  const userArea = document.getElementById('userArea');
-  const authEmail = document.getElementById('authEmail');
-  const authPass = document.getElementById('authPass');
-  const authBtn = document.getElementById('authBtn');
-  const authTitle = document.getElementById('authTitle');
-  const authToggleLink = document.getElementById('authToggleLink');
-  const authToggleText = document.getElementById('authToggleText');
-  const inboxBtn = document.getElementById('inboxBtn');
-  const badge = document.getElementById('badge');
+<!-- ================= ADD / EDIT ITEM MODAL ================= -->
+<div id="modalAdd" class="modal" style="
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
+  justify-content:center;align-items:center;z-index:1000;
+">
+  <div class="modal-content" style="
+    background:var(--bg-glass);border:1px solid var(--border-glass);
+    padding:2rem;border-radius:20px;width:90%;max-width:600px;
+    max-height:90vh;overflow-y:auto;
+  ">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <h2 id="modalTitle">Post an Item</h2>
+      <button id="closeModalAdd" class="modal-close"
+        style="border:none;background:var(--bg-card);width:36px;height:36px;border-radius:50%;cursor:pointer;">
+        ×
+      </button>
+    </div>
 
-  // state
-  let currentTab = 'lost';
-  let currentUser = null;
-  let allItems = { lost: [], found: [], giveaway: [] };
-  let editingItemId = null;
-  let notifsChannel = null;
-  let itemsChannel = null;
-  let authMode = 'login';
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label>Item Title</label>
+      <input id="itemTitle" class="form-input" type="text"
+        style="width:100%;padding:1rem;background:var(--bg-card);
+        border:1px solid var(--border-glass);border-radius:10px;color:white;"
+        placeholder="e.g., Black Wallet">
+    </div>
 
-  // helpers
-  function showToast(message, t=3000) {
-    toast.textContent = message;
-    toast.classList.add('show');
-    setTimeout(()=> toast.classList.remove('show'), t);
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label>Description</label>
+      <textarea id="itemDesc" class="form-textarea"
+        style="width:100%;padding:1rem;background:var(--bg-card);
+        border:1px solid var(--border-glass);border-radius:10px;color:white;height:120px;"
+        placeholder="Describe the item..."></textarea>
+    </div>
+
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label>Category</label>
+      <select id="category" class="form-select"
+        style="width:100%;padding:1rem;background:var(--bg-card);
+        border:1px solid var(--border-glass);border-radius:10px;color:white;">
+        <option value="electronics">Electronics</option>
+        <option value="books">Books & Notes</option>
+        <option value="clothing">Clothing</option>
+        <option value="accessories">Accessories</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label>Location</label>
+      <input id="location" class="form-input" type="text"
+        style="width:100%;padding:1rem;background:var(--bg-card);
+        border:1px solid var(--border-glass);border-radius:10px;color:white;"
+        placeholder="e.g., Library 3rd floor">
+    </div>
+
+    <!-- IMAGE PREVIEW + UPLOAD -->
+    <div class="form-group" style="margin-bottom:1rem;">
+      <label>Upload Image (optional)</label>
+      <label for="fileInput" class="image-upload-label"
+        style="padding:1.2rem;border:2px dashed var(--border-glass);
+        border-radius:12px;text-align:center;cursor:pointer;">
+        <span id="uploadText">Select Image</span>
+      </label>
+      <input id="fileInput" type="file" accept="image/*" style="display:none;">
+      <img id="imgPreview" style="
+        display:none;width:100%;max-height:250px;object-fit:cover;margin-top:1rem;border-radius:10px;
+      ">
+    </div>
+
+    <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+      <button id="cancelBtn" class="btn"
+        style="flex:1;padding:1rem;background:var(--bg-card);
+        border:1px solid var(--border-glass);border-radius:12px;color:white;">
+        Cancel
+      </button>
+
+      <button id="postBtn" class="btn btn-primary"
+        style="flex:1;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--accent));
+        color:white;border:none;border-radius:12px;font-weight:600;">
+        Post Item
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING ADD BUTTON -->
+<button id="fab" class="fab">+</button>
+
+<!-- TOAST MESSAGE -->
+<div id="toast" class="toast" style="
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--bg-glass);padding:1rem 2rem;border-radius:50px;
+  opacity:0;color:white;border:1px solid var(--border-glass);
+  transition:.4s;z-index:2000;
+"></div>
+
+</div> <!-- END container -->
+<!-- ========== PART-3: JavaScript (paste after Part-2) ========== -->
+<script type="module">
+/*
+  PART-3: Supabase app wiring
+  - Assumes Part-1 + Part-2 HTML is present (IDs used there)
+  - Uses Supabase JS (CDN ESM) and browser-image-compression (ESM)
+*/
+
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import imageCompression from "https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.esm.js";
+
+/* ----------------- CONFIG ----------------- */
+// replace only if you want to change project (you already confirmed these earlier)
+const SUPABASE_URL = "https://aksovogwimuqprevlxhd.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* ----------------- DOM refs ----------------- */
+const list = document.getElementById('list');
+const searchEl = document.getElementById('search');
+const tabs = Array.from(document.querySelectorAll('.tab'));
+const userArea = document.getElementById('userArea');
+
+const modalAuth = document.getElementById('modalAuth');
+const authEmail = document.getElementById('authEmail');
+const authPass = document.getElementById('authPass');
+const authBtn = document.getElementById('authBtn');
+const authTitle = document.getElementById('authTitle');
+const authToggleText = document.getElementById('authToggleText');
+const closeModalAuth = document.getElementById('closeModalAuth');
+
+const modalAdd = document.getElementById('modalAdd');
+const closeModalAdd = document.getElementById('closeModalAdd');
+const itemTitle = document.getElementById('itemTitle');
+const itemDesc = document.getElementById('itemDesc');
+const categoryEl = document.getElementById('category');
+const locationEl = document.getElementById('location');
+const fileInput = document.getElementById('fileInput');
+const uploadText = document.getElementById('uploadText');
+const imgPreview = document.getElementById('imgPreview');
+const postBtn = document.getElementById('postBtn');
+const fab = document.getElementById('fab');
+
+const toast = document.getElementById('toast');
+const inboxBtn = document.getElementById('inboxBtn');
+const badge = document.getElementById('badge');
+
+/* ----------------- state ----------------- */
+let currentTab = 'lost';
+let currentUser = null;
+let allItems = { lost: [], found: [], giveaway: [] };
+let editingItemId = null;
+let notifsChannel = null;
+
+/* ----------------- helpers ----------------- */
+function showToast(msg, t=3000){
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=> {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(80px)';
+  }, t);
+}
+function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+/* ----------------- image compression & upload ----------------- */
+async function compressFile(file){
+  if (!file) return null;
+  try {
+    const opts = { maxSizeMB: 0.8, maxWidthOrHeight: 1080, useWebWorker: true, fileType: 'image/webp' };
+    return await imageCompression(file, opts);
+  } catch(e){
+    console.warn('compress error', e);
+    return file;
   }
-  function escapeHtml(text) {
-    const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
-  }
-
-  // image compress + upload
-  async function compressFile(file) {
-    if (!file) return null;
-    try {
-      const opts = { maxSizeMB: 0.8, maxWidthOrHeight: 1080, useWebWorker: true, fileType: 'image/webp' };
-      return await imageCompression(file, opts);
-    } catch(e) {
-      console.warn('compress fail', e);
-      return file;
-    }
-  }
-  async function uploadImageToSupabase(file) {
-    if (!file) return "";
+}
+async function uploadImageToSupabase(file){
+  if (!file) return "";
+  try{
     const compressed = await compressFile(file);
     const filename = `images/item_${Date.now()}_${Math.random().toString(36).slice(2,8)}.webp`;
-    const { data, error } = await supabase.storage.from('images').upload(filename, compressed, { cacheControl: '3600', upsert: false, contentType: 'image/webp' });
-    if (error) { console.error('upload error', error); return ""; }
-    const { data: urlData } = supabase.storage.from('images').getPublicUrl(filename);
-    return urlData?.publicUrl || "";
-  }
+    const { error } = await supabase.storage.from('images').upload(filename, compressed, { upsert:false, contentType:'image/webp' });
+    if (error) { console.error('storage.upload', error); return ""; }
+    const { data } = supabase.storage.from('images').getPublicUrl(filename);
+    return data?.publicUrl ?? "";
+  }catch(e){ console.error(e); return ""; }
+}
 
-  // ---------------- AUTH ----------------
-  function renderUser(user) {
-    userArea.innerHTML = '';
-    if (!user) {
-      const l = document.createElement('button'); l.className='btn btn-ghost'; l.textContent='Login';
-      const s = document.createElement('button'); s.className='btn btn-primary'; s.textContent='Sign Up';
-      l.onclick = ()=> openAuthModal('login');
-      s.onclick = ()=> openAuthModal('signup');
-      userArea.appendChild(l); userArea.appendChild(s);
+/* ----------------- AUTH UI ----------------- */
+function renderUser(user){
+  userArea.innerHTML = '';
+  if (!user){
+    const loginBtn = document.createElement('button'); loginBtn.className='btn btn-ghost'; loginBtn.textContent='Login';
+    const signupBtn = document.createElement('button'); signupBtn.className='btn btn-primary'; signupBtn.textContent='Sign Up';
+    loginBtn.onclick = ()=> openAuthModal('login');
+    signupBtn.onclick = ()=> openAuthModal('signup');
+    userArea.appendChild(loginBtn); userArea.appendChild(signupBtn);
+    // hide fab when not logged in? we allow fab but require login on click
+  } else {
+    const name = document.createElement('div'); name.style.fontWeight='700'; name.style.marginRight='10px';
+    name.textContent = user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'User');
+    const out = document.createElement('button'); out.className='btn btn-ghost'; out.textContent='Logout';
+    out.onclick = async ()=>{
+      await supabase.auth.signOut();
+      showToast('Logged out');
+    };
+    userArea.appendChild(name); userArea.appendChild(out);
+  }
+}
+
+function openAuthModal(mode='login'){
+  authMode = mode;
+  if (mode === 'login'){
+    authTitle.textContent = 'Login to your account';
+    authBtn.textContent = 'Login';
+    authToggleText.innerHTML = `Don't have an account? <span id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Sign Up</span>`;
+  } else {
+    authTitle.textContent = 'Create new account';
+    authBtn.textContent = 'Sign Up';
+    authToggleText.innerHTML = `Already have an account? <span id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Login</span>`;
+  }
+  modalAuth.style.display = 'flex';
+  authEmail.value=''; authPass.value='';
+  setTimeout(()=> {
+    const link = document.getElementById('authToggleLink');
+    if (link) link.onclick = ()=> openAuthModal(authMode === 'login' ? 'signup' : 'login');
+  }, 50);
+}
+closeModalAuth.onclick = ()=> modalAuth.style.display = 'none';
+let authMode = 'login';
+
+/* auth button */
+authBtn.onclick = async ()=> {
+  const email = authEmail.value.trim();
+  const password = authPass.value.trim();
+  if (!email || !password) return showToast('Fill email & password');
+
+  try {
+    if (authMode === 'signup'){
+      // signUp with metadata
+      const { error: suErr } = await supabase.auth.signUp({ email, password }, { data: { full_name: email.split('@')[0] }});
+      if (suErr) throw suErr;
+      // Some projects require email confirmation; if confirmation is off you might get session automatically.
+      showToast('Signup successful — check email if confirmation enabled');
+      modalAuth.style.display = 'none';
     } else {
-      const name = document.createElement('div'); name.style.fontWeight='700'; name.style.marginRight='10px';
-      name.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
-      const out = document.createElement('button'); out.className='btn btn-ghost'; out.textContent='Logout';
-      out.onclick = async ()=> { await supabase.auth.signOut(); showToast('Logged out'); };
-      userArea.appendChild(name); userArea.appendChild(out);
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      showToast('Logged in');
+      modalAuth.style.display = 'none';
     }
+  } catch(err){
+    console.error('auth error', err);
+    showToast('Auth error: ' + (err.message || JSON.stringify(err)));
   }
+};
 
-  async function openAuthModal(mode='login') {
-    authMode = mode;
-    if (mode === 'login') { authTitle.textContent='Login to your account'; authBtn.textContent='Login'; authToggleText.innerHTML=`Don't have an account? <a id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Sign Up</a>`; }
-    else { authTitle.textContent='Create New Account'; authBtn.textContent='Sign Up'; authToggleText.innerHTML=`Already have an account? <a id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Login</a>`; }
-    modalAuth.classList.add('show'); authEmail.value=''; authPass.value='';
-    setTimeout(()=> { const link = document.getElementById('authToggleLink'); if (link) link.onclick = ()=> openAuthModal(authMode==='login' ? 'signup' : 'login'); }, 50);
-  }
+/* persistent session handling */
+supabase.auth.onAuthStateChange((event, session) => {
+  currentUser = session?.user ?? null;
+  renderUser(currentUser);
+  refreshBadge();
+  loadItems();
+  attachNotificationsChannel();
+});
 
-  closeModalAuth.onclick = ()=> modalAuth.classList.remove('show');
-
-  // auth button (signup/login) — unified and safe for confirm-off
-  authBtn.onclick = async () => {
-    const email = authEmail.value.trim();
-    const pass = authPass.value.trim();
-    if (!email || !pass) return showToast('Fill email & password');
-
-    try {
-      if (authMode === 'signup') {
-        const { data, error } = await supabase.auth.signUp({ email, password: pass, options: { data: { full_name: email.split('@')[0] } } });
-        if (error) throw error;
-        // When Confirm Email = OFF you often immediately get a session; attempt to sign in to be sure
-        const signIn = await supabase.auth.signInWithPassword({ email, password: pass });
-        if (signIn.error) {
-          // still okay — user created, ask to login after verifying email if necessary
-          showToast('Signup success. If email verification is ON, check inbox.');
-        } else {
-          showToast('Signup & logged in!');
-        }
-        modalAuth.classList.remove('show');
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
-        if (error) throw error;
-        showToast('Logged in');
-        modalAuth.classList.remove('show');
-      }
-    } catch (e) {
-      console.error('auth err', e);
-      showToast('Auth error: ' + (e.message || e.error_description || JSON.stringify(e)));
-    }
-  };
-
-  // onAuthStateChange & initial session load (session persistence)
-  supabase.auth.onAuthStateChange((event, session) => {
-    currentUser = session?.user || null;
-    renderUser(currentUser);
-    refreshBadge();
-    loadItems();
-    attachNotificationsChannel(); // re-attach channel with correct user context
-  });
-
-  // initial check (get session)
-  (async ()=> {
+/* initial session */
+(async ()=>{
+  try {
     const { data } = await supabase.auth.getSession();
-    currentUser = data?.session?.user || null;
+    currentUser = data?.session?.user ?? null;
     renderUser(currentUser);
-    await loadItems();
-    attachNotificationsChannel();
-  })();
+  } catch(e){ console.warn('getSession', e); }
+})();
 
-  // ---------------- TABS ----------------
-  tabs.forEach(t=> t.addEventListener('click', ()=> {
-    tabs.forEach(x=> x.classList.remove('active')); t.classList.add('active'); currentTab = t.dataset.tab; renderList();
-  }));
+/* ----------------- TABS + SEARCH ----------------- */
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  currentTab = t.dataset.tab;
+  renderList();
+}));
 
-  // ---------------- FILE INPUT UI ----------------
-  document.querySelector('.image-upload-label').addEventListener('click', ()=> fileInput.click());
-  fileInput.addEventListener('change', (e)=> {
-    const f = e.target.files[0];
-    if (f) {
-      uploadText.textContent = f.name;
-      const reader = new FileReader();
-      reader.onload = (ev)=> { imgPreview.src = ev.target.result; imgPreview.classList.add('show'); };
-      reader.readAsDataURL(f);
-    }
-  });
+searchEl.addEventListener('input', () => renderList());
 
-  // ---------------- LOAD ITEMS (Supabase) ----------------
-  async function loadItems() {
-    try {
-      const { data, error } = await supabase.from('items').select('*').order('created_at', { ascending:false });
-      if (error) { console.error('load error', error); showToast('Failed loading items'); return; }
-      allItems = { lost: [], found: [], giveaway: [] };
-      data.forEach(it => {
-        const bucket = it.status === 'found' ? 'found' : (it.status === 'giveaway' ? 'giveaway' : 'lost');
-        allItems[bucket].push({
-          id: it.id,
-          title: it.title,
-          description: it.description,
-          category: it.category,
-          location: it.location,
-          imageURL: it.image_url,
-          claimed: (it.status === 'returned'),
-          userId: it.user_id,
-          postedBy: it.posted_by || 'Anonymous',
-          createdAt: it.created_at,
-          likes: it.likes_count || 0
-        });
+function matchesQuery(item, q){
+  if (!q) return true;
+  q = q.trim().toLowerCase();
+  return [item.title, item.description, item.category, item.location, item.postedBy].some(f => (f||'').toLowerCase().includes(q));
+}
+
+/* ----------------- LOAD & RENDER ITEMS ----------------- */
+async function loadItems(){
+  try {
+    const { data, error } = await supabase.from('items').select('*').order('created_at', { ascending: false });
+    if (error) { console.error('loadItems error', error); showToast('Failed to load items'); return; }
+    allItems = { lost: [], found: [], giveaway: [] };
+    data.forEach(it => {
+      const bucket = it.status === 'found' ? 'found' : (it.status === 'giveaway' ? 'giveaway' : 'lost');
+      allItems[bucket].push({
+        id: it.id,
+        title: it.title,
+        description: it.description,
+        category: it.category,
+        location: it.location,
+        imageURL: it.image_url,
+        claimed: (it.status === 'returned'),
+        userId: it.user_id,
+        postedBy: it.posted_by || 'Anonymous',
+        createdAt: it.created_at,
+        likes: it.likes_count || 0
       });
-      renderList();
-    } catch (e) { console.error(e); showToast('Load failed'); }
-  }
+    });
+    renderList();
+  } catch(e){ console.error(e); showToast('Load failed'); }
+}
 
-  // ---------------- SEARCH + FILTER ----------------
-  search.addEventListener('input', () => { renderList(); });
-  function matchesQuery(item, q) {
-    if (!q) return true;
-    q = q.trim().toLowerCase();
-    const fields = [item.title, item.description, item.category, item.location, item.postedBy];
-    return fields.some(f => (f||'').toLowerCase().includes(q));
+function renderList(){
+  const q = (searchEl.value || '').trim().toLowerCase();
+  const items = allItems[currentTab] || [];
+  const filtered = items.filter(it=> matchesQuery(it, q));
+  if (!filtered.length){
+    list.innerHTML = `<div class="empty"><div style="font-size:36px">🔍</div><h3>No items found</h3><p style="color:var(--text-secondary)">Be the first to post an item in this section!</p></div>`;
+    return;
   }
-
-  // ---------------- RENDER LIST ----------------
-  function renderList() {
-    const q = search.value.trim().toLowerCase();
-    const items = allItems[currentTab] || [];
-    const filtered = items.filter(it => matchesQuery(it, q));
-    if (!filtered.length) {
-      list.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><h3>No items found</h3><p style="color:var(--text-secondary)">Be the first to post an item in this section!</p></div>`;
-      return;
-    }
-    list.innerHTML = '';
-    filtered.forEach((item, index) => {
-      const card = document.createElement('div'); card.className='card'; card.style.animationDelay = `${index*0.06}s`;
-      const date = new Date(item.createdAt || Date.now());
-      const media = item.imageURL ? `<img src="${item.imageURL}" alt="${escapeHtml(item.title)}">` : `<div class="no-image">No Image</div>`;
-      card.innerHTML = `
-        <div class="card-content">
-          <div class="card-image">${media}</div>
-          <div class="card-body">
-            <h2 class="card-title">${escapeHtml(item.title)}</h2>
-            <p class="card-desc">${escapeHtml(item.description)}</p>
-            <div class="meta-row">
-              <span class="chip chip-location">${escapeHtml(item.location||'Campus')}</span>
-              <span class="chip chip-category">${escapeHtml(item.category||'Other')}</span>
-              <span class="chip chip-date">${date.toLocaleDateString()}</span>
-            </div>
-            <div class="card-footer">
-              <p class="posted-by">Posted by <strong>${escapeHtml(item.postedBy||'Anonymous')}</strong></p>
-              <div class="action-buttons">
-                <button class="btn-share btn btn-ghost" data-id="${item.id}">Share</button>
-                <button class="btn-edit btn btn-ghost" data-id="${item.id}">Edit</button>
-                <button class="btn-return btn btn-ghost" data-id="${item.id}" ${item.claimed ? 'disabled' : ''}>${item.claimed ? 'Returned' : 'Mark as returned'}</button>
-                <button class="btn-like btn btn-ghost" data-id="${item.id}">👍 <span class="like-count">${item.likes||0}</span></button>
-                <button class="btn-report btn btn-ghost" data-id="${item.id}">Report</button>
-                ${currentUser && currentUser.id === item.userId ? `<button class="btn-delete btn-delete" data-delete="${item.id}">Delete</button>` : ''}
-              </div>
+  list.innerHTML = '';
+  filtered.forEach((item, idx) => {
+    const date = new Date(item.createdAt || Date.now());
+    const media = item.imageURL ? `<img src="${item.imageURL}" alt="${escapeHtml(item.title)}" style="width:100%;height:100%;object-fit:cover">` : `<div class="no-image">No Image</div>`;
+    const card = document.createElement('div'); card.className='card';
+    card.style.animationDelay = `${idx*0.06}s`;
+    card.innerHTML = `
+      <div class="card-content">
+        <div class="card-image">${media}</div>
+        <div class="card-body">
+          <h2 class="card-title">${escapeHtml(item.title)}</h2>
+          <p class="card-desc">${escapeHtml(item.description)}</p>
+          <div class="meta-row">
+            <span class="chip chip-location">${escapeHtml(item.location || 'Campus')}</span>
+            <span class="chip chip-category">${escapeHtml(item.category || 'Other')}</span>
+            <span class="chip chip-date">${date.toLocaleDateString()}</span>
+          </div>
+          <div class="card-footer">
+            <p class="posted-by">Posted by <strong>${escapeHtml(item.postedBy || 'Anonymous')}</strong></p>
+            <div class="action-buttons">
+              <button class="btn-share btn btn-ghost" data-id="${item.id}">Share</button>
+              <button class="btn-edit btn btn-ghost" data-id="${item.id}">Edit</button>
+              <button class="btn-return btn btn-ghost" data-id="${item.id}" ${item.claimed ? 'disabled' : ''}>${item.claimed ? 'Returned' : 'Mark as returned'}</button>
+              <button class="btn-like btn btn-ghost" data-id="${item.id}">👍 <span class="like-count">${item.likes||0}</span></button>
+              <button class="btn-report btn btn-ghost" data-id="${item.id}">Report</button>
+              ${currentUser && currentUser.id === item.userId ? `<button class="btn-delete btn-delete" data-delete="${item.id}">Delete</button>` : ''}
             </div>
           </div>
         </div>
-      `;
-      list.appendChild(card);
+      </div>
+    `;
+    list.appendChild(card);
 
-      // handlers
-      card.querySelector('.btn-share').addEventListener('click', ()=> {
-        const text = `Found on BBD Lost & Found: ${item.title}\nLocation: ${item.location}\n${item.description}\nLink: ${location.origin}/?item=${item.id}`;
-        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-      });
-
-      card.querySelector('.btn-edit').addEventListener('click', ()=> openEditModal(item));
-
-      const returnBtn = card.querySelector('.btn-return');
-      returnBtn && returnBtn.addEventListener('click', async ()=> {
-        if (!currentUser) { openAuthModal('login'); showToast('Login to mark returned'); return; }
-        try {
-          await supabase.from('items').update({ status: 'returned' }).eq('id', item.id);
-          await createNotification(`Item returned`, `${item.title} has been marked returned`, 'all');
-          showToast('Marked as returned');
-          await loadItems();
-          particleBurstAtElement(returnBtn);
-        } catch (e) { console.error(e); showToast('Failed'); }
-      });
-
-      const likeBtn = card.querySelector('.btn-like');
-      likeBtn && likeBtn.addEventListener('click', async ()=> {
-        if (!currentUser) { openAuthModal('login'); showToast('Login to like'); return; }
-        try {
-          const { error } = await supabase.from('likes').insert({ item_id: item.id, user_id: currentUser.id });
-          if (error) {
-            // remove like if exists
-            await supabase.from('likes').delete().match({ item_id: item.id, user_id: currentUser.id });
-          } else {
-            await supabase.from('items').update({ likes_count: (item.likes||0) + 1 }).eq('id', item.id);
-          }
-          await loadItems();
-        } catch (e) { console.error(e); showToast('Like error'); }
-      });
-
-      const reportBtn = card.querySelector('.btn-report');
-      reportBtn && reportBtn.addEventListener('click', async ()=> {
-        const reason = prompt('Why are you reporting this item? (brief)');
-        if (!reason) return;
-        try {
-          await supabase.from('reports').insert({ item_id: item.id, user_id: currentUser ? currentUser.id : null, reason });
-          showToast('Reported — thank you');
-        } catch (e) { console.error(e); showToast('Report failed'); }
-      });
-
-      const delBtn = card.querySelector('[data-delete]');
-      delBtn && delBtn.addEventListener('click', async ()=> {
-        if (!confirm('Delete this item?')) return;
-        try { await supabase.from('items').delete().eq('id', item.id); showToast('Deleted'); await loadItems(); } catch(e){ showToast('Delete failed'); }
-      });
+    // handlers
+    card.querySelector('.btn-share').addEventListener('click', ()=> {
+      const text = `Item: ${item.title}\nLocation: ${item.location}\n${item.description}\nLink: ${location.origin}/?item=${item.id}`;
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
     });
-  }
+    card.querySelector('.btn-edit').addEventListener('click', ()=> openEditModal(item));
+    const returnBtn = card.querySelector('.btn-return');
+    returnBtn && returnBtn.addEventListener('click', async ()=> {
+      if (!currentUser) { openAuthModal('login'); showToast('Login to mark returned'); return; }
+      try {
+        await supabase.from('items').update({ status: 'returned' }).eq('id', item.id);
+        await createNotification('Item returned', `${item.title} was marked returned`, 'all');
+        showToast('Marked as returned');
+        await loadItems();
+      } catch(e){ console.error(e); showToast('Failed to mark returned'); }
+    });
 
-  // simple particle burst at element
-  function particleBurstAtElement(el) {
-    try {
-      const rect = el.getBoundingClientRect();
-      particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 28 });
-    } catch {}
-  }
+    const likeBtn = card.querySelector('.btn-like');
+    likeBtn && likeBtn.addEventListener('click', async ()=> {
+      if (!currentUser) { openAuthModal('login'); showToast('Login to like'); return; }
+      try {
+        const { error } = await supabase.from('likes').insert({ item_id: item.id, user_id: currentUser.id });
+        if (error){
+          // likely duplicate -> remove like
+          await supabase.from('likes').delete().match({ item_id: item.id, user_id: currentUser.id });
+        } else {
+          // increment counter (basic)
+          await supabase.from('items').update({ likes_count: (item.likes||0)+1 }).eq('id', item.id);
+        }
+        await loadItems();
+      } catch(e){ console.error(e); showToast('Like failed'); }
+    });
 
-  // ---------------- POST ITEM (Create / Update) ----------------
-  postBtn.addEventListener('click', async ()=> {
-    if (!currentUser) { openAuthModal('login'); showToast('Login first'); return; }
-    const title = itemTitle.value.trim(); const desc = itemDesc.value.trim(); const loc = locationInput.value.trim() || 'Campus'; const cat = category.value;
-    if (!title || !desc) { showToast('Please fill title & description'); return; }
-    postBtn.disabled = true; postBtn.textContent = editingItemId ? 'Saving...' : 'Posting...';
+    const reportBtn = card.querySelector('.btn-report');
+    reportBtn && reportBtn.addEventListener('click', async ()=> {
+      const reason = prompt('Why are you reporting this item? (brief)');
+      if (!reason) return;
+      try {
+        await supabase.from('reports').insert({ item_id: item.id, user_id: currentUser ? currentUser.id : null, reason });
+        showToast('Reported — thanks');
+      } catch(e){ console.error(e); showToast('Report failed'); }
+    });
 
-    try {
-      let imageURL = '';
-      if (fileInput.files[0]) imageURL = await uploadImageToSupabase(fileInput.files[0]);
-
-      if (editingItemId) {
-        await supabase.from('items').update({
-          title, description: desc, location: loc, category: cat, image_url: imageURL || undefined
-        }).eq('id', editingItemId);
-        showToast('Updated');
-        editingItemId = null;
-      } else {
-        await supabase.from('items').insert([{
-          title, description: desc, category: cat, location: loc, image_url: imageURL || '', status: currentTab === 'found' ? 'found' : (currentTab==='giveaway'?'giveaway':'lost'), user_id: currentUser ? currentUser.id : null, posted_by: currentUser ? (currentUser.user_metadata?.full_name || currentUser.email) : 'Anonymous'
-        }]);
-        showToast('Posted successfully');
-        await createNotification(`New ${currentTab} item`, `${title} added in ${currentTab} section`, 'all');
-      }
-      // auto-close & reset form
-      modalAdd.classList.remove('show');
-      itemTitle.value=''; itemDesc.value=''; locationInput.value=''; category.value='electronics'; fileInput.value=''; imgPreview.classList.remove('show'); uploadText.textContent='Upload Image (Optional)';
-      await loadItems();
-
-      // call optional email edge function for all users (if configured)
-      if (SEND_EMAIL_FUNCTION_URL) {
-        try {
-          const { data: users } = await supabase.from('users').select('email').not('email','is',null);
-          if (users && users.length) {
-            for (const u of users) {
-              await fetch(SEND_EMAIL_FUNCTION_URL, {
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ to: u.email, subject: `New ${currentTab} item: ${title}`, text: `${desc}\nLocation: ${loc}` })
-              });
-            }
-          }
-        } catch(e) { console.warn('email func fail', e); }
-      }
-
-    } catch (e) { console.error(e); showToast('Post failed'); }
-    postBtn.disabled = false; postBtn.textContent = 'Post Item';
+    const delBtn = card.querySelector('[data-delete]');
+    delBtn && delBtn.addEventListener('click', async ()=> {
+      if (!confirm('Delete this item?')) return;
+      try {
+        await supabase.from('items').delete().eq('id', item.id);
+        showToast('Deleted');
+        await loadItems();
+      } catch(e){ console.error(e); showToast('Delete failed'); }
+    });
   });
+}
 
-  // open modal for add
-  fab.addEventListener('click', ()=> {
-    if (!currentUser) { openAuthModal('login'); showToast('Login to post'); return; }
-    editingItemId = null;
-    document.getElementById('modalTitle').textContent = 'Post an Item';
-    postBtn.textContent = 'Post Item';
-    modalAdd.classList.add('show');
-  });
-  document.getElementById('closeModalAdd').onclick = ()=> { modalAdd.classList.remove('show'); editingItemId=null; };
-  cancelBtn.addEventListener('click', ()=> { modalAdd.classList.remove('show'); editingItemId=null; });
-
-  // open edit modal
-  function openEditModal(item) {
-    if (!currentUser) { openAuthModal('login'); showToast('Login to edit'); return; }
-    if (currentUser.id !== item.userId) { showToast('You can only edit your own item'); return; }
-    editingItemId = item.id;
-    document.getElementById('modalTitle').textContent = 'Edit Item';
-    itemTitle.value = item.title; itemDesc.value = item.description; locationInput.value = item.location || ''; category.value = item.category || 'other';
-    if (item.imageURL) { imgPreview.src = item.imageURL; imgPreview.classList.add('show'); }
-    modalAdd.classList.add('show');
-    postBtn.textContent = 'Save Changes';
+/* ----------------- ADD / EDIT flow ----------------- */
+fileInput.addEventListener('change', (e)=> {
+  const f = e.target.files[0];
+  if (f){
+    uploadText.textContent = f.name;
+    const reader = new FileReader();
+    reader.onload = ev => { imgPreview.src = ev.target.result; imgPreview.style.display = 'block'; };
+    reader.readAsDataURL(f);
+  } else {
+    uploadText.textContent = 'Select Image';
+    imgPreview.style.display = 'none';
+    imgPreview.src = '';
   }
+});
 
-  // ---------------- NOTIFICATIONS (in-app) ----------------
-  async function createNotification(title, message, target='all') {
-    try {
-      await supabase.from('notifications').insert([{ title, message, target, read_by: [] }]);
-    } catch (e) { console.warn('notif insert', e); }
-  }
+postBtn.addEventListener('click', async ()=> {
+  if (!currentUser){ openAuthModal('login'); showToast('Login to post'); return; }
+  const title = itemTitle.value.trim();
+  const desc = itemDesc.value.trim();
+  const loc = locationEl.value.trim() || 'Campus';
+  const cat = categoryEl.value;
+  if (!title || !desc) { showToast('Please fill title & description'); return; }
+  postBtn.disabled = true;
+  postBtn.textContent = editingItemId ? 'Saving...' : 'Posting...';
 
-  // attach notifications via channel (v2)
-  function attachNotificationsChannel() {
-    // cleanup
-    if (notifsChannel) {
-      try { notifsChannel.unsubscribe(); } catch {}
-      notifsChannel = null;
+  try {
+    let imageURL = '';
+    if (fileInput.files[0]) imageURL = await uploadImageToSupabase(fileInput.files[0]);
+
+    if (editingItemId){
+      await supabase.from('items').update({
+        title, description: desc, location: loc, category: cat, image_url: imageURL || undefined, updated_at: new Date()
+      }).eq('id', editingItemId);
+      showToast('Updated');
+      editingItemId = null;
+    } else {
+      await supabase.from('items').insert([{
+        title, description: desc, category: cat, location: loc, image_url: imageURL || '', status: currentTab === 'found' ? 'found' : (currentTab==='giveaway'?'giveaway':'lost'),
+        user_id: currentUser ? currentUser.id : null, posted_by: currentUser ? (currentUser.user_metadata?.full_name || currentUser.email) : 'Anonymous'
+      }]);
+      showToast('Posted successfully');
+      await createNotification(`New ${currentTab} item`, `${title} added in ${currentTab}`, 'all');
     }
-    notifsChannel = supabase.channel('notifications-channel')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, payload => {
-        // update badge & show small toast
+    // reset form + close
+    modalAdd.style.display = 'none';
+    itemTitle.value=''; itemDesc.value=''; locationEl.value=''; categoryEl.value='electronics';
+    fileInput.value=''; uploadText.textContent='Select Image'; imgPreview.style.display='none'; imgPreview.src='';
+    await loadItems();
+  } catch(e){
+    console.error(e);
+    showToast('Post failed');
+  } finally {
+    postBtn.disabled = false;
+    postBtn.textContent = 'Post Item';
+  }
+});
+
+/* open add modal */
+fab.addEventListener('click', ()=>{
+  if (!currentUser) { openAuthModal('login'); showToast('Login to post'); return; }
+  editingItemId = null;
+  document.getElementById('modalTitle').textContent = 'Post an Item';
+  postBtn.textContent = 'Post Item';
+  modalAdd.style.display = 'flex';
+});
+
+/* modal close handlers */
+closeModalAdd.onclick = ()=> { modalAdd.style.display = 'none'; editingItemId = null; };
+document.getElementById('cancelBtn').onclick = ()=> { modalAdd.style.display = 'none'; editingItemId = null; };
+
+/* open edit modal */
+function openEditModal(item){
+  if (!currentUser) { openAuthModal('login'); showToast('Login to edit'); return; }
+  if (currentUser.id !== item.userId) { showToast('You can only edit your own item'); return; }
+  editingItemId = item.id;
+  document.getElementById('modalTitle').textContent = 'Edit Item';
+  itemTitle.value = item.title || '';
+  itemDesc.value = item.description || '';
+  locationEl.value = item.location || '';
+  categoryEl.value = item.category || 'other';
+  if (item.imageURL) { imgPreview.src = item.imageURL; imgPreview.style.display = 'block'; }
+  modalAdd.style.display = 'flex';
+  postBtn.textContent = 'Save Changes';
+}
+
+/* ----------------- NOTIFICATIONS (in-app) ----------------- */
+async function createNotification(title, message, target='all'){
+  try {
+    await supabase.from('notifications').insert([{ title, message, target, read_by: [] }]);
+  } catch(e){ console.warn('createNotification', e); }
+}
+
+/* attach notifications realtime (v2 channel) */
+function attachNotificationsChannel(){
+  try {
+    if (notifsChannel) { notifsChannel.unsubscribe(); notifsChannel = null; }
+    notifsChannel = supabase.channel('notif-channel')
+      .on('postgres_changes', { event:'INSERT', schema:'public', table:'notifications' }, payload => {
+        // show small toast & update badge
         refreshBadge();
-        showToast('🔔 New notification');
+        showToast('🔔 New notification', 2500);
       })
       .subscribe();
-    refreshBadge();
-  }
+  } catch(e){ console.warn('notif channel err', e); }
+}
 
-  async function refreshBadge() {
-    if (!currentUser) { badge.style.display='none'; return; }
-    const { data, error } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(80);
-    if (error) { console.warn('notif fetch', error); badge.style.display='none'; return; }
+/* refresh badge */
+async function refreshBadge(){
+  if (!currentUser){ badge.style.display = 'none'; return; }
+  try {
+    const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending:false }).limit(80);
     const unread = data.filter(n => !(n.read_by || []).includes(currentUser.id)).length;
-    if (unread>0) { badge.style.display='flex'; badge.textContent = unread; } else { badge.style.display='none'; }
-  }
+    if (unread > 0){ badge.style.display = 'flex'; badge.textContent = unread; } else { badge.style.display = 'none'; }
+  } catch(e){ console.warn(e); badge.style.display = 'none'; }
+}
 
-  // show notif panel when inbox clicked (click outside closes)
-  inboxBtn.addEventListener('click', async ()=> {
-    const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(80);
-    const panel = document.createElement('div'); panel.id='notifPanel';
-    panel.style.position='fixed'; panel.style.right='22px'; panel.style.top='92px'; panel.style.width='420px'; panel.style.background='var(--bg-glass)'; panel.style.border='1px solid var(--border-glass)'; panel.style.padding='12px'; panel.style.borderRadius='12px'; panel.style.boxShadow='0 30px 60px rgba(9,16,56,0.12)'; panel.style.zIndex=1200;
-    const head = document.createElement('div'); head.style.display='flex'; head.style.justifyContent='space-between'; head.style.alignItems='center'; head.style.marginBottom='8px';
-    head.innerHTML = `<strong>Notifications</strong><div><button id="markAll" class="btn btn-ghost">Mark all read</button> <button id="closeNotif" class="btn btn-ghost">Close</button></div>`;
-    panel.appendChild(head);
-    if (!data || data.length===0) { const none = document.createElement('div'); none.className='small-muted'; none.textContent='No notifications'; panel.appendChild(none); document.body.appendChild(panel); return; }
-    data.forEach(n => {
-      const unread = !(n.read_by || []).includes(currentUser ? currentUser.id : '___');
-      const it = document.createElement('div'); it.style.padding='10px'; it.style.borderRadius='10px'; it.style.marginBottom='8px'; it.style.background=unread ? 'linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,252,255,0.96))' : 'transparent'; it.style.cursor='pointer';
-      it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div style="color:var(--text-secondary)">${escapeHtml(n.message || '')}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:6px">${n.created_at ? new Date(n.created_at).toLocaleString() : ''}</div>`;
-      it.addEventListener('click', async ()=> {
-        if (!currentUser) { openAuthModal('login'); return; }
-        const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
-        await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
-        panel.remove(); refreshBadge();
-      });
-      panel.appendChild(it);
-    });
+/* show inbox panel */
+inboxBtn.addEventListener('click', async ()=>{
+  const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending:false }).limit(80);
+  const panel = document.createElement('div'); panel.id = 'notifPanel';
+  panel.style.position='fixed'; panel.style.right='22px'; panel.style.top='92px'; panel.style.width='420px';
+  panel.style.background='var(--bg-glass)'; panel.style.border='1px solid var(--border-glass)'; panel.style.padding='12px';
+  panel.style.borderRadius='12px'; panel.style.boxShadow='0 30px 60px rgba(9,16,56,0.12)'; panel.style.zIndex = 1200;
+  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>Notifications</strong><div><button id="markAll" class="btn btn-ghost">Mark all read</button> <button id="closeNotif" class="btn btn-ghost">Close</button></div></div>`;
+  if (!data || data.length === 0){
+    const none = document.createElement('div'); none.textContent = 'No notifications'; none.style.color = 'var(--text-secondary)';
+    panel.appendChild(none);
     document.body.appendChild(panel);
     document.getElementById('closeNotif').onclick = ()=> panel.remove();
-    document.getElementById('markAll').onclick = async ()=> {
-      if (!currentUser) { openAuthModal('login'); return; }
-      for (const n of data) {
-        const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
-        await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
-      }
-      panel.remove(); refreshBadge();
-    };
-    // close on outside click
-    setTimeout(()=> {
-      function outsideClose(e) { if (!panel.contains(e.target) && e.target !== inboxBtn) { panel.remove(); document.removeEventListener('click', outsideClose); } }
-      document.addEventListener('click', outsideClose);
-    }, 50);
-  });
-
-  // ---------------- small visual particle function ----------------
-  const canvas = (() => {
-    const c = document.createElement('canvas'); c.id='pcanvas'; c.style.position='fixed'; c.style.left=0; c.style.top=0; c.style.width='100%'; c.style.height='100%'; c.style.pointerEvents='none'; c.style.zIndex=1600; document.body.appendChild(c); return c;
-  })();
-  const ctx = canvas.getContext('2d');
-  function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  window.addEventListener('resize', resizeCanvas); resizeCanvas();
-  function particleBurst({x=window.innerWidth/2, y=window.innerHeight/2, count=30}={}) {
-    const particles = [];
-    for (let i=0;i<count;i++) particles.push({ x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-1.5)*6, life:Math.random()*50+40, size:Math.random()*3+2, color:`hsl(${Math.random()*360},80%,60%)` });
-    let raf;
-    function step(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      let alive=false;
-      for (const p of particles) {
-        if (p.life>0) { p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life--; ctx.globalAlpha=Math.max(0,p.life/80); ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); alive=true; }
-      }
-      if (alive) raf = requestAnimationFrame(step); else { cancelAnimationFrame(raf); ctx.clearRect(0,0,canvas.width,canvas.height); }
-    }
-    step();
+    return;
   }
+  data.forEach(n => {
+    const unread = !(n.read_by || []).includes(currentUser ? currentUser.id : '__');
+    const it = document.createElement('div');
+    it.style.padding='10px'; it.style.borderRadius='10px'; it.style.marginBottom='8px';
+    it.style.background = unread ? 'rgba(255,255,255,0.04)' : 'transparent';
+    it.style.cursor = 'pointer';
+    it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div style="color:var(--text-secondary)">${escapeHtml(n.message || '')}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:6px">${n.created_at ? new Date(n.created_at).toLocaleString() : ''}</div>`;
+    it.onclick = async ()=>{
+      if (!currentUser) { openAuthModal('login'); return; }
+      const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
+      await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
+      panel.remove();
+      refreshBadge();
+    };
+    panel.appendChild(it);
+  });
+  document.body.appendChild(panel);
+  document.getElementById('closeNotif').onclick = ()=> panel.remove();
+  document.getElementById('markAll').onclick = async ()=>{
+    if (!currentUser) { openAuthModal('login'); return; }
+    for (const n of data){
+      const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
+      await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
+    }
+    panel.remove();
+    refreshBadge();
+  };
+  // outside click closes
+  setTimeout(()=> {
+    function outsideClose(e){ if (!panel.contains(e.target) && e.target !== inboxBtn){ panel.remove(); document.removeEventListener('click', outsideClose); } }
+    document.addEventListener('click', outsideClose);
+  }, 50);
+});
 
-  // ---------------- BOOT ----------------
-  // quick idempotent check for "users" table (we may not create server-side here)
-  (async ()=> {
-    try { await supabase.from('users').select('id').limit(1); } catch(e) { /* ignore */ }
-  })();
-
-  // initial load
+/* ----------------- INITIALIZE ----------------- */
+(async ()=>{
   await loadItems();
   attachNotificationsChannel();
   setInterval(()=> loadItems(), 60_000);
+  // keep badge updated
+  setInterval(()=> refreshBadge(), 30_000);
+})();
 
-  // cleanup before unload
-  window.addEventListener('beforeunload', ()=> {
-    if (notifsChannel && typeof notifsChannel.unsubscribe === 'function') notifsChannel.unsubscribe();
-    if (itemsChannel && typeof itemsChannel.unsubscribe === 'function') itemsChannel.unsubscribe();
-  });
+/* cleanup on unload */
+window.addEventListener('beforeunload', ()=> {
+  try { if (notifsChannel) notifsChannel.unsubscribe(); } catch {}
+});
 
-  </script>
-</body>
-</html>
+</script>
+<!-- ========== PART-3 ENDS ========== -->
+
+
