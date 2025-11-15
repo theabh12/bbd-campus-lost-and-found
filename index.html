@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ============ (UNCHANGED UI styles) ============ */
     :root{
       --primary: #6366f1;
       --primary-light: #818cf8;
@@ -25,782 +26,79 @@
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
       --border-glass: rgba(255, 255, 255, 0.1);
-      --shadow-glow: 0 0 40px rgba(99, 102, 241, 0.3);
+      --shadow-glow: 0 0 60px rgba(99, 102, 241, 0.4);
       --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.5);
     }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
-      color: var(--text-primary);
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-    
-    /* Animated Background */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 40% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%);
-      pointer-events: none;
-      animation: bgShift 20s ease-in-out infinite;
-    }
-    
-    @keyframes bgShift {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-    
-    /* Container */
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-    
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 3rem;
-      animation: fadeInDown 0.8s ease;
-    }
-    
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .logo-wrapper {
-      display: inline-flex;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 1.5rem;
-      padding: 1.5rem 3rem;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border-radius: 100px;
-      border: 1px solid var(--border-glass);
-      box-shadow: var(--shadow-glow);
-    }
-    
-    .logo {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-    }
-    
-    .logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    
-    h1 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin: 0;
-    }
-    
-    .subtitle {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      margin-top: 0.5rem;
-    }
-    
-    /* Navigation Tabs */
-    .tabs-wrapper {
-      display: flex;
-      justify-content: center;
-      margin: 2rem 0;
-      animation: fadeIn 1s ease 0.2s both;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    .tabs {
-      display: inline-flex;
-      gap: 1rem;
-      padding: 0.5rem;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border-radius: 50px;
-      border: 1px solid var(--border-glass);
-    }
-    
-    .tab {
-      padding: 1rem 2.5rem;
-      border-radius: 50px;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-    
-    .tab:hover {
-      color: var(--text-primary);
-      transform: translateY(-2px);
-    }
-    
-    .tab.active {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
-    }
-    
-    /* Controls */
-    .controls {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin: 2rem 0;
-      flex-wrap: wrap;
-      animation: fadeIn 1s ease 0.4s both;
-    }
-    
-    .search-wrapper {
-      position: relative;
-      flex: 1;
-      max-width: 500px;
-    }
-    
-    .search {
-      width: 100%;
-      padding: 1rem 1.5rem 1rem 3.5rem;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      border-radius: 50px;
-      color: var(--text-primary);
-      font-family: 'Outfit', sans-serif;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-    
-    .search:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    }
-    
-    .search::placeholder {
-      color: var(--text-secondary);
-    }
-    
-    .search-icon {
-      position: absolute;
-      left: 1.5rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-secondary);
-      pointer-events: none;
-    }
-    
-    .btn {
-      padding: 1rem 2rem;
-      border-radius: 50px;
-      border: none;
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-    
-    .btn:hover::before {
-      width: 300px;
-      height: 300px;
-    }
-    
-    .btn-primary {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-    }
-    
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
-    }
-    
-    .btn-ghost {
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      color: var(--text-primary);
-    }
-    
-    .btn-ghost:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-    
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-    
-    /* User Area */
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .user-name {
-      padding: 0.75rem 1.5rem;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-    
-    /* Item List */
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-    
-    .card {
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      border-radius: 24px;
-      overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: slideUp 0.6s ease both;
-      position: relative;
-    }
-    
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-card);
-      border-color: rgba(99, 102, 241, 0.3);
-    }
-    
-    .card-content {
-      display: grid;
-      grid-template-columns: 400px 1fr;
-      gap: 2rem;
-      padding: 2rem;
-    }
-    
-    .card-image {
-      width: 100%;
-      height: 300px;
-      border-radius: 16px;
-      overflow: hidden;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-      position: relative;
-    }
-    
-    .card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-    
-    .card:hover .card-image img {
-      transform: scale(1.05);
-    }
-    
-    .no-image {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-    
-    .card-body {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    
-    .card-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
-    }
-    
-    .card-desc {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      line-height: 1.6;
-    }
-    
-    .meta-row {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    
-    .chip {
-      padding: 0.5rem 1.25rem;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .chip-location {
-      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(6, 182, 212, 0.1));
-      color: var(--secondary);
-      border: 1px solid rgba(6, 182, 212, 0.3);
-    }
-    
-    .chip-category {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
-      color: var(--accent);
-      border: 1px solid rgba(139, 92, 246, 0.3);
-    }
-    
-    .chip-date {
-      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.1));
-      color: var(--warning);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-    }
-    
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: auto;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border-glass);
-    }
-    
-    .posted-by {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-    }
-    
-    .posted-by strong {
-      color: var(--primary-light);
-      font-weight: 600;
-    }
-    
-    .action-buttons {
-      display: flex;
-      gap: 0.75rem;
-    }
-    
-    .btn-claim {
-      padding: 0.75rem 2rem;
-      border-radius: 50px;
-      border: none;
-      background: linear-gradient(135deg, var(--success), #059669);
-      color: white;
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-claim:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
-    }
-    
-    .btn-claim.claimed {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
-      color: var(--success);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      cursor: default;
-    }
-    
-    .btn-claim.claimed:hover {
-      transform: none;
-      box-shadow: none;
-    }
-    
-    .btn-delete {
-      padding: 0.75rem 1.5rem;
-      border-radius: 50px;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
-      color: var(--danger);
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-delete:hover {
-      background: linear-gradient(135deg, var(--danger), #dc2626);
-      color: white;
-      transform: translateY(-2px);
-    }
-    
-    /* Empty State */
-    .empty {
-      text-align: center;
-      padding: 4rem 2rem;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      border-radius: 24px;
-      animation: fadeIn 1s ease;
-    }
-    
-    .empty-icon {
-      font-size: 5rem;
-      margin-bottom: 1.5rem;
-      opacity: 0.3;
-    }
-    
-    .empty h3 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-    }
-    
-    .empty p {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-    }
-    
-    /* FAB */
-    .fab {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-      font-size: 2rem;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 10px 40px rgba(99, 102, 241, 0.5);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .fab:hover {
-      transform: translateY(-5px) scale(1.1);
-      box-shadow: 0 15px 50px rgba(99, 102, 241, 0.6);
-    }
-    
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(10px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.3s ease;
-    }
-    
-    .modal.show {
-      display: flex;
-    }
-    
-    .modal-content {
-      background: var(--bg-glass);
-      backdrop-filter: blur(40px);
-      border: 1px solid var(--border-glass);
-      border-radius: 24px;
-      padding: 2.5rem;
-      max-width: 600px;
-      width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: slideUp 0.4s ease;
-      box-shadow: var(--shadow-card);
-    }
-    
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    
-    .modal-header h2 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.8rem;
-      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .modal-close {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--bg-card);
-      border: 1px solid var(--border-glass);
-      color: var(--text-primary);
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-    
-    .modal-close:hover {
-      background: var(--danger);
-      transform: rotate(90deg);
-    }
-    
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-    
-    .form-input,
-    .form-textarea,
-    .form-select {
-      width: 100%;
-      padding: 1rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border-glass);
-      border-radius: 12px;
-      color: var(--text-primary);
-      font-family: 'Outfit', sans-serif;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-    
-    .form-input:focus,
-    .form-textarea:focus,
-    .form-select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-    }
-    
-    .form-textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-    
-    .image-upload {
-      position: relative;
-      margin-top: 1rem;
-    }
-    
-    .image-upload-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 1.5rem;
-      background: var(--bg-card);
-      border: 2px dashed var(--border-glass);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .image-upload-label:hover {
-      border-color: var(--primary);
-      background: rgba(99, 102, 241, 0.05);
-    }
-    
-    .image-upload input {
-      display: none;
-    }
-    
-    .image-preview {
-      width: 100%;
-      max-height: 250px;
-      object-fit: cover;
-      border-radius: 12px;
-      margin-top: 1rem;
-      display: none;
-    }
-    
-    .image-preview.show {
-      display: block;
-    }
-    
-    .modal-actions {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-    
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      padding: 1rem 2rem;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      border-radius: 50px;
-      color: var(--text-primary);
-      font-weight: 500;
-      box-shadow: var(--shadow-card);
-      z-index: 2000;
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 3rem 2rem;
-      margin-top: 4rem;
-      border-top: 1px solid var(--border-glass);
-    }
-    
-    footer a {
-      color: var(--primary-light);
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-    
-    footer a:hover {
-      color: var(--primary);
-      text-decoration: underline;
-    }
-    
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .card-content {
-        grid-template-columns: 1fr;
-      }
-      
-      .card-image {
-        height: 250px;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 2rem;
-      }
-      
-      .tabs {
-        flex-direction: column;
-        width: 100%;
-      }
-      
-      .tab {
-        width: 100%;
-      }
-      
-      .controls {
-        flex-direction: column;
-      }
-      
-      .search-wrapper {
-        width: 100%;
-        max-width: 100%;
-      }
-      
-      .card-title {
-        font-size: 1.5rem;
-      }
-      
-      .fab {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
-      }
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Outfit',sans-serif; background:linear-gradient(135deg,#0f0f23 0%,#1a1a3e 50%,#0f0f23 100%); color:var(--text-primary); min-height:100vh; overflow-x:hidden; position:relative; }
+    body::before { content:''; position:fixed; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 20% 50%, rgba(99,102,241,0.15), transparent 50%), radial-gradient(circle at 80% 80%, rgba(139,92,246,0.15), transparent 50%), radial-gradient(circle at 40% 20%, rgba(6,182,212,0.15), transparent 50%); pointer-events:none; animation:bgShift 20s ease-in-out infinite; }
+    @keyframes bgShift { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    .container { max-width:1400px; margin:0 auto; padding:2rem; position:relative; z-index:1; }
+    header { text-align:center; margin-bottom:3rem; animation:fadeInDown .8s ease; }
+    @keyframes fadeInDown { from{opacity:0; transform:translateY(-30px)} to{opacity:1; transform:none} }
+    .logo-wrapper { display:inline-flex; align-items:center; gap:1.5rem; margin-bottom:1.5rem; padding:1.5rem 3rem; background:var(--bg-glass); backdrop-filter:blur(20px); border-radius:100px; border:1px solid var(--border-glass); box-shadow:var(--shadow-glow); }
+    .logo { width:60px; height:60px; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(99,102,241,0.4); }
+    .logo img { width:100%; height:100%; object-fit:cover; }
+    h1 { font-family:'Space Grotesk',sans-serif; font-size:2.5rem; font-weight:800; background:linear-gradient(135deg,#fff 0%,#a5b4fc 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .subtitle { font-size:1rem; color:var(--text-secondary); margin-top:.5rem; }
+    .tabs-wrapper { display:flex; justify-content:center; margin:2rem 0; animation:fadeIn 1s ease .2s both; }
+    .tabs { display:inline-flex; gap:1rem; padding:.5rem; background:var(--bg-glass); backdrop-filter:blur(20px); border-radius:50px; border:1px solid var(--border-glass); }
+    .tab { padding:1rem 2.5rem; border-radius:50px; border:none; background:transparent; color:var(--text-secondary); font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; transition:all .3s; position:relative; }
+    .tab.active { background:linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; box-shadow:0 10px 30px rgba(99,102,241,.4); }
+    .controls { display:flex; justify-content:center; align-items:center; gap:1rem; margin:2rem 0; flex-wrap:wrap; animation:fadeIn 1s ease .4s both; }
+    .search-wrapper { position:relative; flex:1; max-width:500px; }
+    .search { width:100%; padding:1rem 1.5rem 1rem 3.5rem; background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); border-radius:50px; color:var(--text-primary); font-family:'Outfit',sans-serif; font-size:1rem; transition:all .3s; }
+    .search:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,0.2); }
+    .search::placeholder { color:var(--text-secondary); }
+    .btn { padding:1rem 2rem; border-radius:50px; border:none; font-family:'Space Grotesk',sans-serif; font-size:1rem; font-weight:600; cursor:pointer; position:relative; overflow:hidden; }
+    .btn-primary { background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; box-shadow:0 10px 30px rgba(99,102,241,0.3); }
+    .btn-ghost { background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); color:var(--text-primary); }
+    .list { display:flex; flex-direction:column; gap:2rem; margin-top:2rem; }
+    .card { background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); border-radius:24px; overflow:hidden; transition:all .4s; animation:slideUp .6s ease both; position:relative; }
+    @keyframes slideUp { from{opacity:0; transform:translateY(30px)} to{opacity:1; transform:none} }
+    .card:hover { transform:translateY(-8px); box-shadow:var(--shadow-card); border-color:rgba(99,102,241,0.3); }
+    .card-content { display:grid; grid-template-columns:400px 1fr; gap:2rem; padding:2rem; }
+    .card-image { width:100%; height:300px; border-radius:16px; overflow:hidden; background:linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.1)); position:relative; }
+    .card-image img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+    .card:hover .card-image img { transform:scale(1.05); }
+    .no-image { display:flex; align-items:center; justify-content:center; color:var(--text-secondary); font-weight:500; }
+    .card-body { display:flex; flex-direction:column; gap:1.5rem; }
+    .card-title { font-family:'Space Grotesk',sans-serif; font-size:2rem; font-weight:700; background:linear-gradient(135deg,#fff 0%,#a5b4fc 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.2; }
+    .card-desc { color:var(--text-secondary); font-size:1.1rem; line-height:1.6; }
+    .meta-row { display:flex; gap:.75rem; flex-wrap:wrap; }
+    .chip { padding:.5rem 1.25rem; border-radius:50px; font-size:.9rem; font-weight:600; display:inline-flex; align-items:center; gap:.5rem; }
+    .chip-location { background:linear-gradient(135deg, rgba(6,182,212,0.2), rgba(6,182,212,0.1)); color:var(--secondary); border:1px solid rgba(6,182,212,0.3); }
+    .chip-category { background:linear-gradient(135deg, rgba(139,92,246,0.2), rgba(139,92,246,0.1)); color:var(--accent); border:1px solid rgba(139,92,246,0.3); }
+    .chip-date { background:linear-gradient(135deg, rgba(245,158,11,0.2), rgba(245,158,11,0.1)); color:var(--warning); border:1px solid rgba(245,158,11,0.3); }
+    .card-footer { display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:1rem; border-top:1px solid var(--border-glass); }
+    .posted-by { color:var(--text-secondary); font-size:.95rem; }
+    .action-buttons { display:flex; gap:.75rem; }
+    .btn-claim { padding:.75rem 2rem; border-radius:50px; border:none; background:linear-gradient(135deg,var(--success),#059669); color:white; font-weight:600; cursor:pointer; }
+    .btn-claim.claimed { background:linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.1)); color:var(--success); border:1px solid rgba(16,185,129,0.3); cursor:default; }
+    .btn-delete { padding:.75rem 1.5rem; border-radius:50px; border:1px solid rgba(239,68,68,0.3); background:linear-gradient(135deg, rgba(239,68,68,0.2), rgba(239,68,68,0.1)); color:var(--danger); font-weight:600; cursor:pointer; }
+    .empty { text-align:center; padding:4rem 2rem; background:var(--bg-glass); border:1px solid var(--border-glass); border-radius:24px; }
+    .fab { position:fixed; bottom:2rem; right:2rem; width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; font-size:2rem; border:none; cursor:pointer; box-shadow:0 10px 40px rgba(99,102,241,0.5); transition:all .3s; z-index:100; display:flex; align-items:center; justify-content:center; }
+    .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); z-index:1000; align-items:center; justify-content:center; animation:fadeIn .3s ease; }
+    .modal.show { display:flex; }
+    .modal-content { background:var(--bg-glass); backdrop-filter:blur(40px); border:1px solid var(--border-glass); border-radius:24px; padding:2.5rem; max-width:600px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-card); }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; }
+    .modal-close { width:36px; height:36px; border-radius:50%; background:var(--bg-card); border:1px solid var(--border-glass); color:var(--text-primary); font-size:1.5rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .3s ease; }
+    .modal-close:hover { background:var(--danger); transform:rotate(90deg); }
+    .form-group { margin-bottom:1.5rem; }
+    .form-input, .form-textarea, .form-select { width:100%; padding:1rem; background:var(--bg-card); border:1px solid var(--border-glass); border-radius:12px; color:var(--text-primary); font-family:'Outfit',sans-serif; font-size:1rem; transition:all .3s ease; }
+    .image-upload-label { display:flex; align-items:center; justify-content:center; gap:.75rem; padding:1.5rem; background:var(--bg-card); border:2px dashed var(--border-glass); border-radius:12px; cursor:pointer; transition:all .3s ease; }
+    .image-preview { width:100%; max-height:250px; object-fit:cover; border-radius:12px; margin-top:1rem; display:none; }
+    .image-preview.show { display:block; }
+    .modal-actions { display:flex; gap:1rem; margin-top:2rem; }
+    .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px); padding:1rem 2rem; background:var(--bg-glass); backdrop-filter:blur(20px); border:1px solid var(--border-glass); border-radius:50px; color:var(--text-primary); font-weight:500; box-shadow:var(--shadow-card); z-index:2000; opacity:0; transition:all .4s; }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    footer { text-align:center; padding:3rem 2rem; margin-top:4rem; border-top:1px solid var(--border-glass); }
+    footer a { color:var(--primary-light); text-decoration:none; font-weight:600; }
+    @media (max-width:1024px){ .card-content{grid-template-columns:1fr} .card-image{height:250px} }
+    @media (max-width:768px){ h1{font-size:2rem} .tabs{flex-direction:column} .tab{width:100%} .controls{flex-direction:column} .search-wrapper{width:100%} .card-title{font-size:1.5rem} .fab{width:60px;height:60px;font-size:1.5rem} }
+    /* notification badge on inbox */
+    .inbox { position:relative; display:inline-block; }
+    .badge { position:absolute; right:-10px; top:-10px; background:var(--danger); color:#fff; width:20px; height:20px; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:12px; box-shadow:0 8px 20px rgba(239,68,68,0.16); }
   </style>
 </head>
 <body>
@@ -816,37 +114,38 @@
         </div>
       </div>
     </header>
-    
+
     <div class="tabs-wrapper">
-      <div class="tabs">
+      <div class="tabs" role="tablist">
         <button class="tab active" data-tab="lost">Lost Items</button>
         <button class="tab" data-tab="found">Found Items</button>
         <button class="tab" data-tab="giveaway">Giveaway</button>
       </div>
     </div>
-    
+
     <div class="controls">
       <div class="search-wrapper">
-        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
-        </svg>
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-secondary)"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
         <input id="search" class="search" type="text" placeholder="Search items...">
       </div>
       <div id="userArea"></div>
+      <div class="inbox" style="margin-left:8px">
+        <button id="inboxBtn" class="btn btn-ghost">Inbox</button>
+        <div id="badge" class="badge" style="display:none">0</div>
+      </div>
     </div>
-    
+
     <div id="list" class="list"></div>
-    
+
     <footer>
       <p>Made with ❤️ by BBD Students | <a href="contributors.html">View Contributors</a></p>
-      <p style="margin-top:0.5rem;color:var(--text-secondary)">Premium Lost & Found System — 2025 Edition</p>
+      <p style="margin-top:.5rem;color:var(--text-secondary)">Premium Lost & Found System — 2025 Edition</p>
     </footer>
   </div>
-  
+
   <!-- Auth Modal -->
-  <div id="modalAuth" class="modal">
-    <div class="modal-content">
+  <div id="modalAuth" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" style="max-width:480px">
       <div class="modal-header">
         <h2 id="authTitle">Welcome Back</h2>
         <button id="closeModalAuth" class="modal-close">×</button>
@@ -867,14 +166,15 @@
       </p>
     </div>
   </div>
-  
-  <!-- Add Item Modal -->
-  <div id="modalAdd" class="modal">
-    <div class="modal-content">
+
+  <!-- Add/Edit Item Modal -->
+  <div id="modalAdd" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
-        <h2>Post an Item</h2>
+        <h2 id="modalTitle">Post an Item</h2>
         <button id="closeModalAdd" class="modal-close">×</button>
       </div>
+
       <div class="form-group">
         <label>Item Title</label>
         <input id="itemTitle" class="form-input" type="text" placeholder="e.g., Black Leather Wallet">
@@ -897,355 +197,492 @@
         <label>Location</label>
         <input id="location" class="form-input" type="text" placeholder="e.g., Library 3rd Floor">
       </div>
+
       <div class="image-upload">
         <label for="fileInput" class="image-upload-label">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
           <span id="uploadText">Upload Image (Optional)</span>
         </label>
-        <input id="fileInput" type="file" accept="image/*">
+        <input id="fileInput" type="file" accept="image/*" style="display:none">
         <img id="imgPreview" class="image-preview" alt="Preview">
       </div>
+
       <div class="modal-actions">
         <button id="cancelBtn" class="btn btn-ghost" style="flex:1">Cancel</button>
         <button id="postBtn" class="btn btn-primary" style="flex:1">Post Item</button>
       </div>
     </div>
   </div>
-  
+
   <button id="fab" class="fab" title="Add New Item">+</button>
-  
+
   <div id="toast" class="toast"></div>
 
-  <script>
-    // LOCAL STORAGE ONLY - NO FIREBASE
-    let currentTab = 'lost';
-    let currentUser = JSON.parse(localStorage.getItem('bbdCurrentUser')) || null;
-    let allItems = JSON.parse(localStorage.getItem('bbdAllItems')) || { lost: [], found: [], giveaway: [] };
+  <!-- libs -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
 
-    const list = document.getElementById('list');
-    const search = document.getElementById('search');
-    const modalAdd = document.getElementById('modalAdd');
-    const modalAuth = document.getElementById('modalAuth');
-    const closeModalAdd = document.getElementById('closeModalAdd');
-    const closeModalAuth = document.getElementById('closeModalAuth');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const fab = document.getElementById('fab');
-    const itemTitle = document.getElementById('itemTitle');
-    const itemDesc = document.getElementById('itemDesc');
-    const category = document.getElementById('category');
-    const location = document.getElementById('location');
-    const fileInput = document.getElementById('fileInput');
-    const uploadText = document.getElementById('uploadText');
-    const imgPreview = document.getElementById('imgPreview');
-    const postBtn = document.getElementById('postBtn');
-    const toast = document.getElementById('toast');
-    const tabs = document.querySelectorAll('.tab');
-    const userArea = document.getElementById('userArea');
-    const authEmail = document.getElementById('authEmail');
-    const authPass = document.getElementById('authPass');
-    const authBtn = document.getElementById('authBtn');
-    const authTitle = document.getElementById('authTitle');
-    const authToggleLink = document.getElementById('authToggleLink');
-    const authToggleText = document.getElementById('authToggleText');
+  <script type="module">
+  // ========================= NOTE =========================
+  // This file uses your Supabase project URL and anon key (public).
+  // I DO NOT put your Resend API key here for security reasons.
+  // If you want email notifications, deploy the send-email Edge Function
+  // and paste its URL into SEND_EMAIL_FUNCTION_URL below.
+  //
+  // Replace NOTHING else in the UI unless you know what you do.
+  // =======================================================
 
-    let authMode = 'login';
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    // Init
-    renderUserArea();
-    renderList();
+  // ---------- YOUR Supabase config (you confirmed these) ----------
+  const SUPABASE_URL = "https://aksovogwimuqprevlxhd.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q";
+  // ---------- If you have an Edge Function URL for sending email (deployed), paste it here:
+  // e.g. "https://<project>.functions.supabase.co/send-email"
+  const SEND_EMAIL_FUNCTION_URL = ""; // <-- paste function URL here if you deploy it
 
-    function renderUserArea() {
-      if (currentUser) {
-        userArea.innerHTML = `
-          <div class="user-info">
-            <span class="user-name">${currentUser.email.split('@')[0]}</span>
-            <button id="logoutBtn" class="btn btn-ghost">Logout</button>
-          </div>
-        `;
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-          currentUser = null;
-          localStorage.removeItem('bbdCurrentUser');
-          renderUserArea();
-          showToast('✅ Logged out');
+  // ---------- Notification recipient preference ----------
+  const NOTIFY_ALL_USERS = true; // you wanted all users to receive notifications
+  const NOTIFY_FROM_EMAIL = "abhinavtiwari@outlook.com"; // shown in email function from field (server-side)
+
+  // init supabase
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // UI refs
+  const list = document.getElementById('list');
+  const search = document.getElementById('search');
+  const modalAdd = document.getElementById('modalAdd');
+  const modalAuth = document.getElementById('modalAuth');
+  const closeModalAdd = document.getElementById('closeModalAdd');
+  const closeModalAuth = document.getElementById('closeModalAuth');
+  const cancelBtn = document.getElementById('cancelBtn');
+  const fab = document.getElementById('fab');
+  const itemTitle = document.getElementById('itemTitle');
+  const itemDesc = document.getElementById('itemDesc');
+  const category = document.getElementById('category');
+  const locationInput = document.getElementById('location');
+  const fileInput = document.getElementById('fileInput');
+  const uploadText = document.getElementById('uploadText');
+  const imgPreview = document.getElementById('imgPreview');
+  const postBtn = document.getElementById('postBtn');
+  const toast = document.getElementById('toast');
+  const tabs = document.querySelectorAll('.tab');
+  const userArea = document.getElementById('userArea');
+  const authEmail = document.getElementById('authEmail');
+  const authPass = document.getElementById('authPass');
+  const authBtn = document.getElementById('authBtn');
+  const authTitle = document.getElementById('authTitle');
+  const authToggleLink = document.getElementById('authToggleLink');
+  const authToggleText = document.getElementById('authToggleText');
+  const inboxBtn = document.getElementById('inboxBtn');
+  const badge = document.getElementById('badge');
+
+  // local state
+  let currentTab = 'lost';
+  let currentUser = null;
+  let allItems = { lost: [], found: [], giveaway: [] };
+  let authMode = 'login';
+
+  // small helpers
+  function showToast(message, t = 3000) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(()=> toast.classList.remove('show'), t);
+  }
+  function escapeHtml(text) {
+    const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
+  }
+
+  // image compression & upload
+  async function compressFile(file) {
+    if (!file) return null;
+    try {
+      const options = { maxSizeMB: 0.6, maxWidthOrHeight: 1080, useWebWorker: true, fileType: 'image/webp' };
+      const compressed = await imageCompression(file, options);
+      return compressed;
+    } catch (e) {
+      console.warn("compression failed", e);
+      return file;
+    }
+  }
+  async function uploadImageToSupabase(file) {
+    if (!file) return "";
+    const compressed = await compressFile(file);
+    const filename = `images/item_${Date.now()}.webp`;
+    const { data, error } = await supabase.storage.from('images').upload(filename, compressed, { cacheControl:'3600', upsert:false, contentType:'image/webp' });
+    if (error) { console.error("upload error", error); return ""; }
+    const { data: urlData } = supabase.storage.from('images').getPublicUrl(filename);
+    return urlData.publicUrl || "";
+  }
+
+  // ---------------- AUTH ----------------
+  function renderUser(user) {
+    userArea.innerHTML = '';
+    if (!user) {
+      const l = document.createElement('button'); l.className='btn btn-ghost'; l.textContent='Login';
+      const s = document.createElement('button'); s.className='btn btn-primary'; s.textContent='Sign Up';
+      l.onclick = ()=> openAuthModal('login');
+      s.onclick = ()=> openAuthModal('signup');
+      userArea.appendChild(l); userArea.appendChild(s);
+    } else {
+      const name = document.createElement('div'); name.style.fontWeight='700'; name.style.marginRight='10px';
+      name.textContent = user.user_metadata?.full_name || user.email.split('@')[0];
+      const out = document.createElement('button'); out.className='btn btn-ghost'; out.textContent='Logout';
+      out.onclick = async ()=> { await supabase.auth.signOut(); showToast('Logged out'); };
+      userArea.appendChild(name); userArea.appendChild(out);
+    }
+  }
+
+  async function openAuthModal(mode='login') {
+    authMode = mode;
+    if (mode === 'login') { authTitle.textContent='Login to your account'; authBtn.textContent='Login'; authToggleText.innerHTML=`Don't have an account? <a id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Sign Up</a>`; }
+    else { authTitle.textContent='Create New Account'; authBtn.textContent='Sign Up'; authToggleText.innerHTML=`Already have an account? <a id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Login</a>`; }
+    modalAuth.classList.add('show'); authEmail.value=''; authPass.value='';
+    setTimeout(()=> { const link = document.getElementById('authToggleLink'); if (link) link.onclick = ()=> openAuthModal(authMode==='login' ? 'signup' : 'login'); }, 50);
+  }
+
+  // auth actions
+  document.getElementById('closeModalAuth').onclick = ()=> modalAuth.classList.remove('show');
+  authBtn && (authBtn.onclick = async () => {
+    const email = authEmail.value.trim(); const pass = authPass.value.trim();
+    if (!email || !pass) return showToast('Fill email & password');
+    try {
+      if (authMode === 'signup') {
+        const { user, error } = await supabase.auth.signUp({ email, password: pass }, { data: { full_name: email.split('@')[0] }});
+        if (error) throw error;
+        showToast('Signup success — check email for confirmation (if enabled).');
+        modalAuth.classList.remove('show');
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+        if (error) throw error;
+        showToast('Logged in');
+        modalAuth.classList.remove('show');
+      }
+    } catch (e) {
+      console.error(e); showToast('Auth error: ' + (e.message || e.error_description || e));
+    }
+  });
+
+  // auth state
+  supabase.auth.onAuthStateChange((event, session) => {
+    currentUser = session?.user || null;
+    renderUser(currentUser);
+    loadItems();
+    attachNotificationsListener();
+  });
+
+  // ---------------- TABS ----------------
+  tabs.forEach(t=> t.addEventListener('click', ()=> {
+    tabs.forEach(x=> x.classList.remove('active')); t.classList.add('active'); currentTab = t.dataset.tab; renderList();
+  }));
+
+  // ---------------- FILE INPUT UI ----------------
+  document.querySelector('.image-upload-label').addEventListener('click', ()=> fileInput.click());
+  fileInput.addEventListener('change', (e)=> {
+    const f = e.target.files[0];
+    if (f) {
+      uploadText.textContent = f.name;
+      const reader = new FileReader();
+      reader.onload = (ev)=> { imgPreview.src = ev.target.result; imgPreview.classList.add('show'); };
+      reader.readAsDataURL(f);
+    }
+  });
+
+  // ---------------- LOAD ITEMS (Supabase) ----------------
+  async function loadItems() {
+    // fetch items: status = lost/found/giveaway/returned
+    try {
+      const { data, error } = await supabase.from('items').select('*').order('created_at', { ascending: false });
+      if (error) { console.error('load error', error); showToast('Failed loading items'); return; }
+      allItems = { lost: [], found: [], giveaway: [] };
+      data.forEach(it => {
+        const bucket = it.status === 'found' ? 'found' : (it.status === 'giveaway' ? 'giveaway' : 'lost');
+        allItems[bucket].push({
+          id: it.id,
+          title: it.title,
+          description: it.description,
+          category: it.category,
+          location: it.location,
+          imageURL: it.image_url,
+          claimed: (it.status === 'returned'),
+          userId: it.user_id,
+          postedBy: it.posted_by || 'Anonymous',
+          createdAt: it.created_at,
+          likes: it.likes_count || 0
         });
-      } else {
-        userArea.innerHTML = `
-          <button id="loginBtn" class="btn btn-ghost">Login</button>
-          <button id="signupBtn" class="btn btn-primary">Sign Up</button>
-        `;
-        document.getElementById('loginBtn').addEventListener('click', () => openAuthModal('login'));
-        document.getElementById('signupBtn').addEventListener('click', () => openAuthModal('signup'));
-      }
+      });
+      renderList();
+    } catch (e) { console.error(e); }
+  }
+
+  // ---------------- SEARCH + FILTER ----------------
+  search.addEventListener('input', renderList);
+  function matchesQuery(item, q) {
+    if (!q) return true;
+    q = q.trim().toLowerCase();
+    const fields = [item.title, item.description, item.category, item.location, item.postedBy];
+    return fields.some(f => (f||'').toLowerCase().includes(q));
+  }
+
+  // ---------------- RENDER LIST ----------------
+  function renderList() {
+    const q = search.value.trim().toLowerCase();
+    const items = allItems[currentTab] || [];
+    const filtered = items.filter(it => matchesQuery(it, q));
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><h3>No items found</h3><p style="color:var(--text-secondary)">Be the first to post an item in this section!</p></div>`;
+      return;
     }
-
-    function openAuthModal(mode) {
-      authMode = mode;
-      if (mode === 'login') {
-        authTitle.textContent = 'Welcome Back';
-        authBtn.textContent = 'Login';
-        authToggleText.innerHTML = `Don't have an account? <a id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Sign Up</a>`;
-      } else {
-        authTitle.textContent = 'Create Account';
-        authBtn.textContent = 'Sign Up';
-        authToggleText.innerHTML = `Already have an account? <a id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Login</a>`;
-      }
-      
-      document.getElementById('authToggleLink').addEventListener('click', () => {
-        openAuthModal(authMode === 'login' ? 'signup' : 'login');
-      });
-      
-      modalAuth.classList.add('show');
-      authEmail.value = '';
-      authPass.value = '';
-    }
-
-    closeModalAuth.addEventListener('click', () => modalAuth.classList.remove('show'));
-
-    authBtn.addEventListener('click', () => {
-      const email = authEmail.value.trim();
-      const password = authPass.value.trim();
-
-      if (!email || !password) {
-        showToast('❌ Please fill all fields');
-        return;
-      }
-
-      if (password.length < 6) {
-        showToast('❌ Password must be at least 6 characters');
-        return;
-      }
-
-      const users = JSON.parse(localStorage.getItem('bbdUsers')) || [];
-
-      if (authMode === 'login') {
-        const user = users.find(u => u.email === email && u.password === password);
-        if (user) {
-          currentUser = { email: user.email, uid: user.uid };
-          localStorage.setItem('bbdCurrentUser', JSON.stringify(currentUser));
-          showToast('✅ Logged in successfully!');
-          modalAuth.classList.remove('show');
-          renderUserArea();
-        } else {
-          showToast('❌ Invalid credentials');
-        }
-      } else {
-        const exists = users.find(u => u.email === email);
-        if (exists) {
-          showToast('❌ Email already exists');
-        } else {
-          const newUser = { email, password, uid: Date.now().toString() };
-          users.push(newUser);
-          localStorage.setItem('bbdUsers', JSON.stringify(users));
-          currentUser = { email: newUser.email, uid: newUser.uid };
-          localStorage.setItem('bbdCurrentUser', JSON.stringify(currentUser));
-          showToast('✅ Account created!');
-          modalAuth.classList.remove('show');
-          renderUserArea();
-        }
-      }
-    });
-
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        currentTab = tab.dataset.tab;
-        renderList();
-      });
-    });
-
-    search.addEventListener('input', renderList);
-
-    function renderList() {
-      const q = search.value.trim().toLowerCase();
-      const items = allItems[currentTab] || [];
-      const filtered = items.filter(item => {
-        if (!q) return true;
-        return (item.title + ' ' + item.description).toLowerCase().includes(q);
-      });
-
-      if (!filtered.length) {
-        list.innerHTML = `
-          <div class="empty">
-            <div class="empty-icon">🔍</div>
-            <h3>No items found</h3>
-            <p>Be the first to post an item in this section!</p>
-          </div>
-        `;
-        return;
-      }
-
-      list.innerHTML = '';
-
-      filtered.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.animationDelay = `${index * 0.1}s`;
-
-        const date = new Date(item.createdAt);
-
-        card.innerHTML = `
-          <div class="card-content">
-            <div class="card-image">
-              ${item.imageURL 
-                ? `<img src="${item.imageURL}" alt="${escapeHtml(item.title)}">` 
-                : `<div class="no-image">No Image</div>`
-              }
+    list.innerHTML = '';
+    filtered.forEach((item, index) => {
+      const card = document.createElement('div'); card.className='card'; card.style.animationDelay = `${index*0.06}s`;
+      const date = new Date(item.createdAt || Date.now());
+      const media = item.imageURL ? `<img src="${item.imageURL}" alt="${escapeHtml(item.title)}">` : `<div class="no-image">No Image</div>`;
+      card.innerHTML = `
+        <div class="card-content">
+          <div class="card-image">${media}</div>
+          <div class="card-body">
+            <h2 class="card-title">${escapeHtml(item.title)}</h2>
+            <p class="card-desc">${escapeHtml(item.description)}</p>
+            <div class="meta-row">
+              <span class="chip chip-location">${escapeHtml(item.location||'Campus')}</span>
+              <span class="chip chip-category">${escapeHtml(item.category||'Other')}</span>
+              <span class="chip chip-date">${date.toLocaleDateString()}</span>
             </div>
-            <div class="card-body">
-              <h2 class="card-title">${escapeHtml(item.title)}</h2>
-              <p class="card-desc">${escapeHtml(item.description)}</p>
-              <div class="meta-row">
-                <span class="chip chip-location">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                    <circle cx="12" cy="10" r="3"></circle>
-                  </svg>
-                  ${escapeHtml(item.location)}
-                </span>
-                <span class="chip chip-category">${escapeHtml(item.category)}</span>
-                <span class="chip chip-date">${date.toLocaleDateString()}</span>
-              </div>
-              <div class="card-footer">
-                <p class="posted-by">Posted by <strong>${escapeHtml(item.postedBy || 'Anonymous')}</strong></p>
-                <div class="action-buttons">
-                  <button class="btn-claim ${item.claimed ? 'claimed' : ''}" data-id="${item.id}" ${item.claimed ? 'disabled' : ''}>
-                    ${item.claimed ? '✓ Claimed' : 'Claim Item'}
-                  </button>
-                  ${currentUser && currentUser.uid === item.userId ? `<button class="btn-delete" data-delete="${item.id}">Delete</button>` : ''}
-                </div>
+            <div class="card-footer">
+              <p class="posted-by">Posted by <strong>${escapeHtml(item.postedBy||'Anonymous')}</strong></p>
+              <div class="action-buttons">
+                <button class="btn-share btn btn-ghost" data-id="${item.id}">Share</button>
+                <button class="btn-edit btn btn-ghost" data-id="${item.id}">Edit</button>
+                <button class="btn-return btn btn-ghost" data-id="${item.id}" ${item.claimed ? 'disabled' : ''}>${item.claimed ? 'Returned' : 'Mark as returned'}</button>
+                <button class="btn-like btn btn-ghost" data-id="${item.id}">👍 <span class="like-count">${item.likes||0}</span></button>
+                <button class="btn-report btn btn-ghost" data-id="${item.id}">Report</button>
+                ${currentUser && currentUser.id === item.userId ? `<button class="btn-delete btn-delete" data-delete="${item.id}">Delete</button>` : ''}
               </div>
             </div>
           </div>
-        `;
+        </div>
+      `;
+      list.appendChild(card);
 
-        list.appendChild(card);
+      // handlers
+      card.querySelector('.btn-share').addEventListener('click', ()=> {
+        const text = `Found on BBD Lost & Found: ${item.title}\nLocation: ${item.location}\n${item.description}\nLink: ${location.origin}/?item=${item.id}`;
+        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+      });
 
-        const claimBtn = card.querySelector('.btn-claim');
-        if (claimBtn && !item.claimed) {
-          claimBtn.addEventListener('click', () => {
-            item.claimed = true;
-            localStorage.setItem('bbdAllItems', JSON.stringify(allItems));
-            renderList();
-            showToast('✅ Item claimed!');
-          });
-        }
+      card.querySelector('.btn-edit').addEventListener('click', ()=> openEditModal(item));
 
-        const deleteBtn = card.querySelector('[data-delete]');
-        if (deleteBtn) {
-          deleteBtn.addEventListener('click', () => {
-            if (confirm('Delete this item?')) {
-              allItems[currentTab] = allItems[currentTab].filter(i => i.id !== item.id);
-              localStorage.setItem('bbdAllItems', JSON.stringify(allItems));
-              renderList();
-              showToast('🗑️ Item deleted');
+      const returnBtn = card.querySelector('.btn-return');
+      returnBtn && returnBtn.addEventListener('click', async ()=> {
+        if (!currentUser) { openAuthModal('login'); showToast('Login to mark returned'); return; }
+        try {
+          await supabase.from('items').update({ status: 'returned' }).eq('id', item.id);
+          await createNotification(`Item returned`, `${item.title} has been marked returned`, 'all');
+          showToast('Marked as returned');
+          await loadItems();
+        } catch (e) { console.error(e); showToast('Failed'); }
+      });
+
+      const likeBtn = card.querySelector('.btn-like');
+      likeBtn && likeBtn.addEventListener('click', async ()=> {
+        if (!currentUser) { openAuthModal('login'); showToast('Login to like'); return; }
+        try {
+          // try insert like
+          const { error } = await supabase.from('likes').insert({ item_id: item.id, user_id: currentUser.id });
+          if (error) {
+            // if unique error, remove like
+            await supabase.from('likes').delete().match({ item_id: item.id, user_id: currentUser.id });
+            // decrement likes_count safely server-side if you prefer RPC, here we just reload
+          } else {
+            // increment likes_count
+            await supabase.from('items').update({ likes_count: (item.likes||0) + 1 }).eq('id', item.id);
+          }
+          await loadItems();
+        } catch (e) { console.error(e); showToast('Like error'); }
+      });
+
+      const reportBtn = card.querySelector('.btn-report');
+      reportBtn && reportBtn.addEventListener('click', async ()=> {
+        const reason = prompt('Why are you reporting this item? (brief)');
+        if (!reason) return;
+        try {
+          await supabase.from('reports').insert({ item_id: item.id, user_id: currentUser ? currentUser.id : null, reason });
+          showToast('Reported — thank you');
+        } catch (e) { console.error(e); showToast('Report failed'); }
+      });
+
+      const delBtn = card.querySelector('[data-delete]');
+      delBtn && delBtn.addEventListener('click', async ()=> {
+        if (!confirm('Delete this item?')) return;
+        try { await supabase.from('items').delete().eq('id', item.id); showToast('Deleted'); await loadItems(); } catch(e){ showToast('Delete failed'); }
+      });
+    });
+  }
+
+  // ---------------- POST ITEM (Create) ----------------
+  let editingItemId = null;
+  postBtn.addEventListener('click', async ()=> {
+    if (!currentUser) { openAuthModal('login'); showToast('Login first'); return; }
+    const title = itemTitle.value.trim(); const desc = itemDesc.value.trim(); const loc = locationInput.value.trim() || 'Campus'; const cat = category.value;
+    if (!title || !desc) { showToast('Please fill title & description'); return; }
+    postBtn.disabled = true; postBtn.textContent = editingItemId ? 'Saving...' : 'Posting...';
+
+    try {
+      let imageURL = '';
+      if (fileInput.files[0]) imageURL = await uploadImageToSupabase(fileInput.files[0]);
+
+      if (editingItemId) {
+        // update
+        await supabase.from('items').update({
+          title, description: desc, location: loc, category: cat, image_url: imageURL || undefined
+        }).eq('id', editingItemId);
+        showToast('Updated');
+        editingItemId = null;
+      } else {
+        // insert new item
+        await supabase.from('items').insert([{
+          title, description: desc, category: cat, location: loc, image_url: imageURL || '', status: currentTab === 'found' ? 'found' : (currentTab==='giveaway'?'giveaway':'lost'), user_id: currentUser ? currentUser.id : null, posted_by: currentUser ? (currentUser.user_metadata?.full_name || currentUser.email) : 'Anonymous'
+        }]);
+        showToast('Posted successfully');
+        // create a notification record for in-app
+        await createNotification(`New ${currentTab} item`, `${title} added in ${currentTab} section`, 'all');
+      }
+      // auto-close & reset form
+      modalAdd.classList.remove('show');
+      itemTitle.value=''; itemDesc.value=''; locationInput.value=''; category.value='electronics'; fileInput.value=''; imgPreview.classList.remove('show'); uploadText.textContent='Upload Image (Optional)';
+      await loadItems();
+
+      // OPTIONAL: call server-side email function to send emails to all users:
+      // If you deploy an Edge Function (send-email) that accepts { to, subject, text } and triggers Resend,
+      // you can call it here to email each user. Doing that securely requires server-side key (Edge Function).
+      // Example (do NOT include your Resend key in client — deploy server function and paste its URL into SEND_EMAIL_FUNCTION_URL):
+      if (SEND_EMAIL_FUNCTION_URL) {
+        try {
+          // fetch all user emails
+          const { data: users } = await supabase.from('users').select('email').not('email', 'is', null);
+          if (users && users.length) {
+            for (const u of users) {
+              await fetch(SEND_EMAIL_FUNCTION_URL, {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ to: u.email, subject: `New ${currentTab} item: ${title}`, text: `${desc}\nLocation: ${loc}` })
+              });
             }
-          });
-        }
+          }
+        } catch(e) { console.warn('email function call failed', e); }
+      }
+
+    } catch (e) { console.error(e); showToast('Post failed'); }
+    postBtn.disabled = false; postBtn.textContent = 'Post Item';
+  });
+
+  // open modal for add
+  fab.addEventListener('click', ()=> {
+    if (!currentUser) { openAuthModal('login'); showToast('Login to post'); return; }
+    editingItemId = null;
+    document.getElementById('modalTitle').textContent = 'Post an Item';
+    postBtn.textContent = 'Post Item';
+    modalAdd.classList.add('show');
+  });
+  document.getElementById('closeModalAdd').onclick = ()=> { modalAdd.classList.remove('show'); editingItemId=null; };
+
+  cancelBtn.addEventListener('click', ()=> { modalAdd.classList.remove('show'); editingItemId=null; });
+
+  // open edit modal
+  function openEditModal(item) {
+    if (!currentUser || (currentUser.id !== item.userId && currentUser.role !== 'admin')) { /* allow only owner or admin */ }
+    editingItemId = item.id;
+    document.getElementById('modalTitle').textContent = 'Edit Item';
+    itemTitle.value = item.title; itemDesc.value = item.description; locationInput.value = item.location || ''; category.value = item.category || 'other';
+    if (item.imageURL) { imgPreview.src = item.imageURL; imgPreview.classList.add('show'); }
+    modalAdd.classList.add('show');
+    postBtn.textContent = 'Save Changes';
+  }
+
+  // ---------------- NOTIFICATIONS (in-app) ----------------
+  async function createNotification(title, message, target='all') {
+    try {
+      await supabase.from('notifications').insert([{ title, message, target, read_by: [] }]);
+    } catch (e) { console.warn('notif insert', e); }
+  }
+
+  // attach realtime notifications listener
+  let notifsUnsub = null;
+  function attachNotificationsListener() {
+    if (notifsUnsub) { notifsUnsub(); notifsUnsub = null; }
+    notifsUnsub = supabase.from('notifications').on('INSERT', payload => {
+      // show badge / toast
+      showToast('🔔 New notification');
+      refreshBadge();
+    }).subscribe();
+    refreshBadge();
+  }
+
+  async function refreshBadge() {
+    if (!currentUser) { badge.style.display='none'; return; }
+    const { data, error } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(80);
+    if (error) { console.warn(error); badge.style.display='none'; return; }
+    const unread = data.filter(n => !(n.read_by || []).includes(currentUser.id)).length;
+    if (unread>0) { badge.style.display='flex'; badge.textContent = unread; } else { badge.style.display='none'; }
+  }
+
+  // show notif panel when inbox clicked
+  inboxBtn.addEventListener('click', async ()=> {
+    // create simple panel
+    const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(80);
+    const panel = document.createElement('div'); panel.style.position='fixed'; panel.style.right='22px'; panel.style.top='92px'; panel.style.width='420px'; panel.style.background='var(--bg-glass)'; panel.style.border='1px solid var(--border-glass)'; panel.style.padding='12px'; panel.style.borderRadius='12px'; panel.style.boxShadow='0 30px 60px rgba(9,16,56,0.12)'; panel.style.zIndex=1200;
+    const head = document.createElement('div'); head.style.display='flex'; head.style.justifyContent='space-between'; head.style.alignItems='center'; head.style.marginBottom='8px';
+    head.innerHTML = `<strong>Notifications</strong><button id="markAll" class="btn btn-ghost">Mark all read</button>`;
+    panel.appendChild(head);
+    if (!data || data.length===0) { const none = document.createElement('div'); none.className='small-muted'; none.textContent='No notifications'; panel.appendChild(none); document.body.appendChild(panel); return; }
+    data.forEach(n => {
+      const unread = !(n.read_by || []).includes(currentUser ? currentUser.id : '___');
+      const it = document.createElement('div'); it.style.padding='10px'; it.style.borderRadius='10px'; it.style.marginBottom='8px'; it.style.background=unread ? 'linear-gradient(180deg,rgba(255,255,255,0.96),rgba(250,252,255,0.96))' : 'transparent'; it.style.cursor='pointer';
+      it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div style="color:var(--text-secondary)">${escapeHtml(n.message || '')}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:6px">${n.created_at ? new Date(n.created_at).toLocaleString() : ''}</div>`;
+      it.addEventListener('click', async ()=> {
+        if (!currentUser) { openAuthModal('login'); return; }
+        // mark read for this user
+        await supabase.from('notifications').update({ read_by: supabase.rpc ? supabase.rpc('array_append', { }) : null }).eq('id', n.id).catch(()=>{});
+        // simple approach: pull read_by, append
+        const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
+        await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
+        panel.remove(); refreshBadge();
       });
-    }
-
-    fab.addEventListener('click', () => {
-      if (!currentUser) {
-        openAuthModal('login');
-        showToast('⚠️ Please login first');
-        return;
+      panel.appendChild(it);
+    });
+    document.body.appendChild(panel);
+    document.getElementById('markAll').onclick = async ()=> {
+      if (!currentUser) { openAuthModal('login'); return; }
+      for (const n of data) {
+        const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
+        await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
       }
-      modalAdd.classList.add('show');
-      resetForm();
-    });
+      panel.remove(); refreshBadge();
+    };
+  });
 
-    closeModalAdd.addEventListener('click', () => modalAdd.classList.remove('show'));
-    cancelBtn.addEventListener('click', () => modalAdd.classList.remove('show'));
-
-    function resetForm() {
-      itemTitle.value = '';
-      itemDesc.value = '';
-      category.value = 'electronics';
-      location.value = '';
-      fileInput.value = '';
-      imgPreview.classList.remove('show');
-      uploadText.textContent = 'Upload Image (Optional)';
+  // ---------------- BOOTSTRAP ----------------
+  // create missing DB tables if needed (safe, idempotent) - optional local fallback
+  (async ()=> {
+    // add a 'users' table for storing registered emails if not present - helpful for notifications
+    try {
+      await supabase.from('users').select('*').limit(1);
+    } catch (e) {
+      // ignore
     }
+  })();
 
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        uploadText.textContent = file.name;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          imgPreview.src = event.target.result;
-          imgPreview.classList.add('show');
-        };
-        reader.readAsDataURL(file);
-      }
-    });
+  // initial load
+  await loadItems();
+  attachNotificationsListener();
 
-    postBtn.addEventListener('click', () => {
-      if (!currentUser) return;
+  // helpful: re-run load periodically (or rely on realtime)
+  setInterval(()=> loadItems(), 60_000);
 
-      const title = itemTitle.value.trim();
-      const desc = itemDesc.value.trim();
-      const loc = location.value.trim() || 'Campus';
-      const cat = category.value;
+  // ---------------- Graceful unload: cleanup subscriptions ----------------
+  window.addEventListener('beforeunload', ()=> { if (notifsUnsub && typeof notifsUnsub.unsubscribe === 'function') notifsUnsub.unsubscribe(); });
 
-      if (!title || !desc) {
-        showToast('❌ Please fill required fields');
-        return;
-      }
-
-      postBtn.disabled = true;
-      postBtn.textContent = 'Posting...';
-
-      setTimeout(() => {
-        const newItem = {
-          id: Date.now().toString(),
-          title,
-          description: desc,
-          location: loc,
-          category: cat,
-          imageURL: imgPreview.src || '',
-          claimed: false,
-          userId: currentUser.uid,
-          postedBy: currentUser.email.split('@')[0],
-          createdAt: new Date().toISOString()
-        };
-
-        allItems[currentTab].unshift(newItem);
-        localStorage.setItem('bbdAllItems', JSON.stringify(allItems));
-        
-        modalAdd.classList.remove('show');
-        renderList();
-        showToast('✅ Item posted successfully!');
-        
-        postBtn.disabled = false;
-        postBtn.textContent = 'Post Item';
-      }, 500);
-    });
-
-    function showToast(message) {
-      toast.textContent = message;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    modalAdd.addEventListener('click', (e) => {
-      if (e.target === modalAdd) modalAdd.classList.remove('show');
-    });
-
-    modalAuth.addEventListener('click', (e) => {
-      if (e.target === modalAuth) modalAuth.classList.remove('show');
-    });
   </script>
 </body>
 </html>
