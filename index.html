@@ -148,7 +148,7 @@
     <div class="modal-content" role="dialog" aria-modal="true" style="max-width:480px">
       <div class="modal-header">
         <h2 id="authTitle">Welcome Back</h2>
-        <button id="closeModalAuth" class="modal-close">×</button>
+        <button id="closeModalAuth" class="modal-close" title="Close">×</button>
       </div>
       <div class="form-group">
         <label>Email Address</label>
@@ -172,7 +172,7 @@
     <div class="modal-content" role="dialog" aria-modal="true">
       <div class="modal-header">
         <h2 id="modalTitle">Post an Item</h2>
-        <button id="closeModalAdd" class="modal-close">×</button>
+        <button id="closeModalAdd" class="modal-close" title="Close">×</button>
       </div>
 
       <div class="form-group">
@@ -218,34 +218,17 @@
 
   <div id="toast" class="toast"></div>
 
-  <!-- libs -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
-
+  <!-- libraries -->
   <script type="module">
-  // ========================= NOTE =========================
-  // This file uses your Supabase project URL and anon key (public).
-  // I DO NOT put your Resend API key here for security reasons.
-  // If you want email notifications, deploy the send-email Edge Function
-  // and paste its URL into SEND_EMAIL_FUNCTION_URL below.
-  //
-  // Replace NOTHING else in the UI unless you know what you do.
-  // =======================================================
-
+  // Single-module script: Supabase v2 + features
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  import imageCompression from "https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.esm.js";
 
-  // ---------- YOUR Supabase config (you confirmed these) ----------
+  // ---------- YOUR Supabase config ----------
   const SUPABASE_URL = "https://aksovogwimuqprevlxhd.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q";
-  // ---------- If you have an Edge Function URL for sending email (deployed), paste it here:
-  // e.g. "https://<project>.functions.supabase.co/send-email"
-  const SEND_EMAIL_FUNCTION_URL = ""; // <-- paste function URL here if you deploy it
+  const SEND_EMAIL_FUNCTION_URL = ""; // optional edge function URL (leave blank during dev)
 
-  // ---------- Notification recipient preference ----------
-  const NOTIFY_ALL_USERS = true; // you wanted all users to receive notifications
-  const NOTIFY_FROM_EMAIL = "abhinavtiwari@outlook.com"; // shown in email function from field (server-side)
-
-  // init supabase
   const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   // UI refs
@@ -277,14 +260,17 @@
   const inboxBtn = document.getElementById('inboxBtn');
   const badge = document.getElementById('badge');
 
-  // local state
+  // state
   let currentTab = 'lost';
   let currentUser = null;
   let allItems = { lost: [], found: [], giveaway: [] };
+  let editingItemId = null;
+  let notifsChannel = null;
+  let itemsChannel = null;
   let authMode = 'login';
 
-  // small helpers
-  function showToast(message, t = 3000) {
+  // helpers
+  function showToast(message, t=3000) {
     toast.textContent = message;
     toast.classList.add('show');
     setTimeout(()=> toast.classList.remove('show'), t);
@@ -293,26 +279,25 @@
     const d = document.createElement('div'); d.textContent = text; return d.innerHTML;
   }
 
-  // image compression & upload
+  // image compress + upload
   async function compressFile(file) {
     if (!file) return null;
     try {
-      const options = { maxSizeMB: 0.6, maxWidthOrHeight: 1080, useWebWorker: true, fileType: 'image/webp' };
-      const compressed = await imageCompression(file, options);
-      return compressed;
-    } catch (e) {
-      console.warn("compression failed", e);
+      const opts = { maxSizeMB: 0.8, maxWidthOrHeight: 1080, useWebWorker: true, fileType: 'image/webp' };
+      return await imageCompression(file, opts);
+    } catch(e) {
+      console.warn('compress fail', e);
       return file;
     }
   }
   async function uploadImageToSupabase(file) {
     if (!file) return "";
     const compressed = await compressFile(file);
-    const filename = `images/item_${Date.now()}.webp`;
-    const { data, error } = await supabase.storage.from('images').upload(filename, compressed, { cacheControl:'3600', upsert:false, contentType:'image/webp' });
-    if (error) { console.error("upload error", error); return ""; }
+    const filename = `images/item_${Date.now()}_${Math.random().toString(36).slice(2,8)}.webp`;
+    const { data, error } = await supabase.storage.from('images').upload(filename, compressed, { cacheControl: '3600', upsert: false, contentType: 'image/webp' });
+    if (error) { console.error('upload error', error); return ""; }
     const { data: urlData } = supabase.storage.from('images').getPublicUrl(filename);
-    return urlData.publicUrl || "";
+    return urlData?.publicUrl || "";
   }
 
   // ---------------- AUTH ----------------
@@ -341,16 +326,26 @@
     setTimeout(()=> { const link = document.getElementById('authToggleLink'); if (link) link.onclick = ()=> openAuthModal(authMode==='login' ? 'signup' : 'login'); }, 50);
   }
 
-  // auth actions
-  document.getElementById('closeModalAuth').onclick = ()=> modalAuth.classList.remove('show');
-  authBtn && (authBtn.onclick = async () => {
-    const email = authEmail.value.trim(); const pass = authPass.value.trim();
+  closeModalAuth.onclick = ()=> modalAuth.classList.remove('show');
+
+  // auth button (signup/login) — unified and safe for confirm-off
+  authBtn.onclick = async () => {
+    const email = authEmail.value.trim();
+    const pass = authPass.value.trim();
     if (!email || !pass) return showToast('Fill email & password');
+
     try {
       if (authMode === 'signup') {
-        const { user, error } = await supabase.auth.signUp({ email, password: pass }, { data: { full_name: email.split('@')[0] }});
+        const { data, error } = await supabase.auth.signUp({ email, password: pass, options: { data: { full_name: email.split('@')[0] } } });
         if (error) throw error;
-        showToast('Signup success — check email for confirmation (if enabled).');
+        // When Confirm Email = OFF you often immediately get a session; attempt to sign in to be sure
+        const signIn = await supabase.auth.signInWithPassword({ email, password: pass });
+        if (signIn.error) {
+          // still okay — user created, ask to login after verifying email if necessary
+          showToast('Signup success. If email verification is ON, check inbox.');
+        } else {
+          showToast('Signup & logged in!');
+        }
         modalAuth.classList.remove('show');
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
@@ -359,17 +354,28 @@
         modalAuth.classList.remove('show');
       }
     } catch (e) {
-      console.error(e); showToast('Auth error: ' + (e.message || e.error_description || e));
+      console.error('auth err', e);
+      showToast('Auth error: ' + (e.message || e.error_description || JSON.stringify(e)));
     }
-  });
+  };
 
-  // auth state
+  // onAuthStateChange & initial session load (session persistence)
   supabase.auth.onAuthStateChange((event, session) => {
     currentUser = session?.user || null;
     renderUser(currentUser);
+    refreshBadge();
     loadItems();
-    attachNotificationsListener();
+    attachNotificationsChannel(); // re-attach channel with correct user context
   });
+
+  // initial check (get session)
+  (async ()=> {
+    const { data } = await supabase.auth.getSession();
+    currentUser = data?.session?.user || null;
+    renderUser(currentUser);
+    await loadItems();
+    attachNotificationsChannel();
+  })();
 
   // ---------------- TABS ----------------
   tabs.forEach(t=> t.addEventListener('click', ()=> {
@@ -390,9 +396,8 @@
 
   // ---------------- LOAD ITEMS (Supabase) ----------------
   async function loadItems() {
-    // fetch items: status = lost/found/giveaway/returned
     try {
-      const { data, error } = await supabase.from('items').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('items').select('*').order('created_at', { ascending:false });
       if (error) { console.error('load error', error); showToast('Failed loading items'); return; }
       allItems = { lost: [], found: [], giveaway: [] };
       data.forEach(it => {
@@ -412,11 +417,11 @@
         });
       });
       renderList();
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error(e); showToast('Load failed'); }
   }
 
   // ---------------- SEARCH + FILTER ----------------
-  search.addEventListener('input', renderList);
+  search.addEventListener('input', () => { renderList(); });
   function matchesQuery(item, q) {
     if (!q) return true;
     q = q.trim().toLowerCase();
@@ -481,6 +486,7 @@
           await createNotification(`Item returned`, `${item.title} has been marked returned`, 'all');
           showToast('Marked as returned');
           await loadItems();
+          particleBurstAtElement(returnBtn);
         } catch (e) { console.error(e); showToast('Failed'); }
       });
 
@@ -488,14 +494,11 @@
       likeBtn && likeBtn.addEventListener('click', async ()=> {
         if (!currentUser) { openAuthModal('login'); showToast('Login to like'); return; }
         try {
-          // try insert like
           const { error } = await supabase.from('likes').insert({ item_id: item.id, user_id: currentUser.id });
           if (error) {
-            // if unique error, remove like
+            // remove like if exists
             await supabase.from('likes').delete().match({ item_id: item.id, user_id: currentUser.id });
-            // decrement likes_count safely server-side if you prefer RPC, here we just reload
           } else {
-            // increment likes_count
             await supabase.from('items').update({ likes_count: (item.likes||0) + 1 }).eq('id', item.id);
           }
           await loadItems();
@@ -520,8 +523,15 @@
     });
   }
 
-  // ---------------- POST ITEM (Create) ----------------
-  let editingItemId = null;
+  // simple particle burst at element
+  function particleBurstAtElement(el) {
+    try {
+      const rect = el.getBoundingClientRect();
+      particleBurst({ x: rect.left + rect.width/2, y: rect.top + rect.height/2, count: 28 });
+    } catch {}
+  }
+
+  // ---------------- POST ITEM (Create / Update) ----------------
   postBtn.addEventListener('click', async ()=> {
     if (!currentUser) { openAuthModal('login'); showToast('Login first'); return; }
     const title = itemTitle.value.trim(); const desc = itemDesc.value.trim(); const loc = locationInput.value.trim() || 'Campus'; const cat = category.value;
@@ -533,19 +543,16 @@
       if (fileInput.files[0]) imageURL = await uploadImageToSupabase(fileInput.files[0]);
 
       if (editingItemId) {
-        // update
         await supabase.from('items').update({
           title, description: desc, location: loc, category: cat, image_url: imageURL || undefined
         }).eq('id', editingItemId);
         showToast('Updated');
         editingItemId = null;
       } else {
-        // insert new item
         await supabase.from('items').insert([{
           title, description: desc, category: cat, location: loc, image_url: imageURL || '', status: currentTab === 'found' ? 'found' : (currentTab==='giveaway'?'giveaway':'lost'), user_id: currentUser ? currentUser.id : null, posted_by: currentUser ? (currentUser.user_metadata?.full_name || currentUser.email) : 'Anonymous'
         }]);
         showToast('Posted successfully');
-        // create a notification record for in-app
         await createNotification(`New ${currentTab} item`, `${title} added in ${currentTab} section`, 'all');
       }
       // auto-close & reset form
@@ -553,14 +560,10 @@
       itemTitle.value=''; itemDesc.value=''; locationInput.value=''; category.value='electronics'; fileInput.value=''; imgPreview.classList.remove('show'); uploadText.textContent='Upload Image (Optional)';
       await loadItems();
 
-      // OPTIONAL: call server-side email function to send emails to all users:
-      // If you deploy an Edge Function (send-email) that accepts { to, subject, text } and triggers Resend,
-      // you can call it here to email each user. Doing that securely requires server-side key (Edge Function).
-      // Example (do NOT include your Resend key in client — deploy server function and paste its URL into SEND_EMAIL_FUNCTION_URL):
+      // call optional email edge function for all users (if configured)
       if (SEND_EMAIL_FUNCTION_URL) {
         try {
-          // fetch all user emails
-          const { data: users } = await supabase.from('users').select('email').not('email', 'is', null);
+          const { data: users } = await supabase.from('users').select('email').not('email','is',null);
           if (users && users.length) {
             for (const u of users) {
               await fetch(SEND_EMAIL_FUNCTION_URL, {
@@ -570,7 +573,7 @@
               });
             }
           }
-        } catch(e) { console.warn('email function call failed', e); }
+        } catch(e) { console.warn('email func fail', e); }
       }
 
     } catch (e) { console.error(e); showToast('Post failed'); }
@@ -586,12 +589,12 @@
     modalAdd.classList.add('show');
   });
   document.getElementById('closeModalAdd').onclick = ()=> { modalAdd.classList.remove('show'); editingItemId=null; };
-
   cancelBtn.addEventListener('click', ()=> { modalAdd.classList.remove('show'); editingItemId=null; });
 
   // open edit modal
   function openEditModal(item) {
-    if (!currentUser || (currentUser.id !== item.userId && currentUser.role !== 'admin')) { /* allow only owner or admin */ }
+    if (!currentUser) { openAuthModal('login'); showToast('Login to edit'); return; }
+    if (currentUser.id !== item.userId) { showToast('You can only edit your own item'); return; }
     editingItemId = item.id;
     document.getElementById('modalTitle').textContent = 'Edit Item';
     itemTitle.value = item.title; itemDesc.value = item.description; locationInput.value = item.location || ''; category.value = item.category || 'other';
@@ -607,33 +610,38 @@
     } catch (e) { console.warn('notif insert', e); }
   }
 
-  // attach realtime notifications listener
-  let notifsUnsub = null;
-  function attachNotificationsListener() {
-    if (notifsUnsub) { notifsUnsub(); notifsUnsub = null; }
-    notifsUnsub = supabase.from('notifications').on('INSERT', payload => {
-      // show badge / toast
-      showToast('🔔 New notification');
-      refreshBadge();
-    }).subscribe();
+  // attach notifications via channel (v2)
+  function attachNotificationsChannel() {
+    // cleanup
+    if (notifsChannel) {
+      try { notifsChannel.unsubscribe(); } catch {}
+      notifsChannel = null;
+    }
+    notifsChannel = supabase.channel('notifications-channel')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications' }, payload => {
+        // update badge & show small toast
+        refreshBadge();
+        showToast('🔔 New notification');
+      })
+      .subscribe();
     refreshBadge();
   }
 
   async function refreshBadge() {
     if (!currentUser) { badge.style.display='none'; return; }
     const { data, error } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(80);
-    if (error) { console.warn(error); badge.style.display='none'; return; }
+    if (error) { console.warn('notif fetch', error); badge.style.display='none'; return; }
     const unread = data.filter(n => !(n.read_by || []).includes(currentUser.id)).length;
     if (unread>0) { badge.style.display='flex'; badge.textContent = unread; } else { badge.style.display='none'; }
   }
 
-  // show notif panel when inbox clicked
+  // show notif panel when inbox clicked (click outside closes)
   inboxBtn.addEventListener('click', async ()=> {
-    // create simple panel
     const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending: false }).limit(80);
-    const panel = document.createElement('div'); panel.style.position='fixed'; panel.style.right='22px'; panel.style.top='92px'; panel.style.width='420px'; panel.style.background='var(--bg-glass)'; panel.style.border='1px solid var(--border-glass)'; panel.style.padding='12px'; panel.style.borderRadius='12px'; panel.style.boxShadow='0 30px 60px rgba(9,16,56,0.12)'; panel.style.zIndex=1200;
+    const panel = document.createElement('div'); panel.id='notifPanel';
+    panel.style.position='fixed'; panel.style.right='22px'; panel.style.top='92px'; panel.style.width='420px'; panel.style.background='var(--bg-glass)'; panel.style.border='1px solid var(--border-glass)'; panel.style.padding='12px'; panel.style.borderRadius='12px'; panel.style.boxShadow='0 30px 60px rgba(9,16,56,0.12)'; panel.style.zIndex=1200;
     const head = document.createElement('div'); head.style.display='flex'; head.style.justifyContent='space-between'; head.style.alignItems='center'; head.style.marginBottom='8px';
-    head.innerHTML = `<strong>Notifications</strong><button id="markAll" class="btn btn-ghost">Mark all read</button>`;
+    head.innerHTML = `<strong>Notifications</strong><div><button id="markAll" class="btn btn-ghost">Mark all read</button> <button id="closeNotif" class="btn btn-ghost">Close</button></div>`;
     panel.appendChild(head);
     if (!data || data.length===0) { const none = document.createElement('div'); none.className='small-muted'; none.textContent='No notifications'; panel.appendChild(none); document.body.appendChild(panel); return; }
     data.forEach(n => {
@@ -642,9 +650,6 @@
       it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div style="color:var(--text-secondary)">${escapeHtml(n.message || '')}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:6px">${n.created_at ? new Date(n.created_at).toLocaleString() : ''}</div>`;
       it.addEventListener('click', async ()=> {
         if (!currentUser) { openAuthModal('login'); return; }
-        // mark read for this user
-        await supabase.from('notifications').update({ read_by: supabase.rpc ? supabase.rpc('array_append', { }) : null }).eq('id', n.id).catch(()=>{});
-        // simple approach: pull read_by, append
         const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
         await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
         panel.remove(); refreshBadge();
@@ -652,6 +657,7 @@
       panel.appendChild(it);
     });
     document.body.appendChild(panel);
+    document.getElementById('closeNotif').onclick = ()=> panel.remove();
     document.getElementById('markAll').onclick = async ()=> {
       if (!currentUser) { openAuthModal('login'); return; }
       for (const n of data) {
@@ -660,95 +666,52 @@
       }
       panel.remove(); refreshBadge();
     };
+    // close on outside click
+    setTimeout(()=> {
+      function outsideClose(e) { if (!panel.contains(e.target) && e.target !== inboxBtn) { panel.remove(); document.removeEventListener('click', outsideClose); } }
+      document.addEventListener('click', outsideClose);
+    }, 50);
   });
 
-  // ---------------- BOOTSTRAP ----------------
-  // create missing DB tables if needed (safe, idempotent) - optional local fallback
-  (async ()=> {
-    // add a 'users' table for storing registered emails if not present - helpful for notifications
-    try {
-      await supabase.from('users').select('*').limit(1);
-    } catch (e) {
-      // ignore
+  // ---------------- small visual particle function ----------------
+  const canvas = (() => {
+    const c = document.createElement('canvas'); c.id='pcanvas'; c.style.position='fixed'; c.style.left=0; c.style.top=0; c.style.width='100%'; c.style.height='100%'; c.style.pointerEvents='none'; c.style.zIndex=1600; document.body.appendChild(c); return c;
+  })();
+  const ctx = canvas.getContext('2d');
+  function resizeCanvas(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas); resizeCanvas();
+  function particleBurst({x=window.innerWidth/2, y=window.innerHeight/2, count=30}={}) {
+    const particles = [];
+    for (let i=0;i<count;i++) particles.push({ x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-1.5)*6, life:Math.random()*50+40, size:Math.random()*3+2, color:`hsl(${Math.random()*360},80%,60%)` });
+    let raf;
+    function step(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      let alive=false;
+      for (const p of particles) {
+        if (p.life>0) { p.x+=p.vx; p.y+=p.vy; p.vy+=0.12; p.life--; ctx.globalAlpha=Math.max(0,p.life/80); ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); alive=true; }
+      }
+      if (alive) raf = requestAnimationFrame(step); else { cancelAnimationFrame(raf); ctx.clearRect(0,0,canvas.width,canvas.height); }
     }
+    step();
+  }
+
+  // ---------------- BOOT ----------------
+  // quick idempotent check for "users" table (we may not create server-side here)
+  (async ()=> {
+    try { await supabase.from('users').select('id').limit(1); } catch(e) { /* ignore */ }
   })();
 
   // initial load
   await loadItems();
-  attachNotificationsListener();
-
-  // helpful: re-run load periodically (or rely on realtime)
+  attachNotificationsChannel();
   setInterval(()=> loadItems(), 60_000);
 
-  // ---------------- Graceful unload: cleanup subscriptions ----------------
-  window.addEventListener('beforeunload', ()=> { if (notifsUnsub && typeof notifsUnsub.unsubscribe === 'function') notifsUnsub.unsubscribe(); });
+  // cleanup before unload
+  window.addEventListener('beforeunload', ()=> {
+    if (notifsChannel && typeof notifsChannel.unsubscribe === 'function') notifsChannel.unsubscribe();
+    if (itemsChannel && typeof itemsChannel.unsubscribe === 'function') itemsChannel.unsubscribe();
+  });
 
   </script>
-// ---------- FIXED LOGIN ----------
-document.querySelector("#login-form")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.querySelector("#login-email").value.trim();
-  const password = document.querySelector("#login-password").value.trim();
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    showToast("Login failed: " + error.message);
-  } else {
-    showToast("Login successful!");
-    loadUser();
-    closeAuthModal();
-  }
-});
-
-
-// ---------- FIXED SIGN UP ----------
-document.querySelector("#signup-form")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.querySelector("#signup-email").value.trim();
-  const password = document.querySelector("#signup-password").value.trim();
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-  });
-
-  if (error) {
-    showToast("Sign-up failed: " + error.message);
-  } else {
-    showToast("Sign-up successful! Check your email for confirmation.");
-    closeAuthModal();
-  }
-});
-
-
-// ---------- FIXED SESSION CHECK ----------
-async function loadUser() {
-  const { data, error } = await supabase.auth.getUser();
-  if (data?.user) {
-    document.body.classList.add("logged-in");
-    loadItems();
-  } else {
-    document.body.classList.remove("logged-in");
-  }
-}
-
-
-// ---------- FIXED ON AUTH CHANGE ----------
-supabase.auth.onAuthStateChange(async (event, session) => {
-  if (event === "SIGNED_IN") {
-    loadUser();
-  }
-  if (event === "SIGNED_OUT") {
-    document.body.classList.remove("logged-in");
-  }
-});
-
-loadUser();
-
 </body>
 </html>
-
