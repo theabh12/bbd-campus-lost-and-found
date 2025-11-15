@@ -684,5 +684,71 @@
   window.addEventListener('beforeunload', ()=> { if (notifsUnsub && typeof notifsUnsub.unsubscribe === 'function') notifsUnsub.unsubscribe(); });
 
   </script>
+// ---------- FIXED LOGIN ----------
+document.querySelector("#login-form")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.querySelector("#login-email").value.trim();
+  const password = document.querySelector("#login-password").value.trim();
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    showToast("Login failed: " + error.message);
+  } else {
+    showToast("Login successful!");
+    loadUser();
+    closeAuthModal();
+  }
+});
+
+
+// ---------- FIXED SIGN UP ----------
+document.querySelector("#signup-form")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.querySelector("#signup-email").value.trim();
+  const password = document.querySelector("#signup-password").value.trim();
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (error) {
+    showToast("Sign-up failed: " + error.message);
+  } else {
+    showToast("Sign-up successful! Check your email for confirmation.");
+    closeAuthModal();
+  }
+});
+
+
+// ---------- FIXED SESSION CHECK ----------
+async function loadUser() {
+  const { data, error } = await supabase.auth.getUser();
+  if (data?.user) {
+    document.body.classList.add("logged-in");
+    loadItems();
+  } else {
+    document.body.classList.remove("logged-in");
+  }
+}
+
+
+// ---------- FIXED ON AUTH CHANGE ----------
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === "SIGNED_IN") {
+    loadUser();
+  }
+  if (event === "SIGNED_OUT") {
+    document.body.classList.remove("logged-in");
+  }
+});
+
+loadUser();
+
 </body>
 </html>
+
