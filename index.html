@@ -3,882 +3,1101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BBD Campus Lost & Found — Premium Edition</title>
+  <title>BBD Campus Lost & Found</title>
 
-  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png"/>
-  <meta name="theme-color" content="#6366f1"/>
+  <!-- ICON -->
+  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- MAIN UI STYLES (unmodified UI) -->
   <style>
-    :root{
-      --primary:#6366f1;
-      --primary-light:#818cf8;
-      --primary-dark:#4f46e5;
-      --secondary:#06b6d4;
-      --accent:#8b5cf6;
-      --success:#10b981;
-      --danger:#ef4444;
-      --warning:#f59e0b;
-      --bg-main:#0f0f23;
-      --bg-card:rgba(255,255,255,0.05);
-      --bg-glass:rgba(255,255,255,0.08);
-      --text-primary:#f8fafc;
-      --text-secondary:#94a3b8;
-      --border-glass:rgba(255,255,255,0.1);
+    /* ROOT THEME VARIABLES */
+    :root {
+      --bg: #0f0f23;
+      --bg-card: rgba(255,255,255,0.05);
+      --bg-glass: rgba(255,255,255,0.07);
+      --text: #f8fafc;
+      --text-light: #cbd5e1;
+      --primary: #6366f1;
+      --accent: #8b5cf6;
+      --border: rgba(255,255,255,0.15);
     }
 
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{
-      font-family:'Outfit',sans-serif;
-      background:linear-gradient(135deg,#0f0f23,#1a1a3e,#0f0f23);
-      color:var(--text-primary);
+    /* LIGHT MODE */
+    :root.light {
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-glass: #ffffff;
+      --text: #0f172a;
+      --text-light: #475569;
+      --border: #d8dee9;
+      --primary: #3b82f6;
+      --accent: #2563eb;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    body {
+      font-family:'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       min-height:100vh;
-      position:relative;
-      overflow-x:hidden;
+      padding-bottom:120px;
+      transition: background .3s, color .3s;
     }
 
-    body::before{
-      content:'';
-      position:fixed;
-      inset:0;
-      background:
-        radial-gradient(circle at 20% 40%, rgba(99,102,241,.2), transparent 60%),
-        radial-gradient(circle at 80% 80%, rgba(139,92,246,.18), transparent 60%),
-        radial-gradient(circle at 50% 10%, rgba(6,182,212,.18), transparent 60%);
-      z-index:-1;
-      animation:bgFade 14s ease-in-out infinite;
+    header {
+      text-align:center;
+      margin-top:2rem;
+      margin-bottom:2rem;
     }
 
-    @keyframes bgFade{
-      0%,100%{opacity:1}
-      50%{opacity:.7}
-    }
-
-    .container{
-      max-width:1400px;
-      margin:auto;
-      padding:2rem;
-    }
-
-    header{text-align:center;margin-bottom:3rem;}
-
-    .logo-wrapper{
-      display:inline-flex;
+    .logo-box {
+      display:flex;
+      justify-content:center;
       align-items:center;
-      background:var(--bg-glass);
-      padding:1.5rem 3rem;
-      border-radius:100px;
-      gap:1.3rem;
-      backdrop-filter:blur(20px);
-      border:1px solid var(--border-glass);
+      gap:1rem;
+      background: var(--bg-card);
+      padding:1.2rem 2rem;
+      border-radius:50px;
+      backdrop-filter:blur(12px);
+      border:1px solid var(--border);
     }
 
-    .logo img{width:60px;height:60px;border-radius:16px;}
-
-    h1{
-      font-family:'Space Grotesk',sans-serif;
-      font-weight:800;
+    h1 {
+      font-family:'Space Grotesk', sans-serif;
       font-size:2.4rem;
-      background:linear-gradient(135deg,#fff,#b3b8ff);
+      background:linear-gradient(135deg, var(--primary), var(--accent));
       -webkit-background-clip:text;
       -webkit-text-fill-color:transparent;
     }
 
-    .subtitle{
+    .subtitle {
+      color: var(--text-light);
       font-size:1rem;
-      color:var(--text-secondary);
-      margin-top:.3rem;
     }
 
-    /* Tabs */
-    .tabs-wrapper{display:flex;justify-content:center;margin:2rem 0;}
-    .tabs{
+    /* TABS */
+    .tabs-wrapper {
+      display:flex;
+      justify-content:center;
+      margin-top:2rem;
+    }
+
+    .tabs {
       display:flex;
       gap:1rem;
-      background:var(--bg-glass);
-      border-radius:50px;
       padding:.5rem;
-      backdrop-filter:blur(20px);
-      border:1px solid var(--border-glass);
+      background: var(--bg-card);
+      border-radius:50px;
+      border:1px solid var(--border);
+      backdrop-filter:blur(12px);
     }
 
-    .tab{
-      padding:1rem 2.5rem;
-      border-radius:50px;
+    .tab {
+      padding:.8rem 2.2rem;
       background:transparent;
       border:none;
-      color:var(--text-secondary);
-      font-weight:600;
+      border-radius:50px;
       cursor:pointer;
-      font-family:'Space Grotesk',sans-serif;
+      color:var(--text-light);
+      font-size:1rem;
+      font-weight:600;
       transition:.3s;
     }
-    .tab.active{
-      background:linear-gradient(135deg,var(--primary),var(--accent));
-      color:#fff;
-      box-shadow:0 8px 20px rgba(99,102,241,.4);
+
+    .tab.active {
+      background:linear-gradient(135deg, var(--primary), var(--accent));
+      color:white;
     }
 
-    /* Search */
-    .controls{
+    /* SEARCH + USER AREA */
+    .top-controls {
       display:flex;
       justify-content:center;
       gap:1rem;
-      margin:2rem 0;
       flex-wrap:wrap;
+      margin-top:2rem;
     }
 
-    .search-wrapper{
-      position:relative;
+    .search-box {
       flex:1;
-      max-width:500px;
+      max-width:450px;
+      position:relative;
     }
 
-    .search{
+    .search-input {
       width:100%;
-      padding:1rem 1.5rem 1rem 3rem;
-      background:var(--bg-glass);
-      border:1px solid var(--border-glass);
+      padding:1rem 1.4rem;
       border-radius:50px;
-      color:var(--text-primary);
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      color:var(--text);
       font-size:1rem;
-      backdrop-filter:blur(20px);
     }
 
-    /* Item List */
-    .list{display:flex;flex-direction:column;gap:2rem;margin-top:2rem;}
+    /* ITEM LIST */
+    #itemsList {
+      margin-top:2.5rem;
+      max-width:800px;
+      margin-left:auto;
+      margin-right:auto;
+      display:flex;
+      flex-direction:column;
+      gap:2rem;
+    }
 
-    .card{
-      background:var(--bg-glass);
-      border:1px solid var(--border-glass);
-      border-radius:20px;
-      overflow:hidden;
+    .card {
+      background:var(--bg-card);
       padding:1.5rem;
+      border-radius:20px;
+      border:1px solid var(--border);
+      backdrop-filter:blur(10px);
+      animation:fadeUp .3s ease forwards;
     }
 
-    footer{
-      text-align:center;
-      padding:2rem 0;
-      margin-top:4rem;
-      border-top:1px solid var(--border-glass);
-    }
-    footer a{
-      color:var(--primary-light);
-      text-decoration:none;
-      font-weight:600;
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to { opacity:1; transform:translateY(0); }
     }
 
-    /* Floating Add Button */
-    .fab{
+    /* FLOATING BUTTON */
+    #addBtn {
       position:fixed;
       bottom:2rem;
       right:2rem;
-      width:70px;
-      height:70px;
+      width:75px;
+      height:75px;
       border-radius:50%;
       background:linear-gradient(135deg,var(--primary),var(--accent));
       color:white;
-      font-size:2rem;
+      font-size:2.5rem;
       border:none;
       cursor:pointer;
       display:flex;
       align-items:center;
       justify-content:center;
-      box-shadow:0 8px 30px rgba(99,102,241,.5);
+      box-shadow:0 12px 30px rgba(0,0,0,0.3);
       z-index:200;
     }
+
+    /* MODALS */
+    .modal {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.6);
+      display:none;
+      justify-content:center;
+      align-items:center;
+      backdrop-filter:blur(8px);
+    }
+
+    .modal-box {
+      background:var(--bg-card);
+      padding:2rem;
+      border-radius:20px;
+      border:1px solid var(--border);
+      width:90%;
+      max-width:500px;
+      max-height:90vh;
+      overflow-y:auto;
+    }
+
+    .modal-box input,
+    .modal-box textarea,
+    .modal-box select {
+      width:100%;
+      padding:1rem;
+      border-radius:12px;
+      background:var(--bg-glass);
+      border:1px solid var(--border);
+      color:var(--text);
+      margin-top:.5rem;
+      margin-bottom:1rem;
+    }
+
+    .modal-close {
+      float:right;
+      cursor:pointer;
+      font-size:1.6rem;
+      font-weight:bold;
+      margin-top:-1rem;
+    }
+
+    /* TOGGLE MODE BUTTON */
+    #themeToggle {
+      position:fixed;
+      top:1.5rem;
+      right:1.5rem;
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      padding:.6rem 1rem;
+      border-radius:12px;
+      cursor:pointer;
+      color:var(--text);
+      font-weight:600;
+    }
+
   </style>
 </head>
 
 <body>
-<div class="container">
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo-wrapper">
-      <div class="logo">
-        <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png">
-      </div>
-      <div>
-        <h1>Campus Lost & Found</h1>
-        <p class="subtitle">BBD University — Premium Edition</p>
-      </div>
-    </div>
-  </header>
+<!-- LIGHT / DARK MODE TOGGLE -->
+<button id="themeToggle">Toggle Theme</button>
 
-  <!-- TABS -->
-  <div class="tabs-wrapper">
-    <div class="tabs">
-      <button class="tab active" data-tab="lost">Lost Items</button>
-      <button class="tab" data-tab="found">Found Items</button>
-      <button class="tab" data-tab="giveaway">Giveaway</button>
+<header>
+  <div class="logo-box">
+    <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" width="60">
+    <div>
+      <h1>BBD Lost & Found</h1>
+      <p class="subtitle">BBD Educational Group — Premium Edition</p>
     </div>
   </div>
+</header>
 
-  <!-- SEARCH + USER AREA -->
-  <div class="controls">
-    <div class="search-wrapper">
-      <input id="search" class="search" placeholder="Search items...">
-    </div>
-
-    <div id="userArea"></div>
-
-    <button id="inboxBtn" class="btn btn-ghost">Inbox</button>
-    <div id="badge" class="badge" style="display:none">0</div>
-  </div>
-
-  <!-- ITEMS -->
-  <div id="list" class="list"></div>
-  <!-- ================= AUTH MODAL ================= -->
-<div id="modalAuth" class="modal" style="
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
-  justify-content:center;align-items:center;z-index:1000;
-">
-  <div class="modal-content" style="
-    background:var(--bg-glass);border:1px solid var(--border-glass);
-    padding:2rem;border-radius:20px;width:90%;max-width:420px;
-  ">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-      <h2 id="authTitle">Login</h2>
-      <button id="closeModalAuth" class="modal-close"
-        style="border:none;background:var(--bg-card);width:36px;height:36px;border-radius:50%;cursor:pointer;">
-        ×
-      </button>
-    </div>
-
-    <div class="form-group" style="margin-bottom:1.2rem;">
-      <label>Email</label>
-      <input id="authEmail" class="form-input" type="email"
-        style="width:100%;padding:1rem;background:var(--bg-card);
-        border:1px solid var(--border-glass);border-radius:10px;color:white;"
-        placeholder="your.email@example.com">
-    </div>
-
-    <div class="form-group" style="margin-bottom:1.2rem;">
-      <label>Password</label>
-      <input id="authPass" class="form-input" type="password"
-        style="width:100%;padding:1rem;background:var(--bg-card);
-        border:1px solid var(--border-glass);border-radius:10px;color:white;"
-        placeholder="Minimum 6 characters">
-    </div>
-
-    <button id="authBtn" class="btn btn-primary" style="
-      width:100%;padding:1rem;border-radius:12px;
-      background:linear-gradient(135deg,var(--primary),var(--accent));
-      color:white;border:none;font-size:1rem;font-weight:600;cursor:pointer;
-    ">
-      Login
-    </button>
-
-    <p id="authToggleText" style="text-align:center;margin-top:1rem;color:var(--text-secondary)">
-      Don't have an account?
-      <span id="authToggleLink" style="color:var(--primary-light);cursor:pointer;font-weight:600;">
-        Sign Up
-      </span>
-    </p>
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <div class="tabs">
+    <button class="tab active" data-tab="lost">Lost</button>
+    <button class="tab" data-tab="found">Found</button>
+    <button class="tab" data-tab="giveaway">Giveaway</button>
   </div>
 </div>
 
-<!-- ================= ADD / EDIT ITEM MODAL ================= -->
-<div id="modalAdd" class="modal" style="
-  display:none;position:fixed;inset:0;
-  background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);
-  justify-content:center;align-items:center;z-index:1000;
-">
-  <div class="modal-content" style="
-    background:var(--bg-glass);border:1px solid var(--border-glass);
-    padding:2rem;border-radius:20px;width:90%;max-width:600px;
-    max-height:90vh;overflow-y:auto;
-  ">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
-      <h2 id="modalTitle">Post an Item</h2>
-      <button id="closeModalAdd" class="modal-close"
-        style="border:none;background:var(--bg-card);width:36px;height:36px;border-radius:50%;cursor:pointer;">
-        ×
-      </button>
-    </div>
+<!-- SEARCH + USER -->
+<div class="top-controls">
+  <div class="search-box">
+    <input id="searchInput" class="search-input" placeholder="Search items...">
+  </div>
+  <div id="userBox"></div>
+  <button id="notifBtn">🔔</button>
+  <span id="notifBadge" style="
+    background:red;color:white;border-radius:50%;
+    padding:3px 8px;font-size:.8rem;display:none;
+  ">0</span>
+</div>
 
-    <div class="form-group" style="margin-bottom:1rem;">
-      <label>Item Title</label>
-      <input id="itemTitle" class="form-input" type="text"
-        style="width:100%;padding:1rem;background:var(--bg-card);
-        border:1px solid var(--border-glass);border-radius:10px;color:white;"
-        placeholder="e.g., Black Wallet">
-    </div>
+<!-- MAIN ITEM LIST -->
+<div id="itemsList"></div>
 
-    <div class="form-group" style="margin-bottom:1rem;">
-      <label>Description</label>
-      <textarea id="itemDesc" class="form-textarea"
-        style="width:100%;padding:1rem;background:var(--bg-card);
-        border:1px solid var(--border-glass);border-radius:10px;color:white;height:120px;"
-        placeholder="Describe the item..."></textarea>
-    </div>
+<!-- ADD / EDIT MODAL -->
+<div id="itemModal" class="modal">
+  <div class="modal-box">
+    <span id="modalClose" class="modal-close">×</span>
+    <h2 id="modalTitle">Add Item</h2>
 
-    <div class="form-group" style="margin-bottom:1rem;">
-      <label>Category</label>
-      <select id="category" class="form-select"
-        style="width:100%;padding:1rem;background:var(--bg-card);
-        border:1px solid var(--border-glass);border-radius:10px;color:white;">
-        <option value="electronics">Electronics</option>
-        <option value="books">Books & Notes</option>
-        <option value="clothing">Clothing</option>
-        <option value="accessories">Accessories</option>
-        <option value="other">Other</option>
-      </select>
-    </div>
+    <label>Title</label>
+    <input id="itemTitle">
 
-    <div class="form-group" style="margin-bottom:1rem;">
-      <label>Location</label>
-      <input id="location" class="form-input" type="text"
-        style="width:100%;padding:1rem;background:var(--bg-card);
-        border:1px solid var(--border-glass);border-radius:10px;color:white;"
-        placeholder="e.g., Library 3rd floor">
-    </div>
+    <label>Description</label>
+    <textarea id="itemDesc" rows="4"></textarea>
 
-    <!-- IMAGE PREVIEW + UPLOAD -->
-    <div class="form-group" style="margin-bottom:1rem;">
-      <label>Upload Image (optional)</label>
-      <label for="fileInput" class="image-upload-label"
-        style="padding:1.2rem;border:2px dashed var(--border-glass);
-        border-radius:12px;text-align:center;cursor:pointer;">
-        <span id="uploadText">Select Image</span>
-      </label>
-      <input id="fileInput" type="file" accept="image/*" style="display:none;">
-      <img id="imgPreview" style="
-        display:none;width:100%;max-height:250px;object-fit:cover;margin-top:1rem;border-radius:10px;
-      ">
-    </div>
+    <label>Category</label>
+    <select id="itemCategory">
+      <option value="electronics">Electronics</option>
+      <option value="books">Books</option>
+      <option value="clothing">Clothing</option>
+      <option value="accessories">Accessories</option>
+      <option value="others">Others</option>
+    </select>
 
-    <div style="display:flex;gap:1rem;margin-top:1.5rem;">
-      <button id="cancelBtn" class="btn"
-        style="flex:1;padding:1rem;background:var(--bg-card);
-        border:1px solid var(--border-glass);border-radius:12px;color:white;">
-        Cancel
-      </button>
+    <label>Location</label>
+    <input id="itemLocation">
 
-      <button id="postBtn" class="btn btn-primary"
-        style="flex:1;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--accent));
-        color:white;border:none;border-radius:12px;font-weight:600;">
-        Post Item
-      </button>
-    </div>
+    <label>Image</label>
+    <input type="file" id="itemImage">
+
+    <button id="saveItemBtn" style="
+      width:100%;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--accent));
+      color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;
+    ">Save</button>
   </div>
 </div>
 
-<!-- FLOATING ADD BUTTON -->
-<button id="fab" class="fab">+</button>
-
-<!-- TOAST MESSAGE -->
-<div id="toast" class="toast" style="
-  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);
-  background:var(--bg-glass);padding:1rem 2rem;border-radius:50px;
-  opacity:0;color:white;border:1px solid var(--border-glass);
-  transition:.4s;z-index:2000;
-"></div>
-
-</div> <!-- END container -->
-<!-- ========== PART-3: JavaScript (paste after Part-2) ========== -->
+<button id="addBtn">+</button>
 <script type="module">
 /*
-  PART-3: Supabase app wiring
-  - Assumes Part-1 + Part-2 HTML is present (IDs used there)
-  - Uses Supabase JS (CDN ESM) and browser-image-compression (ESM)
+  PART 2 — Supabase Auth, Session, Tabs, Load & Render Items
+  Paste after PART 1 in the same index.html
 */
 
+/* ---------- Supabase client ---------- */
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-import imageCompression from "https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.esm.js";
 
-/* ----------------- CONFIG ----------------- */
-// replace only if you want to change project (you already confirmed these earlier)
 const SUPABASE_URL = "https://aksovogwimuqprevlxhd.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ----------------- DOM refs ----------------- */
-const list = document.getElementById('list');
-const searchEl = document.getElementById('search');
+/* ---------- DOM Refs ---------- */
 const tabs = Array.from(document.querySelectorAll('.tab'));
-const userArea = document.getElementById('userArea');
+const searchInput = document.getElementById('searchInput');
+const itemsList = document.getElementById('itemsList');
+const addBtn = document.getElementById('addBtn');
+const itemModal = document.getElementById('itemModal');
+const modalClose = document.getElementById('modalClose');
+const saveItemBtn = document.getElementById('saveItemBtn');
+const itemTitleEl = document.getElementById('itemTitle');
+const itemDescEl = document.getElementById('itemDesc');
+const itemCategoryEl = document.getElementById('itemCategory');
+const itemLocationEl = document.getElementById('itemLocation');
+const itemImageEl = document.getElementById('itemImage');
 
-const modalAuth = document.getElementById('modalAuth');
-const authEmail = document.getElementById('authEmail');
-const authPass = document.getElementById('authPass');
-const authBtn = document.getElementById('authBtn');
-const authTitle = document.getElementById('authTitle');
-const authToggleText = document.getElementById('authToggleText');
-const closeModalAuth = document.getElementById('closeModalAuth');
+const userBox = document.getElementById('userBox');
+const notifBtn = document.getElementById('notifBtn');
+const notifBadge = document.getElementById('notifBadge');
 
-const modalAdd = document.getElementById('modalAdd');
-const closeModalAdd = document.getElementById('closeModalAdd');
-const itemTitle = document.getElementById('itemTitle');
-const itemDesc = document.getElementById('itemDesc');
-const categoryEl = document.getElementById('category');
-const locationEl = document.getElementById('location');
-const fileInput = document.getElementById('fileInput');
-const uploadText = document.getElementById('uploadText');
-const imgPreview = document.getElementById('imgPreview');
-const postBtn = document.getElementById('postBtn');
-const fab = document.getElementById('fab');
+const themeToggle = document.getElementById('themeToggle');
 
-const toast = document.getElementById('toast');
-const inboxBtn = document.getElementById('inboxBtn');
-const badge = document.getElementById('badge');
-
-/* ----------------- state ----------------- */
+/* ---------- State ---------- */
 let currentTab = 'lost';
-let currentUser = null;
-let allItems = { lost: [], found: [], giveaway: [] };
-let editingItemId = null;
-let notifsChannel = null;
+let state = {
+  currentUser: null,
+  allItems: { lost: [], found: [], giveaway: [] },
+  editingId: null // if editing an item
+};
 
-/* ----------------- helpers ----------------- */
-function showToast(msg, t=3000){
-  toast.textContent = msg;
-  toast.style.opacity = '1';
-  toast.style.transform = 'translateX(-50%) translateY(0)';
-  clearTimeout(toast._t);
-  toast._t = setTimeout(()=> {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) translateY(80px)';
+/* ---------- THEME: Dark/Light toggle ---------- */
+(function initTheme(){
+  const root = document.documentElement;
+  // default: dark, but respond to prefers-color-scheme
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+    root.classList.add('light');
+  }
+  themeToggle.onclick = () => {
+    root.classList.toggle('light');
+    // small feedback
+    showToast('Theme toggled');
+  };
+})();
+
+/* ---------- TOAST (small helper) ---------- */
+const toastEl = document.getElementById('toast');
+function showToast(msg, t = 2500){
+  if (!toastEl) return;
+  toastEl.textContent = msg;
+  toastEl.style.opacity = '1';
+  toastEl.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(toastEl._t);
+  toastEl._t = setTimeout(()=> {
+    toastEl.style.opacity = '0';
+    toastEl.style.transform = 'translateX(-50%) translateY(80px)';
   }, t);
 }
-function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
-/* ----------------- image compression & upload ----------------- */
-async function compressFile(file){
-  if (!file) return null;
-  try {
-    const opts = { maxSizeMB: 0.8, maxWidthOrHeight: 1080, useWebWorker: true, fileType: 'image/webp' };
-    return await imageCompression(file, opts);
-  } catch(e){
-    console.warn('compress error', e);
-    return file;
-  }
-}
-async function uploadImageToSupabase(file){
-  if (!file) return "";
-  try{
-    const compressed = await compressFile(file);
-    const filename = `images/item_${Date.now()}_${Math.random().toString(36).slice(2,8)}.webp`;
-    const { error } = await supabase.storage.from('images').upload(filename, compressed, { upsert:false, contentType:'image/webp' });
-    if (error) { console.error('storage.upload', error); return ""; }
-    const { data } = supabase.storage.from('images').getPublicUrl(filename);
-    return data?.publicUrl ?? "";
-  }catch(e){ console.error(e); return ""; }
-}
-
-/* ----------------- AUTH UI ----------------- */
-function renderUser(user){
-  userArea.innerHTML = '';
+/* ---------- AUTH UI & Handlers ---------- */
+function renderUserUI(user){
+  userBox.innerHTML = '';
   if (!user){
-    const loginBtn = document.createElement('button'); loginBtn.className='btn btn-ghost'; loginBtn.textContent='Login';
-    const signupBtn = document.createElement('button'); signupBtn.className='btn btn-primary'; signupBtn.textContent='Sign Up';
-    loginBtn.onclick = ()=> openAuthModal('login');
-    signupBtn.onclick = ()=> openAuthModal('signup');
-    userArea.appendChild(loginBtn); userArea.appendChild(signupBtn);
-    // hide fab when not logged in? we allow fab but require login on click
+    const loginBtn = document.createElement('button');
+    loginBtn.textContent = 'Login';
+    loginBtn.className = 'tab';
+    loginBtn.style.padding = '.6rem 1rem';
+    loginBtn.onclick = () => openAuthModal('login');
+    const signupBtn = document.createElement('button');
+    signupBtn.textContent = 'Sign Up';
+    signupBtn.className = 'tab';
+    signupBtn.style.padding = '.6rem 1rem';
+    signupBtn.onclick = () => openAuthModal('signup');
+    userBox.appendChild(loginBtn);
+    userBox.appendChild(signupBtn);
   } else {
-    const name = document.createElement('div'); name.style.fontWeight='700'; name.style.marginRight='10px';
-    name.textContent = user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'User');
-    const out = document.createElement('button'); out.className='btn btn-ghost'; out.textContent='Logout';
-    out.onclick = async ()=>{
+    const nameDiv = document.createElement('div');
+    nameDiv.style.display = 'inline-block';
+    nameDiv.style.marginRight = '8px';
+    nameDiv.textContent = user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'User');
+    nameDiv.style.fontWeight = '700';
+
+    const logoutBtn = document.createElement('button');
+    logoutBtn.textContent = 'Logout';
+    logoutBtn.className = 'tab';
+    logoutBtn.style.padding = '.6rem 1rem';
+    logoutBtn.onclick = async () => {
       await supabase.auth.signOut();
       showToast('Logged out');
     };
-    userArea.appendChild(name); userArea.appendChild(out);
+
+    userBox.appendChild(nameDiv);
+    userBox.appendChild(logoutBtn);
   }
 }
 
+/* Auth modal (simple) */
 function openAuthModal(mode='login'){
-  authMode = mode;
-  if (mode === 'login'){
-    authTitle.textContent = 'Login to your account';
-    authBtn.textContent = 'Login';
-    authToggleText.innerHTML = `Don't have an account? <span id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Sign Up</span>`;
-  } else {
-    authTitle.textContent = 'Create new account';
-    authBtn.textContent = 'Sign Up';
-    authToggleText.innerHTML = `Already have an account? <span id="authToggleLink" style="color:var(--primary-light);cursor:pointer">Login</span>`;
-  }
-  modalAuth.style.display = 'flex';
-  authEmail.value=''; authPass.value='';
-  setTimeout(()=> {
-    const link = document.getElementById('authToggleLink');
-    if (link) link.onclick = ()=> openAuthModal(authMode === 'login' ? 'signup' : 'login');
-  }, 50);
-}
-closeModalAuth.onclick = ()=> modalAuth.style.display = 'none';
-let authMode = 'login';
+  // Create a minimal auth modal on the fly (keeps index.html minimal)
+  const modal = document.createElement('div');
+  modal.style.position = 'fixed';
+  modal.style.inset = '0';
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+  modal.style.background = 'rgba(0,0,0,0.6)';
+  modal.style.zIndex = 9999;
 
-/* auth button */
-authBtn.onclick = async ()=> {
-  const email = authEmail.value.trim();
-  const password = authPass.value.trim();
-  if (!email || !password) return showToast('Fill email & password');
+  const box = document.createElement('div');
+  box.style.background = 'var(--bg-card)';
+  box.style.border = '1px solid var(--border)';
+  box.style.padding = '1.2rem';
+  box.style.borderRadius = '12px';
+  box.style.width = '360px';
 
-  try {
-    if (authMode === 'signup'){
-      // signUp with metadata
-      const { error: suErr } = await supabase.auth.signUp({ email, password }, { data: { full_name: email.split('@')[0] }});
-      if (suErr) throw suErr;
-      // Some projects require email confirmation; if confirmation is off you might get session automatically.
-      showToast('Signup successful — check email if confirmation enabled');
-      modalAuth.style.display = 'none';
-    } else {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      showToast('Logged in');
-      modalAuth.style.display = 'none';
+  const title = document.createElement('h3');
+  title.textContent = mode === 'login' ? 'Login' : 'Sign Up';
+  box.appendChild(title);
+
+  const email = document.createElement('input');
+  email.type = 'email';
+  email.placeholder = 'Email';
+  email.style.width = '100%'; email.style.padding = '10px'; email.style.marginTop = '8px';
+  box.appendChild(email);
+
+  const pass = document.createElement('input');
+  pass.type = 'password';
+  pass.placeholder = 'Password (6+)';
+  pass.style.width = '100%'; pass.style.padding = '10px'; pass.style.marginTop = '8px';
+  box.appendChild(pass);
+
+  const action = document.createElement('button');
+  action.textContent = mode === 'login' ? 'Login' : 'Sign Up';
+  action.style.width = '100%'; action.style.padding = '10px'; action.style.marginTop = '12px';
+  action.onclick = async () => {
+    const e = email.value.trim(); const p = pass.value.trim();
+    if (!e || !p || p.length < 6) { showToast('Enter valid email & password'); return; }
+    try {
+      if (mode === 'signup'){
+        const { error } = await supabase.auth.signUp({ email: e, password: p }, { data: { full_name: e.split('@')[0] }});
+        if (error) throw error;
+        showToast('Signed up — check email if confirmation required');
+        document.body.removeChild(modal);
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({ email: e, password: p });
+        if (error) throw error;
+        showToast('Logged in');
+        document.body.removeChild(modal);
+      }
+    } catch(err){
+      console.error('Auth err', err);
+      showToast('Auth failed: ' + (err.message || String(err)));
     }
-  } catch(err){
-    console.error('auth error', err);
-    showToast('Auth error: ' + (err.message || JSON.stringify(err)));
-  }
-};
+  };
+  box.appendChild(action);
 
-/* persistent session handling */
+  const cancel = document.createElement('div');
+  cancel.textContent = 'Cancel';
+  cancel.style.marginTop = '8px';
+  cancel.style.textAlign = 'center';
+  cancel.style.cursor = 'pointer';
+  cancel.onclick = ()=> document.body.removeChild(modal);
+  box.appendChild(cancel);
+
+  modal.appendChild(box);
+  document.body.appendChild(modal);
+}
+
+/* listen to auth state changes */
 supabase.auth.onAuthStateChange((event, session) => {
-  currentUser = session?.user ?? null;
-  renderUser(currentUser);
-  refreshBadge();
-  loadItems();
-  attachNotificationsChannel();
+  state.currentUser = session?.user ?? null;
+  renderUserUI(state.currentUser);
+  refreshNotifications();
+  loadItems(); // reload items so user-specific actions reflect
 });
 
-/* initial session */
-(async ()=>{
+/* attempt initial session */
+(async function(){
   try {
     const { data } = await supabase.auth.getSession();
-    currentUser = data?.session?.user ?? null;
-    renderUser(currentUser);
-  } catch(e){ console.warn('getSession', e); }
+    state.currentUser = data?.session?.user ?? null;
+    renderUserUI(state.currentUser);
+  } catch(e){
+    console.warn('session fetch failed', e);
+  }
 })();
 
-/* ----------------- TABS + SEARCH ----------------- */
+/* ---------- TABS & SEARCH ---------- */
 tabs.forEach(t => t.addEventListener('click', () => {
-  tabs.forEach(x=>x.classList.remove('active'));
+  tabs.forEach(x => x.classList.remove('active'));
   t.classList.add('active');
   currentTab = t.dataset.tab;
   renderList();
 }));
 
-searchEl.addEventListener('input', () => renderList());
+searchInput.addEventListener('input', () => {
+  renderList();
+});
 
+/* ---------- Load items from Supabase ---------- */
+async function loadItems(){
+  try {
+    // fetch all items (we'll separate by status)
+    const { data, error } = await supabase
+      .from('items')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(500);
+
+    if (error) {
+      console.error('loadItems error', error);
+      showToast('Failed to load items');
+      return;
+    }
+
+    // reset
+    state.allItems = { lost: [], found: [], giveaway: [] };
+
+    data.forEach(r => {
+      const item = {
+        id: r.id,
+        title: r.title,
+        description: r.description,
+        category: r.category,
+        location: r.location,
+        imageURL: r.image_url || '',
+        status: r.status || 'lost',
+        userId: r.user_id,
+        postedBy: r.posted_by || 'Anonymous',
+        createdAt: r.created_at,
+        likes: r.likes_count || 0,
+        returned: r.status === 'returned'
+      };
+      if (item.status === 'found') state.allItems.found.push(item);
+      else if (item.status === 'giveaway') state.allItems.giveaway.push(item);
+      else state.allItems.lost.push(item);
+    });
+
+    renderList();
+  } catch(err){
+    console.error('loadItems exception', err);
+    showToast('Load failed');
+  }
+}
+
+/* ---------- Render list ---------- */
 function matchesQuery(item, q){
   if (!q) return true;
   q = q.trim().toLowerCase();
-  return [item.title, item.description, item.category, item.location, item.postedBy].some(f => (f||'').toLowerCase().includes(q));
-}
-
-/* ----------------- LOAD & RENDER ITEMS ----------------- */
-async function loadItems(){
-  try {
-    const { data, error } = await supabase.from('items').select('*').order('created_at', { ascending: false });
-    if (error) { console.error('loadItems error', error); showToast('Failed to load items'); return; }
-    allItems = { lost: [], found: [], giveaway: [] };
-    data.forEach(it => {
-      const bucket = it.status === 'found' ? 'found' : (it.status === 'giveaway' ? 'giveaway' : 'lost');
-      allItems[bucket].push({
-        id: it.id,
-        title: it.title,
-        description: it.description,
-        category: it.category,
-        location: it.location,
-        imageURL: it.image_url,
-        claimed: (it.status === 'returned'),
-        userId: it.user_id,
-        postedBy: it.posted_by || 'Anonymous',
-        createdAt: it.created_at,
-        likes: it.likes_count || 0
-      });
-    });
-    renderList();
-  } catch(e){ console.error(e); showToast('Load failed'); }
+  return (item.title + ' ' + item.description + ' ' + item.category + ' ' + item.location + ' ' + item.postedBy).toLowerCase().includes(q);
 }
 
 function renderList(){
-  const q = (searchEl.value || '').trim().toLowerCase();
-  const items = allItems[currentTab] || [];
-  const filtered = items.filter(it=> matchesQuery(it, q));
+  const q = (searchInput.value || '').trim().toLowerCase();
+  const items = state.allItems[currentTab] || [];
+  const filtered = items.filter(it => matchesQuery(it, q));
+
   if (!filtered.length){
-    list.innerHTML = `<div class="empty"><div style="font-size:36px">🔍</div><h3>No items found</h3><p style="color:var(--text-secondary)">Be the first to post an item in this section!</p></div>`;
+    itemsList.innerHTML = `
+      <div class="card" style="text-align:center;">
+        <div style="font-size:32px">🔍</div>
+        <h3 style="margin-top:.5rem">No items found</h3>
+        <p style="color:var(--text-light)">Be the first to post in this section.</p>
+      </div>
+    `;
     return;
   }
-  list.innerHTML = '';
+
+  itemsList.innerHTML = '';
   filtered.forEach((item, idx) => {
-    const date = new Date(item.createdAt || Date.now());
-    const media = item.imageURL ? `<img src="${item.imageURL}" alt="${escapeHtml(item.title)}" style="width:100%;height:100%;object-fit:cover">` : `<div class="no-image">No Image</div>`;
-    const card = document.createElement('div'); card.className='card';
-    card.style.animationDelay = `${idx*0.06}s`;
+    const card = document.createElement('div');
+    card.className = 'card';
+    // large image on top
+    const media = item.imageURL ? `<div style="width:100%;height:260px;border-radius:12px;overflow:hidden;margin-bottom:12px;"><img src="${item.imageURL}" style="width:100%;height:100%;object-fit:cover;display:block" alt="${escapeHtml(item.title)}"></div>` : '';
+    const created = item.createdAt ? new Date(item.createdAt).toLocaleString() : '';
     card.innerHTML = `
-      <div class="card-content">
-        <div class="card-image">${media}</div>
-        <div class="card-body">
-          <h2 class="card-title">${escapeHtml(item.title)}</h2>
-          <p class="card-desc">${escapeHtml(item.description)}</p>
-          <div class="meta-row">
-            <span class="chip chip-location">${escapeHtml(item.location || 'Campus')}</span>
-            <span class="chip chip-category">${escapeHtml(item.category || 'Other')}</span>
-            <span class="chip chip-date">${date.toLocaleDateString()}</span>
+      ${media}
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+        <div style="flex:1">
+          <h2 style="margin:0 0 .4rem 0;font-size:1.1rem">${escapeHtml(item.title)}</h2>
+          <p style="margin:0;color:var(--text-light)">${escapeHtml(item.description)}</p>
+          <div style="margin-top:.8rem;display:flex;gap:.6rem;flex-wrap:wrap">
+            <span style="padding:.4rem .6rem;background:rgba(255,255,255,0.03);border-radius:999px;font-weight:700;color:var(--text-light)">${escapeHtml(item.category)}</span>
+            <span style="padding:.4rem .6rem;background:rgba(255,255,255,0.03);border-radius:999px;font-weight:700;color:var(--text-light)">${escapeHtml(item.location || 'Campus')}</span>
+            <span style="padding:.4rem .6rem;background:rgba(255,255,255,0.03);border-radius:999px;font-weight:700;color:var(--text-light)">${created}</span>
           </div>
-          <div class="card-footer">
-            <p class="posted-by">Posted by <strong>${escapeHtml(item.postedBy || 'Anonymous')}</strong></p>
-            <div class="action-buttons">
-              <button class="btn-share btn btn-ghost" data-id="${item.id}">Share</button>
-              <button class="btn-edit btn btn-ghost" data-id="${item.id}">Edit</button>
-              <button class="btn-return btn btn-ghost" data-id="${item.id}" ${item.claimed ? 'disabled' : ''}>${item.claimed ? 'Returned' : 'Mark as returned'}</button>
-              <button class="btn-like btn btn-ghost" data-id="${item.id}">👍 <span class="like-count">${item.likes||0}</span></button>
-              <button class="btn-report btn btn-ghost" data-id="${item.id}">Report</button>
-              ${currentUser && currentUser.id === item.userId ? `<button class="btn-delete btn-delete" data-delete="${item.id}">Delete</button>` : ''}
-            </div>
-          </div>
+          <p style="margin-top:.8rem;color:var(--text-light);font-size:.95rem">Posted by <strong>${escapeHtml(item.postedBy)}</strong></p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+          <button class="tab btn-claim" data-id="${item.id}" ${item.returned ? 'disabled' : ''}>${item.returned ? 'Returned' : 'Mark as returned'}</button>
+          <button class="tab btn-like" data-id="${item.id}">👍 ${item.likes || 0}</button>
+          <button class="tab btn-share" data-id="${item.id}">Share</button>
+          ${ (state.currentUser && state.currentUser.id === item.userId) ? `<button class="tab btn-edit" data-id="${item.id}">Edit</button><button class="tab btn-delete" data-id="${item.id}">Delete</button>` : `<button class="tab btn-report" data-id="${item.id}">Report</button>` }
         </div>
       </div>
     `;
-    list.appendChild(card);
 
-    // handlers
-    card.querySelector('.btn-share').addEventListener('click', ()=> {
-      const text = `Item: ${item.title}\nLocation: ${item.location}\n${item.description}\nLink: ${location.origin}/?item=${item.id}`;
-      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-    });
-    card.querySelector('.btn-edit').addEventListener('click', ()=> openEditModal(item));
-    const returnBtn = card.querySelector('.btn-return');
-    returnBtn && returnBtn.addEventListener('click', async ()=> {
-      if (!currentUser) { openAuthModal('login'); showToast('Login to mark returned'); return; }
-      try {
-        await supabase.from('items').update({ status: 'returned' }).eq('id', item.id);
-        await createNotification('Item returned', `${item.title} was marked returned`, 'all');
-        showToast('Marked as returned');
-        await loadItems();
-      } catch(e){ console.error(e); showToast('Failed to mark returned'); }
-    });
+    // attach buttons if handler exists (handlers provided in PART 3)
+    setTimeout(()=> {
+      const claimBtn = card.querySelector('.btn-claim');
+      if (claimBtn) claimBtn.addEventListener('click', ()=> {
+        if (typeof handleMarkReturned === 'function') handleMarkReturned(item);
+        else showToast('Action pending...');
+      });
 
-    const likeBtn = card.querySelector('.btn-like');
-    likeBtn && likeBtn.addEventListener('click', async ()=> {
-      if (!currentUser) { openAuthModal('login'); showToast('Login to like'); return; }
-      try {
-        const { error } = await supabase.from('likes').insert({ item_id: item.id, user_id: currentUser.id });
-        if (error){
-          // likely duplicate -> remove like
-          await supabase.from('likes').delete().match({ item_id: item.id, user_id: currentUser.id });
-        } else {
-          // increment counter (basic)
-          await supabase.from('items').update({ likes_count: (item.likes||0)+1 }).eq('id', item.id);
-        }
-        await loadItems();
-      } catch(e){ console.error(e); showToast('Like failed'); }
-    });
+      const likeBtn = card.querySelector('.btn-like');
+      if (likeBtn) likeBtn.addEventListener('click', ()=> {
+        if (typeof handleLike === 'function') handleLike(item);
+        else showToast('Action pending...');
+      });
 
-    const reportBtn = card.querySelector('.btn-report');
-    reportBtn && reportBtn.addEventListener('click', async ()=> {
-      const reason = prompt('Why are you reporting this item? (brief)');
-      if (!reason) return;
-      try {
-        await supabase.from('reports').insert({ item_id: item.id, user_id: currentUser ? currentUser.id : null, reason });
-        showToast('Reported — thanks');
-      } catch(e){ console.error(e); showToast('Report failed'); }
-    });
+      const shareBtn = card.querySelector('.btn-share');
+      if (shareBtn) shareBtn.addEventListener('click', ()=> {
+        const text = `Item: ${item.title}\nLocation: ${item.location}\n${item.description}\nOpen: ${location.href}`;
+        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+      });
 
-    const delBtn = card.querySelector('[data-delete]');
-    delBtn && delBtn.addEventListener('click', async ()=> {
-      if (!confirm('Delete this item?')) return;
-      try {
-        await supabase.from('items').delete().eq('id', item.id);
-        showToast('Deleted');
-        await loadItems();
-      } catch(e){ console.error(e); showToast('Delete failed'); }
-    });
+      const editBtn = card.querySelector('.btn-edit');
+      if (editBtn) editBtn.addEventListener('click', ()=> {
+        if (typeof openEditModal === 'function') openEditModal(item);
+        else showToast('Edit not available');
+      });
+
+      const delBtn = card.querySelector('.btn-delete');
+      if (delBtn) delBtn.addEventListener('click', ()=> {
+        if (typeof handleDelete === 'function') handleDelete(item);
+        else showToast('Delete not available');
+      });
+
+      const reportBtn = card.querySelector('.btn-report');
+      if (reportBtn) reportBtn.addEventListener('click', ()=> {
+        if (typeof handleReport === 'function') handleReport(item);
+        else showToast('Report not available');
+      });
+    }, 30);
+
+    itemsList.appendChild(card);
   });
 }
 
-/* ----------------- ADD / EDIT flow ----------------- */
-fileInput.addEventListener('change', (e)=> {
-  const f = e.target.files[0];
-  if (f){
-    uploadText.textContent = f.name;
-    const reader = new FileReader();
-    reader.onload = ev => { imgPreview.src = ev.target.result; imgPreview.style.display = 'block'; };
-    reader.readAsDataURL(f);
-  } else {
-    uploadText.textContent = 'Select Image';
-    imgPreview.style.display = 'none';
-    imgPreview.src = '';
-  }
-});
-
-postBtn.addEventListener('click', async ()=> {
-  if (!currentUser){ openAuthModal('login'); showToast('Login to post'); return; }
-  const title = itemTitle.value.trim();
-  const desc = itemDesc.value.trim();
-  const loc = locationEl.value.trim() || 'Campus';
-  const cat = categoryEl.value;
-  if (!title || !desc) { showToast('Please fill title & description'); return; }
-  postBtn.disabled = true;
-  postBtn.textContent = editingItemId ? 'Saving...' : 'Posting...';
-
-  try {
-    let imageURL = '';
-    if (fileInput.files[0]) imageURL = await uploadImageToSupabase(fileInput.files[0]);
-
-    if (editingItemId){
-      await supabase.from('items').update({
-        title, description: desc, location: loc, category: cat, image_url: imageURL || undefined, updated_at: new Date()
-      }).eq('id', editingItemId);
-      showToast('Updated');
-      editingItemId = null;
-    } else {
-      await supabase.from('items').insert([{
-        title, description: desc, category: cat, location: loc, image_url: imageURL || '', status: currentTab === 'found' ? 'found' : (currentTab==='giveaway'?'giveaway':'lost'),
-        user_id: currentUser ? currentUser.id : null, posted_by: currentUser ? (currentUser.user_metadata?.full_name || currentUser.email) : 'Anonymous'
-      }]);
-      showToast('Posted successfully');
-      await createNotification(`New ${currentTab} item`, `${title} added in ${currentTab}`, 'all');
-    }
-    // reset form + close
-    modalAdd.style.display = 'none';
-    itemTitle.value=''; itemDesc.value=''; locationEl.value=''; categoryEl.value='electronics';
-    fileInput.value=''; uploadText.textContent='Select Image'; imgPreview.style.display='none'; imgPreview.src='';
-    await loadItems();
-  } catch(e){
-    console.error(e);
-    showToast('Post failed');
-  } finally {
-    postBtn.disabled = false;
-    postBtn.textContent = 'Post Item';
-  }
-});
-
-/* open add modal */
-fab.addEventListener('click', ()=>{
-  if (!currentUser) { openAuthModal('login'); showToast('Login to post'); return; }
-  editingItemId = null;
-  document.getElementById('modalTitle').textContent = 'Post an Item';
-  postBtn.textContent = 'Post Item';
-  modalAdd.style.display = 'flex';
-});
-
-/* modal close handlers */
-closeModalAdd.onclick = ()=> { modalAdd.style.display = 'none'; editingItemId = null; };
-document.getElementById('cancelBtn').onclick = ()=> { modalAdd.style.display = 'none'; editingItemId = null; };
-
-/* open edit modal */
-function openEditModal(item){
-  if (!currentUser) { openAuthModal('login'); showToast('Login to edit'); return; }
-  if (currentUser.id !== item.userId) { showToast('You can only edit your own item'); return; }
-  editingItemId = item.id;
-  document.getElementById('modalTitle').textContent = 'Edit Item';
-  itemTitle.value = item.title || '';
-  itemDesc.value = item.description || '';
-  locationEl.value = item.location || '';
-  categoryEl.value = item.category || 'other';
-  if (item.imageURL) { imgPreview.src = item.imageURL; imgPreview.style.display = 'block'; }
-  modalAdd.style.display = 'flex';
-  postBtn.textContent = 'Save Changes';
+/* ---------- Utilities ---------- */
+function escapeHtml(s){
+  if (s == null) return '';
+  return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 }
 
-/* ----------------- NOTIFICATIONS (in-app) ----------------- */
-async function createNotification(title, message, target='all'){
-  try {
-    await supabase.from('notifications').insert([{ title, message, target, read_by: [] }]);
-  } catch(e){ console.warn('createNotification', e); }
-}
-
-/* attach notifications realtime (v2 channel) */
-function attachNotificationsChannel(){
-  try {
-    if (notifsChannel) { notifsChannel.unsubscribe(); notifsChannel = null; }
-    notifsChannel = supabase.channel('notif-channel')
-      .on('postgres_changes', { event:'INSERT', schema:'public', table:'notifications' }, payload => {
-        // show small toast & update badge
-        refreshBadge();
-        showToast('🔔 New notification', 2500);
-      })
-      .subscribe();
-  } catch(e){ console.warn('notif channel err', e); }
-}
-
-/* refresh badge */
-async function refreshBadge(){
-  if (!currentUser){ badge.style.display = 'none'; return; }
-  try {
-    const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending:false }).limit(80);
-    const unread = data.filter(n => !(n.read_by || []).includes(currentUser.id)).length;
-    if (unread > 0){ badge.style.display = 'flex'; badge.textContent = unread; } else { badge.style.display = 'none'; }
-  } catch(e){ console.warn(e); badge.style.display = 'none'; }
-}
-
-/* show inbox panel */
-inboxBtn.addEventListener('click', async ()=>{
-  const { data } = await supabase.from('notifications').select('*').order('created_at', { ascending:false }).limit(80);
-  const panel = document.createElement('div'); panel.id = 'notifPanel';
-  panel.style.position='fixed'; panel.style.right='22px'; panel.style.top='92px'; panel.style.width='420px';
-  panel.style.background='var(--bg-glass)'; panel.style.border='1px solid var(--border-glass)'; panel.style.padding='12px';
-  panel.style.borderRadius='12px'; panel.style.boxShadow='0 30px 60px rgba(9,16,56,0.12)'; panel.style.zIndex = 1200;
-  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><strong>Notifications</strong><div><button id="markAll" class="btn btn-ghost">Mark all read</button> <button id="closeNotif" class="btn btn-ghost">Close</button></div></div>`;
-  if (!data || data.length === 0){
-    const none = document.createElement('div'); none.textContent = 'No notifications'; none.style.color = 'var(--text-secondary)';
-    panel.appendChild(none);
-    document.body.appendChild(panel);
-    document.getElementById('closeNotif').onclick = ()=> panel.remove();
+/* ---------- Modal open/close ---------- */
+addBtn.addEventListener('click', ()=>{
+  if (!state.currentUser) {
+    openAuthModal('login');
+    showToast('Login to post');
     return;
   }
-  data.forEach(n => {
-    const unread = !(n.read_by || []).includes(currentUser ? currentUser.id : '__');
-    const it = document.createElement('div');
-    it.style.padding='10px'; it.style.borderRadius='10px'; it.style.marginBottom='8px';
-    it.style.background = unread ? 'rgba(255,255,255,0.04)' : 'transparent';
-    it.style.cursor = 'pointer';
-    it.innerHTML = `<div style="font-weight:700">${escapeHtml(n.title || 'Notice')}</div><div style="color:var(--text-secondary)">${escapeHtml(n.message || '')}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:6px">${n.created_at ? new Date(n.created_at).toLocaleString() : ''}</div>`;
-    it.onclick = async ()=>{
-      if (!currentUser) { openAuthModal('login'); return; }
-      const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
-      await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
-      panel.remove();
-      refreshBadge();
-    };
-    panel.appendChild(it);
-  });
-  document.body.appendChild(panel);
-  document.getElementById('closeNotif').onclick = ()=> panel.remove();
-  document.getElementById('markAll').onclick = async ()=>{
-    if (!currentUser) { openAuthModal('login'); return; }
-    for (const n of data){
-      const nb = (n.read_by || []); if (!nb.includes(currentUser.id)) nb.push(currentUser.id);
-      await supabase.from('notifications').update({ read_by: nb }).eq('id', n.id);
-    }
-    panel.remove();
-    refreshBadge();
-  };
-  // outside click closes
-  setTimeout(()=> {
-    function outsideClose(e){ if (!panel.contains(e.target) && e.target !== inboxBtn){ panel.remove(); document.removeEventListener('click', outsideClose); } }
-    document.addEventListener('click', outsideClose);
-  }, 50);
+  state.editingId = null;
+  document.getElementById('modalTitle').textContent = 'Add Item';
+  itemTitleEl.value = '';
+  itemDescEl.value = '';
+  itemCategoryEl.value = 'electronics';
+  itemLocationEl.value = '';
+  itemImageEl.value = '';
+  itemModal.style.display = 'flex';
 });
 
-/* ----------------- INITIALIZE ----------------- */
-(async ()=>{
+modalClose.addEventListener('click', ()=> {
+  itemModal.style.display = 'none';
+  state.editingId = null;
+});
+
+/* ---------- Initial load ---------- */
+(async function init(){
   await loadItems();
-  attachNotificationsChannel();
+  // refresh periodically
   setInterval(()=> loadItems(), 60_000);
-  // keep badge updated
-  setInterval(()=> refreshBadge(), 30_000);
 })();
+</script>
+<script type="module">
+/* ============================================================
+   PART 3 — Posting, Editing, Deleting, Likes, Reports,
+             Notifications, Realtime Updates
+   ============================================================ */
 
-/* cleanup on unload */
-window.addEventListener('beforeunload', ()=> {
-  try { if (notifsChannel) notifsChannel.unsubscribe(); } catch {}
+/* We continue from Supabase client & state defined in PART 2 */
+import imageCompression from "https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.esm.js";
+
+/* ========== IMAGE UPLOAD HANDLER ========== */
+async function compressAndUpload(file){
+  if (!file) return "";
+
+  try {
+    const compressed = await imageCompression(file, {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1200,
+      useWebWorker: true
+    });
+
+    const filename = `img_${Date.now()}_${Math.random().toString(36).slice(2)}.webp`;
+    const { error: uploadErr } = await supabase.storage
+      .from("images")
+      .upload(filename, compressed, {
+        contentType: "image/webp",
+        upsert: false
+      });
+
+    if (uploadErr) {
+      console.error(uploadErr);
+      showToast("Image upload failed");
+      return "";
+    }
+
+    const { data } = supabase.storage.from("images").getPublicUrl(filename);
+    return data?.publicUrl || "";
+
+  } catch (err) {
+    console.error("Compression/upload error", err);
+    return "";
+  }
+}
+
+/* ========== SAVE / POST ITEM ========== */
+saveItemBtn.addEventListener("click", async () => {
+  if (!state.currentUser) {
+    openAuthModal("login");
+    showToast("Login to post");
+    return;
+  }
+
+  const title = itemTitleEl.value.trim();
+  const desc = itemDescEl.value.trim();
+  const category = itemCategoryEl.value;
+  const location = itemLocationEl.value.trim();
+  const file = itemImageEl.files[0] || null;
+
+  if (!title || !desc) {
+    showToast("Fill title and description");
+    return;
+  }
+
+  saveItemBtn.disabled = true;
+  saveItemBtn.textContent = state.editingId ? "Saving..." : "Posting...";
+
+  try {
+    let imageURL = "";
+    if (file) {
+      imageURL = await compressAndUpload(file);
+    }
+
+    if (state.editingId) {
+      /* UPDATE ITEM */
+      const { error } = await supabase
+        .from("items")
+        .update({
+          title,
+          description: desc,
+          category,
+          location,
+          image_url: imageURL || undefined,
+          updated_at: new Date()
+        })
+        .eq("id", state.editingId);
+
+      if (error) throw error;
+      showToast("Updated");
+
+    } else {
+      /* NEW ITEM */
+      const { error } = await supabase.from("items").insert([
+        {
+          title,
+          description: desc,
+          category,
+          location,
+          image_url: imageURL,
+          status: currentTab, // lost / found / giveaway
+          user_id: state.currentUser?.id || null,
+          posted_by: state.currentUser?.email?.split("@")[0] || "User"
+        }
+      ]);
+
+      if (error) throw error;
+
+      /* NOTIFICATION: NEW ITEM */
+      await createNotification(
+        `New ${currentTab} item`,
+        `${title} added in ${currentTab}`,
+        "all"
+      );
+
+      showToast("Posted successfully");
+    }
+
+    // close modal + reset form
+    itemModal.style.display = "none";
+    state.editingId = null;
+    itemTitleEl.value = "";
+    itemDescEl.value = "";
+    itemCategoryEl.value = "electronics";
+    itemLocationEl.value = "";
+    itemImageEl.value = "";
+
+    await loadItems();
+
+  } catch (err) {
+    console.error(err);
+    showToast("Post failed");
+  }
+
+  saveItemBtn.disabled = false;
+  saveItemBtn.textContent = "Save";
 });
+
+/* ========== EDIT ITEM ========== */
+function openEditModal(item) {
+  if (!state.currentUser) {
+    openAuthModal("login");
+    showToast("Login to edit");
+    return;
+  }
+
+  if (state.currentUser.id !== item.userId) {
+    showToast("You can only edit your own items");
+    return;
+  }
+
+  state.editingId = item.id;
+  document.getElementById("modalTitle").textContent = "Edit Item";
+
+  itemTitleEl.value = item.title;
+  itemDescEl.value = item.description;
+  itemCategoryEl.value = item.category;
+  itemLocationEl.value = item.location;
+
+  itemImageEl.value = "";
+  itemModal.style.display = "flex";
+}
+
+/* ========== DELETE ITEM ========== */
+async function handleDelete(item) {
+  if (!state.currentUser) {
+    openAuthModal("login");
+    return;
+  }
+  if (state.currentUser.id !== item.userId) {
+    showToast("Not your item");
+    return;
+  }
+
+  if (!confirm("Delete this item?")) return;
+
+  try {
+    await supabase.from("items").delete().eq("id", item.id);
+    showToast("Deleted");
+    await loadItems();
+  } catch (err) {
+    console.error(err);
+    showToast("Delete failed");
+  }
+}
+
+/* ========== REPORT ITEM ========== */
+async function handleReport(item) {
+  const reason = prompt("Why are you reporting this item?");
+  if (!reason) return;
+
+  try {
+    await supabase.from("reports").insert([
+      {
+        item_id: item.id,
+        user_id: state.currentUser?.id || null,
+        reason
+      }
+    ]);
+
+    showToast("Reported — thank you");
+  } catch (err) {
+    console.error(err);
+    showToast("Report failed");
+  }
+}
+
+/* ========== LIKE ITEM ========== */
+async function handleLike(item) {
+  if (!state.currentUser) {
+    openAuthModal("login");
+    return;
+  }
+
+  try {
+    // try inserting
+    const { error } = await supabase.from("likes").insert({
+      item_id: item.id,
+      user_id: state.currentUser.id
+    });
+
+    if (error) {
+      // means already liked → remove like
+      await supabase
+        .from("likes")
+        .delete()
+        .match({ item_id: item.id, user_id: state.currentUser.id });
+    }
+
+    await loadItems();
+  } catch (err) {
+    console.error(err);
+    showToast("Like failed");
+  }
+}
+
+/* ========== MARK AS RETURNED ========== */
+async function handleMarkReturned(item) {
+  if (!state.currentUser) {
+    openAuthModal("login");
+    return;
+  }
+
+  try {
+    await supabase.from("items").update({ status: "returned" }).eq("id", item.id);
+
+    await createNotification(
+      "Item returned",
+      `${item.title} was marked as returned`,
+      "all"
+    );
+
+    showToast("Marked returned");
+    await loadItems();
+  } catch (err) {
+    console.error(err);
+    showToast("Failed to mark returned");
+  }
+}
+
+/* ========== NOTIFICATIONS ========== */
+async function createNotification(title, message, target = "all") {
+  try {
+    await supabase.from("notifications").insert([
+      {
+        title,
+        message,
+        target,
+        read_by: []
+      }
+    ]);
+  } catch (err) {
+    console.warn("Notif error", err);
+  }
+}
+
+/* ========== REALTIME NOTIFICATION BADGE ========== */
+async function refreshNotifications() {
+  if (!state.currentUser) {
+    notifBadge.style.display = "none";
+    return;
+  }
+
+  try {
+    const { data } = await supabase
+      .from("notifications")
+      .select("*")
+      .limit(100)
+      .order("created_at", { ascending: false });
+
+    const unread = data.filter(
+      n => !(n.read_by || []).includes(state.currentUser.id)
+    ).length;
+
+    if (unread > 0) {
+      notifBadge.textContent = unread;
+      notifBadge.style.display = "inline-block";
+    } else {
+      notifBadge.style.display = "none";
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+/* ========== NOTIFICATION PANEL ========== */
+notifBtn.addEventListener("click", async () => {
+  if (!state.currentUser) {
+    openAuthModal("login");
+    return;
+  }
+
+  const { data } = await supabase
+    .from("notifications")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  const panel = document.createElement("div");
+  panel.style.position = "fixed";
+  panel.style.top = "100px";
+  panel.style.right = "20px";
+  panel.style.width = "380px";
+  panel.style.maxHeight = "60vh";
+  panel.style.overflowY = "auto";
+  panel.style.background = "var(--bg-card)";
+  panel.style.border = "1px solid var(--border)";
+  panel.style.padding = "1rem";
+  panel.style.borderRadius = "12px";
+  panel.style.zIndex = 9999;
+
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <strong>Notifications</strong>
+      <button id="closeNotif">✖</button>
+    </div>
+  `;
+
+  data.forEach(n => {
+    const unread = !(n.read_by || []).includes(state.currentUser.id);
+    const div = document.createElement("div");
+    div.style.padding = "10px";
+    div.style.marginBottom = "10px";
+    div.style.borderRadius = "8px";
+    div.style.background = unread ? "rgba(255,255,255,0.07)" : "transparent";
+    div.style.cursor = "pointer";
+
+    div.innerHTML = `
+      <strong>${escapeHtml(n.title)}</strong>
+      <p style="color:var(--text-light)">${escapeHtml(n.message)}</p>
+      <small style="color:var(--text-light)">${new Date(n.created_at).toLocaleString()}</small>
+    `;
+
+    div.onclick = async () => {
+      const arr = n.read_by || [];
+      if (!arr.includes(state.currentUser.id)) arr.push(state.currentUser.id);
+
+      await supabase
+        .from("notifications")
+        .update({ read_by: arr })
+        .eq("id", n.id);
+
+      panel.remove();
+      refreshNotifications();
+    };
+
+    panel.appendChild(div);
+  });
+
+  document.body.appendChild(panel);
+  document.getElementById("closeNotif").onclick = () => panel.remove();
+});
+
+/* ========== REALTIME LISTENER ========== */
+const channel = supabase
+  .channel("realtime-items")
+  .on(
+    "postgres_changes",
+    { event: "INSERT", schema: "public", table: "items" },
+    payload => {
+      showToast("New item posted");
+      loadItems();
+    }
+  )
+  .subscribe();
+
 
 </script>
-<!-- ========== PART-3 ENDS ========== -->
 
-
+<!-- TOAST ELEMENT -->
+<div id="toast" style="
+  position:fixed; bottom:2rem; left:50%;
+  transform:translateX(-50%) translateY(80px);
+  background:var(--bg-card);
+  padding:1rem 2rem; border-radius:50px;
+  border:1px solid var(--border);
+  color:var(--text); opacity:0;
+  transition:.4s; z-index:9999;
+"></div>
