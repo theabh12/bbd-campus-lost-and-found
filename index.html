@@ -11,8 +11,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
     
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -150,7 +148,7 @@
         <div id="itemsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
             <div class="col-span-full text-center py-20 opacity-50">
                 <i class="ph ph-spinner animate-spin text-4xl mb-4"></i>
-                <p>Loading items...</p>
+                <p>Loading items from local storage...</p>
             </div>
         </div>
 
@@ -218,28 +216,23 @@
             <button onclick="closeModal('authModal')" class="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i class="ph ph-x"></i></button>
             
             <div class="text-center mb-6">
-                <h2 id="authTitle" class="text-2xl font-bold mb-1">Welcome Back</h2>
-                <p class="text-sm text-slate-500">Please sign in to continue</p>
+                <h2 id="authTitle" class="text-2xl font-bold mb-1">Welcome</h2>
+                <p class="text-sm text-slate-500">Sign in to post items (Local Demo)</p>
             </div>
 
             <form id="authForm" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-medium text-slate-500 mb-1">Email Address</label>
-                    <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl glass-input">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Name</label>
+                    <input type="text" id="nameInput" required class="w-full px-4 py-3 rounded-xl glass-input" placeholder="Your Name">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-500 mb-1">Password</label>
-                    <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl glass-input">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Email (Mock)</label>
+                    <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl glass-input" placeholder="any@email.com">
                 </div>
                 <button type="submit" class="w-full py-3 btn-primary rounded-xl mt-2 relative">
-                    <span id="authBtnText">Sign In</span>
-                    <i id="authSpinner" class="ph ph-spinner animate-spin absolute right-4 top-3.5 hidden"></i>
+                    <span id="authBtnText">Start Using App</span>
                 </button>
             </form>
-
-            <div class="mt-6 text-center text-sm">
-                <p id="authSwitchText" class="text-slate-500">Don't have an account? <button onclick="toggleAuthMode()" class="text-brand-600 font-bold hover:underline">Sign Up</button></p>
-            </div>
         </div>
     </div>
 
@@ -312,7 +305,7 @@
     <div id="notifPanel" class="fixed top-20 right-4 z-50 w-80 glass bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl transform translate-x-full transition-transform duration-300 hidden">
         <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
             <h3 class="font-bold">Notifications</h3>
-            <button onclick="markNotificationsRead()" class="text-xs text-brand-500 font-medium">Mark all read</button>
+            <button onclick="markNotificationsRead()" class="text-xs text-brand-500 font-medium">Clear all</button>
         </div>
         <div id="notifList" class="max-h-96 overflow-y-auto p-2">
             <p class="text-center text-sm text-slate-500 py-4">No new notifications</p>
@@ -325,16 +318,16 @@
     </div>
 
     <script>
-        // --- CONFIG ---
-        const SUPABASE_URL = 'https://aksovogwimuqprevlxhd.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         // --- STATE ---
         let currentUser = null;
-        let currentTab = 'lost'; // lost | found | giveaway
-        let isLoginMode = true;
+        let currentTab = 'lost'; 
         let itemsCache = [];
+        let notifications = [];
+
+        // --- KEYS ---
+        const LS_USER = 'bbd_user';
+        const LS_ITEMS = 'bbd_items';
+        const LS_NOTIFS = 'bbd_notifs';
 
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', async () => {
@@ -345,35 +338,55 @@
                 document.documentElement.classList.remove('dark');
             }
 
-            // Check Auth
-            const { data: { session } } = await supabase.auth.getSession();
-            currentUser = session?.user || null;
+            // Check Auth from LocalStorage
+            const storedUser = localStorage.getItem(LS_USER);
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+            }
             updateUIForAuth();
 
-            // Load Items
-            fetchItems();
-
-            // Realtime Subscription
-            supabase
-                .channel('public:items')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, payload => {
-                    fetchItems(); // Simple refresh on change
-                })
-                .subscribe();
-
-            if(currentUser) {
-                setupNotifications();
-            }
+            // Load Items from LocalStorage
+            loadLocalData();
         });
 
-        // --- AUTHENTICATION ---
+        function loadLocalData() {
+            const storedItems = localStorage.getItem(LS_ITEMS);
+            const storedNotifs = localStorage.getItem(LS_NOTIFS);
+
+            itemsCache = storedItems ? JSON.parse(storedItems) : [];
+            notifications = storedNotifs ? JSON.parse(storedNotifs) : [];
+            
+            // Seed some data if empty for demo
+            if (itemsCache.length === 0) {
+                itemsCache = [
+                    {
+                        id: 'demo1',
+                        title: 'Blue Water Bottle',
+                        description: 'Found near the library steps. It has a sticker on it.',
+                        location: 'Library',
+                        category: 'Accessories',
+                        type: 'found',
+                        posted_by: 'Admin',
+                        user_id: 'admin',
+                        status: 'active',
+                        created_at: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem(LS_ITEMS, JSON.stringify(itemsCache));
+            }
+
+            renderItems();
+            updateNotificationBadge();
+        }
+
+        // --- AUTHENTICATION (MOCK) ---
         function updateUIForAuth() {
             const container = document.getElementById('authContainer');
             const fab = document.getElementById('fabBtn');
 
             if (currentUser) {
                 // Logged In
-                const initial = currentUser.email.charAt(0).toUpperCase();
+                const initial = currentUser.name.charAt(0).toUpperCase();
                 container.innerHTML = `
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-accent-500 text-white flex items-center justify-center font-bold text-sm">
@@ -402,84 +415,50 @@
             }, 10);
         }
 
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('authTitle').innerText = isLoginMode ? 'Welcome Back' : 'Create Account';
-            document.getElementById('authBtnText').innerText = isLoginMode ? 'Sign In' : 'Sign Up';
-            document.getElementById('authSwitchText').innerHTML = isLoginMode 
-                ? `Don't have an account? <button onclick="toggleAuthMode()" class="text-brand-600 font-bold hover:underline">Sign Up</button>`
-                : `Already have an account? <button onclick="toggleAuthMode()" class="text-brand-600 font-bold hover:underline">Sign In</button>`;
-        }
-
-        document.getElementById('authForm').addEventListener('submit', async (e) => {
+        document.getElementById('authForm').addEventListener('submit', (e) => {
             e.preventDefault();
+            const name = document.getElementById('nameInput').value;
             const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-            const spinner = document.getElementById('authSpinner');
-            
-            spinner.classList.remove('hidden');
 
-            try {
-                if (isLoginMode) {
-                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-                    if (error) throw error;
-                    currentUser = data.user;
-                } else {
-                    const { data, error } = await supabase.auth.signUp({ email, password });
-                    if (error) throw error;
-                    currentUser = data.user;
-                    showToast('Account created! You are now logged in.');
-                }
-                closeModal('authModal');
-                updateUIForAuth();
-                setupNotifications();
-                window.location.reload(); // Refresh to sync everything perfectly
-            } catch (err) {
-                showToast(err.message);
-            } finally {
-                spinner.classList.add('hidden');
-            }
+            // Create Mock User
+            currentUser = {
+                id: email, // Use email as ID for simplicity
+                name: name,
+                email: email
+            };
+
+            localStorage.setItem(LS_USER, JSON.stringify(currentUser));
+            
+            showToast('Logged in successfully');
+            closeModal('authModal');
+            updateUIForAuth();
         });
 
-        async function handleLogout() {
-            await supabase.auth.signOut();
+        function handleLogout() {
+            localStorage.removeItem(LS_USER);
             currentUser = null;
             updateUIForAuth();
             window.location.reload();
         }
 
         // --- ITEMS LOGIC ---
-        async function fetchItems() {
-            const grid = document.getElementById('itemsGrid');
-            
-            let query = supabase
-                .from('items')
-                .select('*, likes(count)')
-                .eq('type', currentTab)
-                .order('created_at', { ascending: false });
-
-            // Search Logic
-            const searchVal = document.getElementById('searchInput').value.trim();
-            if(searchVal) {
-                query = query.or(`title.ilike.%${searchVal}%,description.ilike.%${searchVal}%,location.ilike.%${searchVal}%`);
-            }
-
-            const { data, error } = await query;
-
-            if (error) {
-                console.error(error);
-                return;
-            }
-
-            itemsCache = data;
-            renderItems(data);
-        }
-
-        function renderItems(items) {
+        function renderItems() {
             const grid = document.getElementById('itemsGrid');
             grid.innerHTML = '';
 
-            if (items.length === 0) {
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+
+            // Filter
+            const filtered = itemsCache.filter(item => {
+                const matchesTab = item.type === currentTab;
+                const matchesSearch = !searchVal || 
+                                      item.title.toLowerCase().includes(searchVal) ||
+                                      item.description.toLowerCase().includes(searchVal) ||
+                                      item.location.toLowerCase().includes(searchVal);
+                return matchesTab && matchesSearch;
+            }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            if (filtered.length === 0) {
                 grid.innerHTML = `
                     <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400">
                         <i class="ph ph-magnifying-glass text-6xl mb-4 opacity-20"></i>
@@ -489,7 +468,7 @@
                 return;
             }
 
-            items.forEach((item, index) => {
+            filtered.forEach((item, index) => {
                 const isOwner = currentUser && currentUser.id === item.user_id;
                 const delay = index * 100; // Stagger animation
 
@@ -497,13 +476,11 @@
                 card.className = 'glass-card rounded-2xl overflow-hidden flex flex-col h-full animate-fade-up';
                 card.style.animationDelay = `${delay}ms`;
 
-                // Badge Color
                 let badgeColor = 'bg-slate-100 text-slate-600';
                 if(item.type === 'lost') badgeColor = 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-300';
                 if(item.type === 'found') badgeColor = 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-300';
                 if(item.type === 'giveaway') badgeColor = 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300';
 
-                // Status Overlay
                 let statusOverlay = '';
                 if (item.status === 'returned' || item.status === 'claimed') {
                     statusOverlay = `<div class="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-[2px] z-10 flex items-center justify-center">
@@ -511,7 +488,6 @@
                     </div>`;
                 }
 
-                // Image Area
                 const imgHtml = item.image_url 
                     ? `<img src="${item.image_url}" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110" loading="lazy">`
                     : `<div class="w-full h-48 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><i class="ph ph-image text-4xl"></i></div>`;
@@ -609,31 +585,25 @@
             const btnText = document.getElementById('postBtnText');
             
             spinner.classList.remove('hidden');
-            btnText.innerText = editingItemId ? 'Updating...' : 'Posting...';
+            btnText.innerText = 'Saving...';
 
             try {
                 let imageUrl = null;
                 
-                // 1. Handle Image Upload
+                // 1. Handle Image (Convert to Base64)
                 if (selectedImageFile) {
-                    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1024, useWebWorker: true };
+                    // Aggressive compression for LocalStorage
+                    const options = { maxSizeMB: 0.1, maxWidthOrHeight: 800, useWebWorker: true };
                     const compressedFile = await imageCompression(selectedImageFile, options);
-                    
-                    const fileName = `${Date.now()}_${currentUser.id}`;
-                    const { data, error } = await supabase.storage.from('images').upload(fileName, compressedFile);
-                    
-                    if (error) throw error;
-                    
-                    const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(fileName);
-                    imageUrl = publicUrl;
+                    imageUrl = await imageToBase64(compressedFile);
                 } else if (editingItemId) {
-                    // Keep existing image if editing and no new file
                     const item = itemsCache.find(i => i.id === editingItemId);
                     imageUrl = item.image_url;
                 }
 
                 // 2. Construct Object
-                const itemData = {
+                const newItem = {
+                    id: editingItemId || 'item_' + Date.now(),
                     title: document.getElementById('itemTitle').value,
                     category: document.getElementById('itemCategory').value,
                     location: document.getElementById('itemLocation').value,
@@ -641,33 +611,45 @@
                     type: currentTab,
                     image_url: imageUrl,
                     user_id: currentUser.id,
-                    posted_by: currentUser.email.split('@')[0],
-                    status: 'active'
+                    posted_by: currentUser.name,
+                    status: 'active',
+                    created_at: new Date().toISOString()
                 };
 
+                // 3. Save to Local Array & Storage
                 if (editingItemId) {
-                    const { error } = await supabase.from('items').update(itemData).eq('id', editingItemId);
-                    if(error) throw error;
+                    const index = itemsCache.findIndex(i => i.id === editingItemId);
+                    if (index !== -1) itemsCache[index] = newItem;
                     showToast('Item updated successfully');
                 } else {
-                    const { error } = await supabase.from('items').insert([itemData]);
-                    if(error) throw error;
+                    itemsCache.unshift(newItem);
                     showToast('Item posted successfully');
                 }
 
+                localStorage.setItem(LS_ITEMS, JSON.stringify(itemsCache));
                 closeModal('postModal');
-                fetchItems();
+                renderItems();
 
             } catch (err) {
                 console.error(err);
-                showToast('Error saving item');
+                showToast('Error saving item (Image might be too large)');
             } finally {
                 spinner.classList.add('hidden');
-                btnText.innerText = editingItemId ? 'Update Item' : 'Publish Item';
+                btnText.innerText = 'Publish Item';
             }
         });
 
-        async function editItem(id) {
+        // Helper: File to Base64
+        function imageToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        function editItem(id) {
             const item = itemsCache.find(i => i.id == id);
             if(!item) return;
 
@@ -688,60 +670,44 @@
             document.getElementById('postBtnText').innerText = 'Update Item';
             
             document.getElementById('postModal').classList.remove('hidden');
-            // Animation timeout...
              setTimeout(() => {
                 document.getElementById('postModal').classList.remove('opacity-0');
                 document.getElementById('postModal').children[0].classList.remove('scale-95');
             }, 10);
         }
 
-        async function deleteItem(id) {
+        function deleteItem(id) {
             if(!confirm('Are you sure you want to delete this?')) return;
-            const { error } = await supabase.from('items').delete().eq('id', id);
-            if(error) showToast('Error deleting item');
-            else {
-                showToast('Item deleted');
-                fetchItems();
-            }
+            itemsCache = itemsCache.filter(i => i.id !== id);
+            localStorage.setItem(LS_ITEMS, JSON.stringify(itemsCache));
+            showToast('Item deleted');
+            renderItems();
         }
 
-        async function markReturned(id) {
-            const { error } = await supabase.from('items').update({ status: 'returned' }).eq('id', id);
-            if(!error) {
+        function markReturned(id) {
+            const index = itemsCache.findIndex(i => i.id === id);
+            if(index !== -1) {
+                itemsCache[index].status = 'returned';
+                localStorage.setItem(LS_ITEMS, JSON.stringify(itemsCache));
                 showToast('Marked as resolved!');
-                fetchItems();
+                renderItems();
             }
         }
 
-        // --- REPORT ---
+        // --- REPORT & NOTIFICATIONS ---
         function openReportModal(id) {
-            if(!currentUser) return showToast('Please login to report');
             document.getElementById('reportItemId').value = id;
             document.getElementById('reportModal').classList.remove('hidden');
         }
 
-        async function submitReport() {
-            const id = document.getElementById('reportItemId').value;
-            const reason = document.getElementById('reportReason').value;
-            if(!reason) return showToast('Please enter a reason');
-
-            const { error } = await supabase.from('reports').insert([{
-                item_id: id,
-                reporter_id: currentUser.id,
-                reason: reason
-            }]);
-
-            if(error) showToast('Failed to report');
-            else showToast('Report submitted. Admins will review.');
-            
+        function submitReport() {
+            showToast('Report submitted (Mock)');
             closeModal('reportModal');
         }
 
-        // --- TAB SWITCHING ---
         function switchTab(tab) {
             currentTab = tab;
             
-            // Update Buttons
             ['lost', 'found', 'giveaway'].forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
                 if(t === tab) {
@@ -757,48 +723,22 @@
                 }
             });
 
-            fetchItems();
+            renderItems();
         }
 
-        // --- NOTIFICATIONS ---
-        async function setupNotifications() {
-            // Subscribe to realtime notifications
-            supabase
-                .channel('public:notifications')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${currentUser.id}` }, payload => {
-                    document.getElementById('notifBadge').classList.remove('hidden');
-                    showToast('New Notification!');
-                })
-                .subscribe();
+        function updateNotificationBadge() {
+            // Mock notification logic
+            const badge = document.getElementById('notifBadge');
+            if(notifications.length > 0) badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
         }
 
-        document.getElementById('notifBtn').addEventListener('click', async () => {
-            const panel = document.getElementById('notifPanel');
-            panel.classList.toggle('hidden');
-            if (!panel.classList.contains('hidden')) {
-                // Load notifs
-                const list = document.getElementById('notifList');
-                if(!currentUser) {
-                    list.innerHTML = '<p class="text-center text-sm p-4">Login to see notifications</p>';
-                    return;
-                }
-                
-                const { data } = await supabase.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false}).limit(10);
-                
-                if(data && data.length > 0) {
-                    list.innerHTML = data.map(n => `
-                        <div class="p-3 border-b border-slate-50 dark:border-slate-800 text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${!n.is_read ? 'bg-brand-50/50 dark:bg-brand-900/10' : ''}">
-                            <p>${n.message}</p>
-                            <span class="text-[10px] text-slate-400">${new Date(n.created_at).toLocaleDateString()}</span>
-                        </div>
-                    `).join('');
-                    // Clear badge
-                    document.getElementById('notifBadge').classList.add('hidden');
-                } else {
-                    list.innerHTML = '<p class="text-center text-sm text-slate-500 py-4">No new notifications</p>';
-                }
-            }
-        });
+        function markNotificationsRead() {
+            notifications = [];
+            localStorage.setItem(LS_NOTIFS, JSON.stringify(notifications));
+            updateNotificationBadge();
+            document.getElementById('notifList').innerHTML = '<p class="text-center text-sm text-slate-500 py-4">No new notifications</p>';
+        }
 
         // --- UTILS ---
         function closeModal(id) {
@@ -840,7 +780,7 @@
         document.getElementById('searchInput').addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
-                fetchItems();
+                renderItems();
             }, 500);
         });
 
@@ -848,6 +788,10 @@
         document.getElementById('themeBtn').addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
             localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+        document.getElementById('notifBtn').addEventListener('click', () => {
+            document.getElementById('notifPanel').classList.toggle('hidden');
         });
 
     </script>
