@@ -1,1103 +1,855 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BBD Campus Lost & Found</title>
-
-  <!-- ICON -->
-  <link rel="icon" href="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png">
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <style>
-    /* ROOT THEME VARIABLES */
-    :root {
-      --bg: #0f0f23;
-      --bg-card: rgba(255,255,255,0.05);
-      --bg-glass: rgba(255,255,255,0.07);
-      --text: #f8fafc;
-      --text-light: #cbd5e1;
-      --primary: #6366f1;
-      --accent: #8b5cf6;
-      --border: rgba(255,255,255,0.15);
-    }
-
-    /* LIGHT MODE */
-    :root.light {
-      --bg: #f8fafc;
-      --bg-card: #ffffff;
-      --bg-glass: #ffffff;
-      --text: #0f172a;
-      --text-light: #475569;
-      --border: #d8dee9;
-      --primary: #3b82f6;
-      --accent: #2563eb;
-    }
-
-    * { margin:0; padding:0; box-sizing:border-box; }
-
-    body {
-      font-family:'Outfit', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height:100vh;
-      padding-bottom:120px;
-      transition: background .3s, color .3s;
-    }
-
-    header {
-      text-align:center;
-      margin-top:2rem;
-      margin-bottom:2rem;
-    }
-
-    .logo-box {
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      gap:1rem;
-      background: var(--bg-card);
-      padding:1.2rem 2rem;
-      border-radius:50px;
-      backdrop-filter:blur(12px);
-      border:1px solid var(--border);
-    }
-
-    h1 {
-      font-family:'Space Grotesk', sans-serif;
-      font-size:2.4rem;
-      background:linear-gradient(135deg, var(--primary), var(--accent));
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-
-    .subtitle {
-      color: var(--text-light);
-      font-size:1rem;
-    }
-
-    /* TABS */
-    .tabs-wrapper {
-      display:flex;
-      justify-content:center;
-      margin-top:2rem;
-    }
-
-    .tabs {
-      display:flex;
-      gap:1rem;
-      padding:.5rem;
-      background: var(--bg-card);
-      border-radius:50px;
-      border:1px solid var(--border);
-      backdrop-filter:blur(12px);
-    }
-
-    .tab {
-      padding:.8rem 2.2rem;
-      background:transparent;
-      border:none;
-      border-radius:50px;
-      cursor:pointer;
-      color:var(--text-light);
-      font-size:1rem;
-      font-weight:600;
-      transition:.3s;
-    }
-
-    .tab.active {
-      background:linear-gradient(135deg, var(--primary), var(--accent));
-      color:white;
-    }
-
-    /* SEARCH + USER AREA */
-    .top-controls {
-      display:flex;
-      justify-content:center;
-      gap:1rem;
-      flex-wrap:wrap;
-      margin-top:2rem;
-    }
-
-    .search-box {
-      flex:1;
-      max-width:450px;
-      position:relative;
-    }
-
-    .search-input {
-      width:100%;
-      padding:1rem 1.4rem;
-      border-radius:50px;
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      color:var(--text);
-      font-size:1rem;
-    }
-
-    /* ITEM LIST */
-    #itemsList {
-      margin-top:2.5rem;
-      max-width:800px;
-      margin-left:auto;
-      margin-right:auto;
-      display:flex;
-      flex-direction:column;
-      gap:2rem;
-    }
-
-    .card {
-      background:var(--bg-card);
-      padding:1.5rem;
-      border-radius:20px;
-      border:1px solid var(--border);
-      backdrop-filter:blur(10px);
-      animation:fadeUp .3s ease forwards;
-    }
-
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(20px); }
-      to { opacity:1; transform:translateY(0); }
-    }
-
-    /* FLOATING BUTTON */
-    #addBtn {
-      position:fixed;
-      bottom:2rem;
-      right:2rem;
-      width:75px;
-      height:75px;
-      border-radius:50%;
-      background:linear-gradient(135deg,var(--primary),var(--accent));
-      color:white;
-      font-size:2.5rem;
-      border:none;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      box-shadow:0 12px 30px rgba(0,0,0,0.3);
-      z-index:200;
-    }
-
-    /* MODALS */
-    .modal {
-      position:fixed;
-      inset:0;
-      background:rgba(0,0,0,0.6);
-      display:none;
-      justify-content:center;
-      align-items:center;
-      backdrop-filter:blur(8px);
-    }
-
-    .modal-box {
-      background:var(--bg-card);
-      padding:2rem;
-      border-radius:20px;
-      border:1px solid var(--border);
-      width:90%;
-      max-width:500px;
-      max-height:90vh;
-      overflow-y:auto;
-    }
-
-    .modal-box input,
-    .modal-box textarea,
-    .modal-box select {
-      width:100%;
-      padding:1rem;
-      border-radius:12px;
-      background:var(--bg-glass);
-      border:1px solid var(--border);
-      color:var(--text);
-      margin-top:.5rem;
-      margin-bottom:1rem;
-    }
-
-    .modal-close {
-      float:right;
-      cursor:pointer;
-      font-size:1.6rem;
-      font-weight:bold;
-      margin-top:-1rem;
-    }
-
-    /* TOGGLE MODE BUTTON */
-    #themeToggle {
-      position:fixed;
-      top:1.5rem;
-      right:1.5rem;
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      padding:.6rem 1rem;
-      border-radius:12px;
-      cursor:pointer;
-      color:var(--text);
-      font-weight:600;
-    }
-
-  </style>
-</head>
-
-<body>
-
-<!-- LIGHT / DARK MODE TOGGLE -->
-<button id="themeToggle">Toggle Theme</button>
-
-<header>
-  <div class="logo-box">
-    <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" width="60">
-    <div>
-      <h1>BBD Lost & Found</h1>
-      <p class="subtitle">BBD Educational Group — Premium Edition</p>
-    </div>
-  </div>
-</header>
-
-<!-- TABS -->
-<div class="tabs-wrapper">
-  <div class="tabs">
-    <button class="tab active" data-tab="lost">Lost</button>
-    <button class="tab" data-tab="found">Found</button>
-    <button class="tab" data-tab="giveaway">Giveaway</button>
-  </div>
-</div>
-
-<!-- SEARCH + USER -->
-<div class="top-controls">
-  <div class="search-box">
-    <input id="searchInput" class="search-input" placeholder="Search items...">
-  </div>
-  <div id="userBox"></div>
-  <button id="notifBtn">🔔</button>
-  <span id="notifBadge" style="
-    background:red;color:white;border-radius:50%;
-    padding:3px 8px;font-size:.8rem;display:none;
-  ">0</span>
-</div>
-
-<!-- MAIN ITEM LIST -->
-<div id="itemsList"></div>
-
-<!-- ADD / EDIT MODAL -->
-<div id="itemModal" class="modal">
-  <div class="modal-box">
-    <span id="modalClose" class="modal-close">×</span>
-    <h2 id="modalTitle">Add Item</h2>
-
-    <label>Title</label>
-    <input id="itemTitle">
-
-    <label>Description</label>
-    <textarea id="itemDesc" rows="4"></textarea>
-
-    <label>Category</label>
-    <select id="itemCategory">
-      <option value="electronics">Electronics</option>
-      <option value="books">Books</option>
-      <option value="clothing">Clothing</option>
-      <option value="accessories">Accessories</option>
-      <option value="others">Others</option>
-    </select>
-
-    <label>Location</label>
-    <input id="itemLocation">
-
-    <label>Image</label>
-    <input type="file" id="itemImage">
-
-    <button id="saveItemBtn" style="
-      width:100%;padding:1rem;background:linear-gradient(135deg,var(--primary),var(--accent));
-      color:white;border:none;border-radius:12px;font-size:1rem;font-weight:700;
-    ">Save</button>
-  </div>
-</div>
-
-<button id="addBtn">+</button>
-<script type="module">
-/*
-  PART 2 — Supabase Auth, Session, Tabs, Load & Render Items
-  Paste after PART 1 in the same index.html
-*/
-
-/* ---------- Supabase client ---------- */
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const SUPABASE_URL = "https://aksovogwimuqprevlxhd.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-/* ---------- DOM Refs ---------- */
-const tabs = Array.from(document.querySelectorAll('.tab'));
-const searchInput = document.getElementById('searchInput');
-const itemsList = document.getElementById('itemsList');
-const addBtn = document.getElementById('addBtn');
-const itemModal = document.getElementById('itemModal');
-const modalClose = document.getElementById('modalClose');
-const saveItemBtn = document.getElementById('saveItemBtn');
-const itemTitleEl = document.getElementById('itemTitle');
-const itemDescEl = document.getElementById('itemDesc');
-const itemCategoryEl = document.getElementById('itemCategory');
-const itemLocationEl = document.getElementById('itemLocation');
-const itemImageEl = document.getElementById('itemImage');
-
-const userBox = document.getElementById('userBox');
-const notifBtn = document.getElementById('notifBtn');
-const notifBadge = document.getElementById('notifBadge');
-
-const themeToggle = document.getElementById('themeToggle');
-
-/* ---------- State ---------- */
-let currentTab = 'lost';
-let state = {
-  currentUser: null,
-  allItems: { lost: [], found: [], giveaway: [] },
-  editingId: null // if editing an item
-};
-
-/* ---------- THEME: Dark/Light toggle ---------- */
-(function initTheme(){
-  const root = document.documentElement;
-  // default: dark, but respond to prefers-color-scheme
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-    root.classList.add('light');
-  }
-  themeToggle.onclick = () => {
-    root.classList.toggle('light');
-    // small feedback
-    showToast('Theme toggled');
-  };
-})();
-
-/* ---------- TOAST (small helper) ---------- */
-const toastEl = document.getElementById('toast');
-function showToast(msg, t = 2500){
-  if (!toastEl) return;
-  toastEl.textContent = msg;
-  toastEl.style.opacity = '1';
-  toastEl.style.transform = 'translateX(-50%) translateY(0)';
-  clearTimeout(toastEl._t);
-  toastEl._t = setTimeout(()=> {
-    toastEl.style.opacity = '0';
-    toastEl.style.transform = 'translateX(-50%) translateY(80px)';
-  }, t);
-}
-
-/* ---------- AUTH UI & Handlers ---------- */
-function renderUserUI(user){
-  userBox.innerHTML = '';
-  if (!user){
-    const loginBtn = document.createElement('button');
-    loginBtn.textContent = 'Login';
-    loginBtn.className = 'tab';
-    loginBtn.style.padding = '.6rem 1rem';
-    loginBtn.onclick = () => openAuthModal('login');
-    const signupBtn = document.createElement('button');
-    signupBtn.textContent = 'Sign Up';
-    signupBtn.className = 'tab';
-    signupBtn.style.padding = '.6rem 1rem';
-    signupBtn.onclick = () => openAuthModal('signup');
-    userBox.appendChild(loginBtn);
-    userBox.appendChild(signupBtn);
-  } else {
-    const nameDiv = document.createElement('div');
-    nameDiv.style.display = 'inline-block';
-    nameDiv.style.marginRight = '8px';
-    nameDiv.textContent = user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'User');
-    nameDiv.style.fontWeight = '700';
-
-    const logoutBtn = document.createElement('button');
-    logoutBtn.textContent = 'Logout';
-    logoutBtn.className = 'tab';
-    logoutBtn.style.padding = '.6rem 1rem';
-    logoutBtn.onclick = async () => {
-      await supabase.auth.signOut();
-      showToast('Logged out');
-    };
-
-    userBox.appendChild(nameDiv);
-    userBox.appendChild(logoutBtn);
-  }
-}
-
-/* Auth modal (simple) */
-function openAuthModal(mode='login'){
-  // Create a minimal auth modal on the fly (keeps index.html minimal)
-  const modal = document.createElement('div');
-  modal.style.position = 'fixed';
-  modal.style.inset = '0';
-  modal.style.display = 'flex';
-  modal.style.alignItems = 'center';
-  modal.style.justifyContent = 'center';
-  modal.style.background = 'rgba(0,0,0,0.6)';
-  modal.style.zIndex = 9999;
-
-  const box = document.createElement('div');
-  box.style.background = 'var(--bg-card)';
-  box.style.border = '1px solid var(--border)';
-  box.style.padding = '1.2rem';
-  box.style.borderRadius = '12px';
-  box.style.width = '360px';
-
-  const title = document.createElement('h3');
-  title.textContent = mode === 'login' ? 'Login' : 'Sign Up';
-  box.appendChild(title);
-
-  const email = document.createElement('input');
-  email.type = 'email';
-  email.placeholder = 'Email';
-  email.style.width = '100%'; email.style.padding = '10px'; email.style.marginTop = '8px';
-  box.appendChild(email);
-
-  const pass = document.createElement('input');
-  pass.type = 'password';
-  pass.placeholder = 'Password (6+)';
-  pass.style.width = '100%'; pass.style.padding = '10px'; pass.style.marginTop = '8px';
-  box.appendChild(pass);
-
-  const action = document.createElement('button');
-  action.textContent = mode === 'login' ? 'Login' : 'Sign Up';
-  action.style.width = '100%'; action.style.padding = '10px'; action.style.marginTop = '12px';
-  action.onclick = async () => {
-    const e = email.value.trim(); const p = pass.value.trim();
-    if (!e || !p || p.length < 6) { showToast('Enter valid email & password'); return; }
-    try {
-      if (mode === 'signup'){
-        const { error } = await supabase.auth.signUp({ email: e, password: p }, { data: { full_name: e.split('@')[0] }});
-        if (error) throw error;
-        showToast('Signed up — check email if confirmation required');
-        document.body.removeChild(modal);
-      } else {
-        const { data, error } = await supabase.auth.signInWithPassword({ email: e, password: p });
-        if (error) throw error;
-        showToast('Logged in');
-        document.body.removeChild(modal);
-      }
-    } catch(err){
-      console.error('Auth err', err);
-      showToast('Auth failed: ' + (err.message || String(err)));
-    }
-  };
-  box.appendChild(action);
-
-  const cancel = document.createElement('div');
-  cancel.textContent = 'Cancel';
-  cancel.style.marginTop = '8px';
-  cancel.style.textAlign = 'center';
-  cancel.style.cursor = 'pointer';
-  cancel.onclick = ()=> document.body.removeChild(modal);
-  box.appendChild(cancel);
-
-  modal.appendChild(box);
-  document.body.appendChild(modal);
-}
-
-/* listen to auth state changes */
-supabase.auth.onAuthStateChange((event, session) => {
-  state.currentUser = session?.user ?? null;
-  renderUserUI(state.currentUser);
-  refreshNotifications();
-  loadItems(); // reload items so user-specific actions reflect
-});
-
-/* attempt initial session */
-(async function(){
-  try {
-    const { data } = await supabase.auth.getSession();
-    state.currentUser = data?.session?.user ?? null;
-    renderUserUI(state.currentUser);
-  } catch(e){
-    console.warn('session fetch failed', e);
-  }
-})();
-
-/* ---------- TABS & SEARCH ---------- */
-tabs.forEach(t => t.addEventListener('click', () => {
-  tabs.forEach(x => x.classList.remove('active'));
-  t.classList.add('active');
-  currentTab = t.dataset.tab;
-  renderList();
-}));
-
-searchInput.addEventListener('input', () => {
-  renderList();
-});
-
-/* ---------- Load items from Supabase ---------- */
-async function loadItems(){
-  try {
-    // fetch all items (we'll separate by status)
-    const { data, error } = await supabase
-      .from('items')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(500);
-
-    if (error) {
-      console.error('loadItems error', error);
-      showToast('Failed to load items');
-      return;
-    }
-
-    // reset
-    state.allItems = { lost: [], found: [], giveaway: [] };
-
-    data.forEach(r => {
-      const item = {
-        id: r.id,
-        title: r.title,
-        description: r.description,
-        category: r.category,
-        location: r.location,
-        imageURL: r.image_url || '',
-        status: r.status || 'lost',
-        userId: r.user_id,
-        postedBy: r.posted_by || 'Anonymous',
-        createdAt: r.created_at,
-        likes: r.likes_count || 0,
-        returned: r.status === 'returned'
-      };
-      if (item.status === 'found') state.allItems.found.push(item);
-      else if (item.status === 'giveaway') state.allItems.giveaway.push(item);
-      else state.allItems.lost.push(item);
-    });
-
-    renderList();
-  } catch(err){
-    console.error('loadItems exception', err);
-    showToast('Load failed');
-  }
-}
-
-/* ---------- Render list ---------- */
-function matchesQuery(item, q){
-  if (!q) return true;
-  q = q.trim().toLowerCase();
-  return (item.title + ' ' + item.description + ' ' + item.category + ' ' + item.location + ' ' + item.postedBy).toLowerCase().includes(q);
-}
-
-function renderList(){
-  const q = (searchInput.value || '').trim().toLowerCase();
-  const items = state.allItems[currentTab] || [];
-  const filtered = items.filter(it => matchesQuery(it, q));
-
-  if (!filtered.length){
-    itemsList.innerHTML = `
-      <div class="card" style="text-align:center;">
-        <div style="font-size:32px">🔍</div>
-        <h3 style="margin-top:.5rem">No items found</h3>
-        <p style="color:var(--text-light)">Be the first to post in this section.</p>
-      </div>
-    `;
-    return;
-  }
-
-  itemsList.innerHTML = '';
-  filtered.forEach((item, idx) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    // large image on top
-    const media = item.imageURL ? `<div style="width:100%;height:260px;border-radius:12px;overflow:hidden;margin-bottom:12px;"><img src="${item.imageURL}" style="width:100%;height:100%;object-fit:cover;display:block" alt="${escapeHtml(item.title)}"></div>` : '';
-    const created = item.createdAt ? new Date(item.createdAt).toLocaleString() : '';
-    card.innerHTML = `
-      ${media}
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-        <div style="flex:1">
-          <h2 style="margin:0 0 .4rem 0;font-size:1.1rem">${escapeHtml(item.title)}</h2>
-          <p style="margin:0;color:var(--text-light)">${escapeHtml(item.description)}</p>
-          <div style="margin-top:.8rem;display:flex;gap:.6rem;flex-wrap:wrap">
-            <span style="padding:.4rem .6rem;background:rgba(255,255,255,0.03);border-radius:999px;font-weight:700;color:var(--text-light)">${escapeHtml(item.category)}</span>
-            <span style="padding:.4rem .6rem;background:rgba(255,255,255,0.03);border-radius:999px;font-weight:700;color:var(--text-light)">${escapeHtml(item.location || 'Campus')}</span>
-            <span style="padding:.4rem .6rem;background:rgba(255,255,255,0.03);border-radius:999px;font-weight:700;color:var(--text-light)">${created}</span>
-          </div>
-          <p style="margin-top:.8rem;color:var(--text-light);font-size:.95rem">Posted by <strong>${escapeHtml(item.postedBy)}</strong></p>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-          <button class="tab btn-claim" data-id="${item.id}" ${item.returned ? 'disabled' : ''}>${item.returned ? 'Returned' : 'Mark as returned'}</button>
-          <button class="tab btn-like" data-id="${item.id}">👍 ${item.likes || 0}</button>
-          <button class="tab btn-share" data-id="${item.id}">Share</button>
-          ${ (state.currentUser && state.currentUser.id === item.userId) ? `<button class="tab btn-edit" data-id="${item.id}">Edit</button><button class="tab btn-delete" data-id="${item.id}">Delete</button>` : `<button class="tab btn-report" data-id="${item.id}">Report</button>` }
-        </div>
-      </div>
-    `;
-
-    // attach buttons if handler exists (handlers provided in PART 3)
-    setTimeout(()=> {
-      const claimBtn = card.querySelector('.btn-claim');
-      if (claimBtn) claimBtn.addEventListener('click', ()=> {
-        if (typeof handleMarkReturned === 'function') handleMarkReturned(item);
-        else showToast('Action pending...');
-      });
-
-      const likeBtn = card.querySelector('.btn-like');
-      if (likeBtn) likeBtn.addEventListener('click', ()=> {
-        if (typeof handleLike === 'function') handleLike(item);
-        else showToast('Action pending...');
-      });
-
-      const shareBtn = card.querySelector('.btn-share');
-      if (shareBtn) shareBtn.addEventListener('click', ()=> {
-        const text = `Item: ${item.title}\nLocation: ${item.location}\n${item.description}\nOpen: ${location.href}`;
-        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-      });
-
-      const editBtn = card.querySelector('.btn-edit');
-      if (editBtn) editBtn.addEventListener('click', ()=> {
-        if (typeof openEditModal === 'function') openEditModal(item);
-        else showToast('Edit not available');
-      });
-
-      const delBtn = card.querySelector('.btn-delete');
-      if (delBtn) delBtn.addEventListener('click', ()=> {
-        if (typeof handleDelete === 'function') handleDelete(item);
-        else showToast('Delete not available');
-      });
-
-      const reportBtn = card.querySelector('.btn-report');
-      if (reportBtn) reportBtn.addEventListener('click', ()=> {
-        if (typeof handleReport === 'function') handleReport(item);
-        else showToast('Report not available');
-      });
-    }, 30);
-
-    itemsList.appendChild(card);
-  });
-}
-
-/* ---------- Utilities ---------- */
-function escapeHtml(s){
-  if (s == null) return '';
-  return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-}
-
-/* ---------- Modal open/close ---------- */
-addBtn.addEventListener('click', ()=>{
-  if (!state.currentUser) {
-    openAuthModal('login');
-    showToast('Login to post');
-    return;
-  }
-  state.editingId = null;
-  document.getElementById('modalTitle').textContent = 'Add Item';
-  itemTitleEl.value = '';
-  itemDescEl.value = '';
-  itemCategoryEl.value = 'electronics';
-  itemLocationEl.value = '';
-  itemImageEl.value = '';
-  itemModal.style.display = 'flex';
-});
-
-modalClose.addEventListener('click', ()=> {
-  itemModal.style.display = 'none';
-  state.editingId = null;
-});
-
-/* ---------- Initial load ---------- */
-(async function init(){
-  await loadItems();
-  // refresh periodically
-  setInterval(()=> loadItems(), 60_000);
-})();
-</script>
-<script type="module">
-/* ============================================================
-   PART 3 — Posting, Editing, Deleting, Likes, Reports,
-             Notifications, Realtime Updates
-   ============================================================ */
-
-/* We continue from Supabase client & state defined in PART 2 */
-import imageCompression from "https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.esm.js";
-
-/* ========== IMAGE UPLOAD HANDLER ========== */
-async function compressAndUpload(file){
-  if (!file) return "";
-
-  try {
-    const compressed = await imageCompression(file, {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1200,
-      useWebWorker: true
-    });
-
-    const filename = `img_${Date.now()}_${Math.random().toString(36).slice(2)}.webp`;
-    const { error: uploadErr } = await supabase.storage
-      .from("images")
-      .upload(filename, compressed, {
-        contentType: "image/webp",
-        upsert: false
-      });
-
-    if (uploadErr) {
-      console.error(uploadErr);
-      showToast("Image upload failed");
-      return "";
-    }
-
-    const { data } = supabase.storage.from("images").getPublicUrl(filename);
-    return data?.publicUrl || "";
-
-  } catch (err) {
-    console.error("Compression/upload error", err);
-    return "";
-  }
-}
-
-/* ========== SAVE / POST ITEM ========== */
-saveItemBtn.addEventListener("click", async () => {
-  if (!state.currentUser) {
-    openAuthModal("login");
-    showToast("Login to post");
-    return;
-  }
-
-  const title = itemTitleEl.value.trim();
-  const desc = itemDescEl.value.trim();
-  const category = itemCategoryEl.value;
-  const location = itemLocationEl.value.trim();
-  const file = itemImageEl.files[0] || null;
-
-  if (!title || !desc) {
-    showToast("Fill title and description");
-    return;
-  }
-
-  saveItemBtn.disabled = true;
-  saveItemBtn.textContent = state.editingId ? "Saving..." : "Posting...";
-
-  try {
-    let imageURL = "";
-    if (file) {
-      imageURL = await compressAndUpload(file);
-    }
-
-    if (state.editingId) {
-      /* UPDATE ITEM */
-      const { error } = await supabase
-        .from("items")
-        .update({
-          title,
-          description: desc,
-          category,
-          location,
-          image_url: imageURL || undefined,
-          updated_at: new Date()
-        })
-        .eq("id", state.editingId);
-
-      if (error) throw error;
-      showToast("Updated");
-
-    } else {
-      /* NEW ITEM */
-      const { error } = await supabase.from("items").insert([
-        {
-          title,
-          description: desc,
-          category,
-          location,
-          image_url: imageURL,
-          status: currentTab, // lost / found / giveaway
-          user_id: state.currentUser?.id || null,
-          posted_by: state.currentUser?.email?.split("@")[0] || "User"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBD Campus Lost & Found</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['Space Grotesk', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366F1', // Indigo
+                            600: '#4F46E5',
+                            900: '#312E81',
+                        },
+                        accent: {
+                            500: '#8B5CF6', // Violet
+                            600: '#7C3AED',
+                        }
+                    },
+                    animation: {
+                        'fade-up': 'fadeUp 0.5s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
         }
-      ]);
+    </script>
 
-      if (error) throw error;
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .glass {
+                @apply bg-white/70 dark:bg-black/60 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-lg;
+            }
+            .glass-card {
+                @apply bg-white/40 dark:bg-gray-900/40 backdrop-blur-md border border-white/30 dark:border-white/5 shadow-sm hover:shadow-md transition-all duration-300;
+            }
+            .glass-input {
+                @apply bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all;
+            }
+            .gradient-text {
+                @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-500 to-accent-500;
+            }
+            .btn-primary {
+                @apply bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-lg shadow-brand-500/30 hover:shadow-brand-500/50 hover:-translate-y-0.5 transition-all duration-300 rounded-xl font-medium;
+            }
+        }
 
-      /* NOTIFICATION: NEW ITEM */
-      await createNotification(
-        `New ${currentTab} item`,
-        `${title} added in ${currentTab}`,
-        "all"
-      );
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        body {
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-[#0f172a] text-slate-800 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col relative overflow-x-hidden">
 
-      showToast("Posted successfully");
-    }
-
-    // close modal + reset form
-    itemModal.style.display = "none";
-    state.editingId = null;
-    itemTitleEl.value = "";
-    itemDescEl.value = "";
-    itemCategoryEl.value = "electronics";
-    itemLocationEl.value = "";
-    itemImageEl.value = "";
-
-    await loadItems();
-
-  } catch (err) {
-    console.error(err);
-    showToast("Post failed");
-  }
-
-  saveItemBtn.disabled = false;
-  saveItemBtn.textContent = "Save";
-});
-
-/* ========== EDIT ITEM ========== */
-function openEditModal(item) {
-  if (!state.currentUser) {
-    openAuthModal("login");
-    showToast("Login to edit");
-    return;
-  }
-
-  if (state.currentUser.id !== item.userId) {
-    showToast("You can only edit your own items");
-    return;
-  }
-
-  state.editingId = item.id;
-  document.getElementById("modalTitle").textContent = "Edit Item";
-
-  itemTitleEl.value = item.title;
-  itemDescEl.value = item.description;
-  itemCategoryEl.value = item.category;
-  itemLocationEl.value = item.location;
-
-  itemImageEl.value = "";
-  itemModal.style.display = "flex";
-}
-
-/* ========== DELETE ITEM ========== */
-async function handleDelete(item) {
-  if (!state.currentUser) {
-    openAuthModal("login");
-    return;
-  }
-  if (state.currentUser.id !== item.userId) {
-    showToast("Not your item");
-    return;
-  }
-
-  if (!confirm("Delete this item?")) return;
-
-  try {
-    await supabase.from("items").delete().eq("id", item.id);
-    showToast("Deleted");
-    await loadItems();
-  } catch (err) {
-    console.error(err);
-    showToast("Delete failed");
-  }
-}
-
-/* ========== REPORT ITEM ========== */
-async function handleReport(item) {
-  const reason = prompt("Why are you reporting this item?");
-  if (!reason) return;
-
-  try {
-    await supabase.from("reports").insert([
-      {
-        item_id: item.id,
-        user_id: state.currentUser?.id || null,
-        reason
-      }
-    ]);
-
-    showToast("Reported — thank you");
-  } catch (err) {
-    console.error(err);
-    showToast("Report failed");
-  }
-}
-
-/* ========== LIKE ITEM ========== */
-async function handleLike(item) {
-  if (!state.currentUser) {
-    openAuthModal("login");
-    return;
-  }
-
-  try {
-    // try inserting
-    const { error } = await supabase.from("likes").insert({
-      item_id: item.id,
-      user_id: state.currentUser.id
-    });
-
-    if (error) {
-      // means already liked → remove like
-      await supabase
-        .from("likes")
-        .delete()
-        .match({ item_id: item.id, user_id: state.currentUser.id });
-    }
-
-    await loadItems();
-  } catch (err) {
-    console.error(err);
-    showToast("Like failed");
-  }
-}
-
-/* ========== MARK AS RETURNED ========== */
-async function handleMarkReturned(item) {
-  if (!state.currentUser) {
-    openAuthModal("login");
-    return;
-  }
-
-  try {
-    await supabase.from("items").update({ status: "returned" }).eq("id", item.id);
-
-    await createNotification(
-      "Item returned",
-      `${item.title} was marked as returned`,
-      "all"
-    );
-
-    showToast("Marked returned");
-    await loadItems();
-  } catch (err) {
-    console.error(err);
-    showToast("Failed to mark returned");
-  }
-}
-
-/* ========== NOTIFICATIONS ========== */
-async function createNotification(title, message, target = "all") {
-  try {
-    await supabase.from("notifications").insert([
-      {
-        title,
-        message,
-        target,
-        read_by: []
-      }
-    ]);
-  } catch (err) {
-    console.warn("Notif error", err);
-  }
-}
-
-/* ========== REALTIME NOTIFICATION BADGE ========== */
-async function refreshNotifications() {
-  if (!state.currentUser) {
-    notifBadge.style.display = "none";
-    return;
-  }
-
-  try {
-    const { data } = await supabase
-      .from("notifications")
-      .select("*")
-      .limit(100)
-      .order("created_at", { ascending: false });
-
-    const unread = data.filter(
-      n => !(n.read_by || []).includes(state.currentUser.id)
-    ).length;
-
-    if (unread > 0) {
-      notifBadge.textContent = unread;
-      notifBadge.style.display = "inline-block";
-    } else {
-      notifBadge.style.display = "none";
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-/* ========== NOTIFICATION PANEL ========== */
-notifBtn.addEventListener("click", async () => {
-  if (!state.currentUser) {
-    openAuthModal("login");
-    return;
-  }
-
-  const { data } = await supabase
-    .from("notifications")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  const panel = document.createElement("div");
-  panel.style.position = "fixed";
-  panel.style.top = "100px";
-  panel.style.right = "20px";
-  panel.style.width = "380px";
-  panel.style.maxHeight = "60vh";
-  panel.style.overflowY = "auto";
-  panel.style.background = "var(--bg-card)";
-  panel.style.border = "1px solid var(--border)";
-  panel.style.padding = "1rem";
-  panel.style.borderRadius = "12px";
-  panel.style.zIndex = 9999;
-
-  panel.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <strong>Notifications</strong>
-      <button id="closeNotif">✖</button>
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-brand-500/20 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse-slow"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-accent-500/20 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-pulse-slow" style="animation-delay: 1s;"></div>
     </div>
-  `;
 
-  data.forEach(n => {
-    const unread = !(n.read_by || []).includes(state.currentUser.id);
-    const div = document.createElement("div");
-    div.style.padding = "10px";
-    div.style.marginBottom = "10px";
-    div.style.borderRadius = "8px";
-    div.style.background = unread ? "rgba(255,255,255,0.07)" : "transparent";
-    div.style.cursor = "pointer";
+    <header class="sticky top-0 z-40 w-full glass">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                <div class="relative w-10 h-10 rounded-xl overflow-hidden shadow-md group-hover:scale-105 transition-transform">
+                    <img src="https://bbdu.ac.in/wp-content/uploads/2018/10/favicon-300x300.png" alt="BBD Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="hidden sm:block">
+                    <h1 class="font-bold text-lg leading-tight tracking-tight">BBD Campus</h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-mono">Lost & Found Service</p>
+                </div>
+            </div>
 
-    div.innerHTML = `
-      <strong>${escapeHtml(n.title)}</strong>
-      <p style="color:var(--text-light)">${escapeHtml(n.message)}</p>
-      <small style="color:var(--text-light)">${new Date(n.created_at).toLocaleString()}</small>
-    `;
+            <div class="flex items-center gap-3">
+                <button id="themeBtn" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                    <i class="ph ph-moon text-xl dark:hidden"></i>
+                    <i class="ph ph-sun text-xl hidden dark:block"></i>
+                </button>
 
-    div.onclick = async () => {
-      const arr = n.read_by || [];
-      if (!arr.includes(state.currentUser.id)) arr.push(state.currentUser.id);
+                <button id="notifBtn" class="relative p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
+                    <i class="ph ph-bell text-xl"></i>
+                    <span id="notifBadge" class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full hidden animate-bounce"></span>
+                </button>
 
-      await supabase
-        .from("notifications")
-        .update({ read_by: arr })
-        .eq("id", n.id);
+                <div id="authContainer">
+                    </div>
+            </div>
+        </div>
+    </header>
 
-      panel.remove();
-      refreshNotifications();
-    };
+    <main class="flex-grow w-full max-w-5xl mx-auto px-4 py-6">
 
-    panel.appendChild(div);
-  });
+        <div class="flex justify-center mb-8">
+            <div class="glass p-1 rounded-2xl flex space-x-1 shadow-sm">
+                <button onclick="switchTab('lost')" id="tab-lost" class="px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 bg-white dark:bg-white/10 shadow-sm text-brand-600 dark:text-white">Lost</button>
+                <button onclick="switchTab('found')" id="tab-found" class="px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/50 dark:hover:bg-white/5 text-slate-600 dark:text-slate-400">Found</button>
+                <button onclick="switchTab('giveaway')" id="tab-giveaway" class="px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/50 dark:hover:bg-white/5 text-slate-600 dark:text-slate-400">Giveaway</button>
+            </div>
+        </div>
 
-  document.body.appendChild(panel);
-  document.getElementById("closeNotif").onclick = () => panel.remove();
-});
+        <div class="relative max-w-lg mx-auto mb-10 group">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <i class="ph ph-magnifying-glass text-slate-400 text-xl group-focus-within:text-brand-500 transition-colors"></i>
+            </div>
+            <input type="text" id="searchInput" placeholder="Search for phones, keys, locations..." 
+                class="w-full pl-12 pr-4 py-3.5 rounded-2xl glass-input text-sm font-mono placeholder:font-sans">
+        </div>
 
-/* ========== REALTIME LISTENER ========== */
-const channel = supabase
-  .channel("realtime-items")
-  .on(
-    "postgres_changes",
-    { event: "INSERT", schema: "public", table: "items" },
-    payload => {
-      showToast("New item posted");
-      loadItems();
-    }
-  )
-  .subscribe();
+        <div id="itemsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pb-20">
+            <div class="col-span-full text-center py-20 opacity-50">
+                <i class="ph ph-spinner animate-spin text-4xl mb-4"></i>
+                <p>Loading items...</p>
+            </div>
+        </div>
 
+    </main>
 
-</script>
+    <footer class="mt-auto border-t border-white/20 dark:border-white/5 bg-white/30 dark:bg-black/30 backdrop-blur-lg pt-10 pb-24">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold gradient-text mb-2">✨ Project Contributors – Team BBD</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Crafted with passion & precision</p>
+            </div>
 
-<!-- TOAST ELEMENT -->
-<div id="toast" style="
-  position:fixed; bottom:2rem; left:50%;
-  transform:translateX(-50%) translateY(80px);
-  background:var(--bg-card);
-  padding:1rem 2rem; border-radius:50px;
-  border:1px solid var(--border);
-  color:var(--text); opacity:0;
-  transition:.4s; z-index:9999;
-"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <div class="glass-card p-6 rounded-2xl relative overflow-hidden group transform hover:-translate-y-1 border-l-4 border-brand-500">
+                    <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="ph-fill ph-crown text-6xl text-brand-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-white">Abhinav Tiwari</h3>
+                    <p class="text-xs font-mono text-brand-600 dark:text-brand-400 mb-3">Roll No. 08</p>
+                    <div class="space-y-1">
+                        <span class="inline-block px-2 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 text-[10px] font-bold uppercase tracking-wider rounded-md">Lead Developer</span>
+                        <span class="inline-block px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] rounded-md">System Architect</span>
+                        <span class="inline-block px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] rounded-md">UI/UX Designer</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl hover:-translate-y-1">
+                    <h3 class="font-bold text-slate-800 dark:text-white">Adarsh Pandey</h3>
+                    <p class="text-xs font-mono text-slate-500 mb-2">Roll No. 16</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">Content Support</span>
+                        <span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">Basic Testing</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl hover:-translate-y-1">
+                    <h3 class="font-bold text-slate-800 dark:text-white">Aman Singh</h3>
+                    <p class="text-xs font-mono text-slate-500 mb-2">Roll No. 31</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">Design Feedback</span>
+                        <span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">Documentation</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl hover:-translate-y-1">
+                    <h3 class="font-bold text-slate-800 dark:text-white">Anuj Kumar</h3>
+                    <p class="text-xs font-mono text-slate-500 mb-2">Roll No. 51</p>
+                    <div class="flex flex-wrap gap-1">
+                        <span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">Validation</span>
+                        <span class="text-[10px] px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-md">Usability Testing</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <button onclick="openPostModal()" id="fabBtn" class="fixed bottom-8 right-6 z-50 w-14 h-14 btn-primary rounded-full flex items-center justify-center text-2xl shadow-2xl hover:scale-110 transition-transform hidden">
+        <i class="ph ph-plus"></i>
+    </button>
+
+    <div id="authModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden transition-opacity opacity-0">
+        <div class="glass bg-white dark:bg-slate-900 p-8 rounded-3xl w-full max-w-md relative transform scale-95 transition-transform">
+            <button onclick="closeModal('authModal')" class="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i class="ph ph-x"></i></button>
+            
+            <div class="text-center mb-6">
+                <h2 id="authTitle" class="text-2xl font-bold mb-1">Welcome Back</h2>
+                <p class="text-sm text-slate-500">Please sign in to continue</p>
+            </div>
+
+            <form id="authForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Email Address</label>
+                    <input type="email" id="emailInput" required class="w-full px-4 py-3 rounded-xl glass-input">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Password</label>
+                    <input type="password" id="passwordInput" required class="w-full px-4 py-3 rounded-xl glass-input">
+                </div>
+                <button type="submit" class="w-full py-3 btn-primary rounded-xl mt-2 relative">
+                    <span id="authBtnText">Sign In</span>
+                    <i id="authSpinner" class="ph ph-spinner animate-spin absolute right-4 top-3.5 hidden"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm">
+                <p id="authSwitchText" class="text-slate-500">Don't have an account? <button onclick="toggleAuthMode()" class="text-brand-600 font-bold hover:underline">Sign Up</button></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="postModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden opacity-0 transition-opacity">
+        <div class="glass bg-white dark:bg-slate-900 p-6 md:p-8 rounded-3xl w-full max-w-2xl h-[90vh] overflow-y-auto relative transform scale-95 transition-transform">
+            <button onclick="closeModal('postModal')" class="absolute top-4 right-4 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i class="ph ph-x"></i></button>
+            
+            <h2 id="postModalTitle" class="text-2xl font-bold mb-6">Post New Item</h2>
+
+            <form id="postForm" class="space-y-5">
+                <input type="hidden" id="itemId"> <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Title</label>
+                        <input type="text" id="itemTitle" required class="w-full px-4 py-3 rounded-xl glass-input" placeholder="e.g. Black Dell Laptop">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Category</label>
+                        <select id="itemCategory" class="w-full px-4 py-3 rounded-xl glass-input bg-transparent">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Documents">Documents/ID</option>
+                            <option value="Accessories">Accessories</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Location Found/Lost</label>
+                    <input type="text" id="itemLocation" required class="w-full px-4 py-3 rounded-xl glass-input" placeholder="e.g. Near Canteen Block B">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Description</label>
+                    <textarea id="itemDesc" rows="3" required class="w-full px-4 py-3 rounded-xl glass-input" placeholder="Describe the item details..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Photo</label>
+                    <div class="relative border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-6 text-center transition-colors hover:border-brand-500">
+                        <input type="file" id="itemImage" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        <div id="imagePreview" class="hidden w-full h-40 mb-2 rounded-lg bg-cover bg-center"></div>
+                        <div id="uploadPlaceholder">
+                            <i class="ph ph-image text-3xl text-slate-400 mb-2"></i>
+                            <p class="text-sm text-slate-500">Click to upload image</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 btn-primary rounded-xl text-lg font-medium flex justify-center items-center gap-2">
+                    <span id="postBtnText">Publish Item</span>
+                    <i id="postSpinner" class="ph ph-spinner animate-spin hidden"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="reportModal" class="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
+        <div class="glass bg-white dark:bg-slate-900 p-6 rounded-2xl w-full max-w-sm">
+            <h3 class="text-lg font-bold mb-4">Report Item</h3>
+            <input type="hidden" id="reportItemId">
+            <textarea id="reportReason" class="w-full p-3 rounded-xl glass-input mb-4" rows="3" placeholder="Reason for reporting..."></textarea>
+            <div class="flex justify-end gap-2">
+                <button onclick="closeModal('reportModal')" class="px-4 py-2 rounded-lg text-sm hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                <button onclick="submitReport()" class="px-4 py-2 rounded-lg bg-red-500 text-white text-sm">Report</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notifPanel" class="fixed top-20 right-4 z-50 w-80 glass bg-white/90 dark:bg-slate-900/90 rounded-2xl shadow-2xl transform translate-x-full transition-transform duration-300 hidden">
+        <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+            <h3 class="font-bold">Notifications</h3>
+            <button onclick="markNotificationsRead()" class="text-xs text-brand-500 font-medium">Mark all read</button>
+        </div>
+        <div id="notifList" class="max-h-96 overflow-y-auto p-2">
+            <p class="text-center text-sm text-slate-500 py-4">No new notifications</p>
+        </div>
+    </div>
+
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl z-[80] transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-3">
+        <i class="ph-fill ph-info text-brand-400"></i>
+        <span id="toastMsg" class="text-sm font-medium">Notification</span>
+    </div>
+
+    <script>
+        // --- CONFIG ---
+        const SUPABASE_URL = 'https://aksovogwimuqprevlxhd.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFrc292b2d3aW11cXByZXZseGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMDQ5NzUsImV4cCI6MjA3ODc4MDk3NX0.HNsnQKEQx5rZdBLFiTV5ooch_APGrVD-noG11Dg8W2Q';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // --- STATE ---
+        let currentUser = null;
+        let currentTab = 'lost'; // lost | found | giveaway
+        let isLoginMode = true;
+        let itemsCache = [];
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Theme Check
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // Check Auth
+            const { data: { session } } = await supabase.auth.getSession();
+            currentUser = session?.user || null;
+            updateUIForAuth();
+
+            // Load Items
+            fetchItems();
+
+            // Realtime Subscription
+            supabase
+                .channel('public:items')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, payload => {
+                    fetchItems(); // Simple refresh on change
+                })
+                .subscribe();
+
+            if(currentUser) {
+                setupNotifications();
+            }
+        });
+
+        // --- AUTHENTICATION ---
+        function updateUIForAuth() {
+            const container = document.getElementById('authContainer');
+            const fab = document.getElementById('fabBtn');
+
+            if (currentUser) {
+                // Logged In
+                const initial = currentUser.email.charAt(0).toUpperCase();
+                container.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-brand-500 to-accent-500 text-white flex items-center justify-center font-bold text-sm">
+                            ${initial}
+                        </div>
+                        <button onclick="handleLogout()" class="text-xs font-medium hover:text-red-500 transition-colors">Logout</button>
+                    </div>
+                `;
+                fab.classList.remove('hidden');
+            } else {
+                // Guest
+                container.innerHTML = `
+                    <button onclick="openAuthModal()" class="px-4 py-1.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-black text-sm font-bold hover:opacity-90 transition-opacity">
+                        Login
+                    </button>
+                `;
+                fab.classList.add('hidden');
+            }
+        }
+
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('authModal').classList.remove('opacity-0');
+                document.getElementById('authModal').children[0].classList.remove('scale-95');
+            }, 10);
+        }
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('authTitle').innerText = isLoginMode ? 'Welcome Back' : 'Create Account';
+            document.getElementById('authBtnText').innerText = isLoginMode ? 'Sign In' : 'Sign Up';
+            document.getElementById('authSwitchText').innerHTML = isLoginMode 
+                ? `Don't have an account? <button onclick="toggleAuthMode()" class="text-brand-600 font-bold hover:underline">Sign Up</button>`
+                : `Already have an account? <button onclick="toggleAuthMode()" class="text-brand-600 font-bold hover:underline">Sign In</button>`;
+        }
+
+        document.getElementById('authForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const spinner = document.getElementById('authSpinner');
+            
+            spinner.classList.remove('hidden');
+
+            try {
+                if (isLoginMode) {
+                    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    currentUser = data.user;
+                } else {
+                    const { data, error } = await supabase.auth.signUp({ email, password });
+                    if (error) throw error;
+                    currentUser = data.user;
+                    showToast('Account created! You are now logged in.');
+                }
+                closeModal('authModal');
+                updateUIForAuth();
+                setupNotifications();
+                window.location.reload(); // Refresh to sync everything perfectly
+            } catch (err) {
+                showToast(err.message);
+            } finally {
+                spinner.classList.add('hidden');
+            }
+        });
+
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            updateUIForAuth();
+            window.location.reload();
+        }
+
+        // --- ITEMS LOGIC ---
+        async function fetchItems() {
+            const grid = document.getElementById('itemsGrid');
+            
+            let query = supabase
+                .from('items')
+                .select('*, likes(count)')
+                .eq('type', currentTab)
+                .order('created_at', { ascending: false });
+
+            // Search Logic
+            const searchVal = document.getElementById('searchInput').value.trim();
+            if(searchVal) {
+                query = query.or(`title.ilike.%${searchVal}%,description.ilike.%${searchVal}%,location.ilike.%${searchVal}%`);
+            }
+
+            const { data, error } = await query;
+
+            if (error) {
+                console.error(error);
+                return;
+            }
+
+            itemsCache = data;
+            renderItems(data);
+        }
+
+        function renderItems(items) {
+            const grid = document.getElementById('itemsGrid');
+            grid.innerHTML = '';
+
+            if (items.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-20 text-slate-400">
+                        <i class="ph ph-magnifying-glass text-6xl mb-4 opacity-20"></i>
+                        <p class="text-lg">No items found in this category.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            items.forEach((item, index) => {
+                const isOwner = currentUser && currentUser.id === item.user_id;
+                const delay = index * 100; // Stagger animation
+
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl overflow-hidden flex flex-col h-full animate-fade-up';
+                card.style.animationDelay = `${delay}ms`;
+
+                // Badge Color
+                let badgeColor = 'bg-slate-100 text-slate-600';
+                if(item.type === 'lost') badgeColor = 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-300';
+                if(item.type === 'found') badgeColor = 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-300';
+                if(item.type === 'giveaway') badgeColor = 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-300';
+
+                // Status Overlay
+                let statusOverlay = '';
+                if (item.status === 'returned' || item.status === 'claimed') {
+                    statusOverlay = `<div class="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-[2px] z-10 flex items-center justify-center">
+                        <span class="bg-black text-white px-4 py-2 rounded-full text-sm font-bold uppercase tracking-widest shadow-xl transform -rotate-12">Resolved</span>
+                    </div>`;
+                }
+
+                // Image Area
+                const imgHtml = item.image_url 
+                    ? `<img src="${item.image_url}" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110" loading="lazy">`
+                    : `<div class="w-full h-48 bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-300"><i class="ph ph-image text-4xl"></i></div>`;
+
+                card.innerHTML = `
+                    <div class="relative overflow-hidden">
+                        ${statusOverlay}
+                        ${imgHtml}
+                        <div class="absolute top-3 left-3">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${badgeColor}">${item.category}</span>
+                        </div>
+                        ${isOwner ? `
+                        <div class="absolute top-3 right-3 flex gap-2 z-20">
+                             <button onclick="editItem('${item.id}')" class="p-2 bg-white/90 text-black rounded-full shadow-sm hover:bg-brand-500 hover:text-white transition-colors"><i class="ph-bold ph-pencil-simple"></i></button>
+                             <button onclick="deleteItem('${item.id}')" class="p-2 bg-white/90 text-red-500 rounded-full shadow-sm hover:bg-red-500 hover:text-white transition-colors"><i class="ph-bold ph-trash"></i></button>
+                        </div>` : ''}
+                    </div>
+                    
+                    <div class="p-5 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold leading-tight line-clamp-1">${escapeHtml(item.title)}</h3>
+                        </div>
+                        
+                        <div class="flex items-center gap-1 text-slate-500 text-xs mb-3 font-mono">
+                            <i class="ph-fill ph-map-pin text-brand-500"></i>
+                            <span class="line-clamp-1">${escapeHtml(item.location)}</span>
+                        </div>
+
+                        <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-4 flex-grow">${escapeHtml(item.description)}</p>
+
+                        <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                            <div class="flex items-center gap-1 text-xs text-slate-400">
+                                <i class="ph ph-user-circle text-lg"></i>
+                                <span>${item.posted_by || 'User'}</span>
+                            </div>
+                            
+                            <div class="flex items-center gap-3">
+                                ${isOwner && item.status === 'active' ? 
+                                    `<button onclick="markReturned('${item.id}')" class="text-xs font-bold text-green-500 hover:underline">Mark Resolved</button>` 
+                                    : ''}
+                                
+                                <button onclick="shareItem('${item.title}', '${item.description}')" class="text-slate-400 hover:text-brand-500"><i class="ph ph-share-network text-lg"></i></button>
+                                
+                                ${!isOwner ? `<button onclick="openReportModal('${item.id}')" class="text-slate-400 hover:text-red-500"><i class="ph ph-flag text-lg"></i></button>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- POST / EDIT ITEM ---
+        let editingItemId = null;
+        let selectedImageFile = null;
+
+        function openPostModal() {
+            if (!currentUser) return showToast('Please login to post');
+            editingItemId = null;
+            document.getElementById('postForm').reset();
+            document.getElementById('imagePreview').style.backgroundImage = '';
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('uploadPlaceholder').classList.remove('hidden');
+            document.getElementById('postModalTitle').innerText = 'Post New Item';
+            document.getElementById('postBtnText').innerText = 'Publish Item';
+            
+            document.getElementById('postModal').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('postModal').classList.remove('opacity-0');
+                document.getElementById('postModal').children[0].classList.remove('scale-95');
+            }, 10);
+        }
+
+        // Image Preview
+        document.getElementById('itemImage').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if(file) {
+                selectedImageFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.style.backgroundImage = `url(${e.target.result})`;
+                    preview.classList.remove('hidden');
+                    document.getElementById('uploadPlaceholder').classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const spinner = document.getElementById('postSpinner');
+            const btnText = document.getElementById('postBtnText');
+            
+            spinner.classList.remove('hidden');
+            btnText.innerText = editingItemId ? 'Updating...' : 'Posting...';
+
+            try {
+                let imageUrl = null;
+                
+                // 1. Handle Image Upload
+                if (selectedImageFile) {
+                    const options = { maxSizeMB: 0.5, maxWidthOrHeight: 1024, useWebWorker: true };
+                    const compressedFile = await imageCompression(selectedImageFile, options);
+                    
+                    const fileName = `${Date.now()}_${currentUser.id}`;
+                    const { data, error } = await supabase.storage.from('images').upload(fileName, compressedFile);
+                    
+                    if (error) throw error;
+                    
+                    const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(fileName);
+                    imageUrl = publicUrl;
+                } else if (editingItemId) {
+                    // Keep existing image if editing and no new file
+                    const item = itemsCache.find(i => i.id === editingItemId);
+                    imageUrl = item.image_url;
+                }
+
+                // 2. Construct Object
+                const itemData = {
+                    title: document.getElementById('itemTitle').value,
+                    category: document.getElementById('itemCategory').value,
+                    location: document.getElementById('itemLocation').value,
+                    description: document.getElementById('itemDesc').value,
+                    type: currentTab,
+                    image_url: imageUrl,
+                    user_id: currentUser.id,
+                    posted_by: currentUser.email.split('@')[0],
+                    status: 'active'
+                };
+
+                if (editingItemId) {
+                    const { error } = await supabase.from('items').update(itemData).eq('id', editingItemId);
+                    if(error) throw error;
+                    showToast('Item updated successfully');
+                } else {
+                    const { error } = await supabase.from('items').insert([itemData]);
+                    if(error) throw error;
+                    showToast('Item posted successfully');
+                }
+
+                closeModal('postModal');
+                fetchItems();
+
+            } catch (err) {
+                console.error(err);
+                showToast('Error saving item');
+            } finally {
+                spinner.classList.add('hidden');
+                btnText.innerText = editingItemId ? 'Update Item' : 'Publish Item';
+            }
+        });
+
+        async function editItem(id) {
+            const item = itemsCache.find(i => i.id == id);
+            if(!item) return;
+
+            editingItemId = id;
+            document.getElementById('itemTitle').value = item.title;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemLocation').value = item.location;
+            document.getElementById('itemDesc').value = item.description;
+            
+            if(item.image_url) {
+                const preview = document.getElementById('imagePreview');
+                preview.style.backgroundImage = `url(${item.image_url})`;
+                preview.classList.remove('hidden');
+                document.getElementById('uploadPlaceholder').classList.add('hidden');
+            }
+
+            document.getElementById('postModalTitle').innerText = 'Edit Item';
+            document.getElementById('postBtnText').innerText = 'Update Item';
+            
+            document.getElementById('postModal').classList.remove('hidden');
+            // Animation timeout...
+             setTimeout(() => {
+                document.getElementById('postModal').classList.remove('opacity-0');
+                document.getElementById('postModal').children[0].classList.remove('scale-95');
+            }, 10);
+        }
+
+        async function deleteItem(id) {
+            if(!confirm('Are you sure you want to delete this?')) return;
+            const { error } = await supabase.from('items').delete().eq('id', id);
+            if(error) showToast('Error deleting item');
+            else {
+                showToast('Item deleted');
+                fetchItems();
+            }
+        }
+
+        async function markReturned(id) {
+            const { error } = await supabase.from('items').update({ status: 'returned' }).eq('id', id);
+            if(!error) {
+                showToast('Marked as resolved!');
+                fetchItems();
+            }
+        }
+
+        // --- REPORT ---
+        function openReportModal(id) {
+            if(!currentUser) return showToast('Please login to report');
+            document.getElementById('reportItemId').value = id;
+            document.getElementById('reportModal').classList.remove('hidden');
+        }
+
+        async function submitReport() {
+            const id = document.getElementById('reportItemId').value;
+            const reason = document.getElementById('reportReason').value;
+            if(!reason) return showToast('Please enter a reason');
+
+            const { error } = await supabase.from('reports').insert([{
+                item_id: id,
+                reporter_id: currentUser.id,
+                reason: reason
+            }]);
+
+            if(error) showToast('Failed to report');
+            else showToast('Report submitted. Admins will review.');
+            
+            closeModal('reportModal');
+        }
+
+        // --- TAB SWITCHING ---
+        function switchTab(tab) {
+            currentTab = tab;
+            
+            // Update Buttons
+            ['lost', 'found', 'giveaway'].forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                if(t === tab) {
+                    btn.classList.add('bg-white', 'shadow-sm', 'text-brand-600');
+                    btn.classList.remove('hover:bg-white/50', 'text-slate-600');
+                    if(document.documentElement.classList.contains('dark')) {
+                        btn.classList.add('dark:bg-white/10', 'dark:text-white');
+                        btn.classList.remove('dark:text-slate-400');
+                    }
+                } else {
+                    btn.classList.remove('bg-white', 'shadow-sm', 'text-brand-600', 'dark:bg-white/10', 'dark:text-white');
+                    btn.classList.add('hover:bg-white/50', 'text-slate-600', 'dark:text-slate-400');
+                }
+            });
+
+            fetchItems();
+        }
+
+        // --- NOTIFICATIONS ---
+        async function setupNotifications() {
+            // Subscribe to realtime notifications
+            supabase
+                .channel('public:notifications')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'notifications', filter: `user_id=eq.${currentUser.id}` }, payload => {
+                    document.getElementById('notifBadge').classList.remove('hidden');
+                    showToast('New Notification!');
+                })
+                .subscribe();
+        }
+
+        document.getElementById('notifBtn').addEventListener('click', async () => {
+            const panel = document.getElementById('notifPanel');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                // Load notifs
+                const list = document.getElementById('notifList');
+                if(!currentUser) {
+                    list.innerHTML = '<p class="text-center text-sm p-4">Login to see notifications</p>';
+                    return;
+                }
+                
+                const { data } = await supabase.from('notifications').select('*').eq('user_id', currentUser.id).order('created_at', {ascending: false}).limit(10);
+                
+                if(data && data.length > 0) {
+                    list.innerHTML = data.map(n => `
+                        <div class="p-3 border-b border-slate-50 dark:border-slate-800 text-sm hover:bg-slate-50 dark:hover:bg-white/5 transition-colors ${!n.is_read ? 'bg-brand-50/50 dark:bg-brand-900/10' : ''}">
+                            <p>${n.message}</p>
+                            <span class="text-[10px] text-slate-400">${new Date(n.created_at).toLocaleDateString()}</span>
+                        </div>
+                    `).join('');
+                    // Clear badge
+                    document.getElementById('notifBadge').classList.add('hidden');
+                } else {
+                    list.innerHTML = '<p class="text-center text-sm text-slate-500 py-4">No new notifications</p>';
+                }
+            }
+        });
+
+        // --- UTILS ---
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            el.classList.add('opacity-0');
+            if(el.children[0]) el.children[0].classList.add('scale-95');
+            setTimeout(() => {
+                el.classList.add('hidden');
+            }, 300);
+        }
+
+        function shareItem(title, desc) {
+            const text = `Check out this item: ${title} - ${desc}`;
+            const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            window.open(url, '_blank');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function escapeHtml(text) {
+            if(!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Search Listener
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                fetchItems();
+            }, 500);
+        });
+
+        // Dark Mode Toggle
+        document.getElementById('themeBtn').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        });
+
+    </script>
+</body>
+</html>
